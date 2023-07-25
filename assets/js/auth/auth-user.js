@@ -7,7 +7,7 @@ form.addEventListener('submit', (event) => {
   const email = formData.get('email');
   const password = formData.get('password');
 
-  fetch('/wp-json/adn-plugin/v1/login', {
+  fetch('/wp-json/brfng-plugin/v1/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

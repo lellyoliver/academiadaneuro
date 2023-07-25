@@ -1,4 +1,4 @@
-const form = document.querySelector('#form-create');
+const form = document.getElementById('form-create');
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -12,10 +12,8 @@ form.addEventListener('submit', (event) => {
   const address = formData.get('address');
   const number_house = formData.get('number_house');
   const neighborhood = formData.get('neighborhood');
-  const city = formData.get('city');
-  const state = formData.get('state');
 
-  fetch('/wp-json/brfng-plugin/v1/users', {
+  fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -30,21 +28,17 @@ form.addEventListener('submit', (event) => {
       address: address,
       number_house: number_house,
       neighborhood: neighborhood,
-      city: city,
-      state: state,
-
     })
   })
-  .then(response => response.json())
-  .then(data => {
-    
-    if (data.status === 'sucesso') {
-      alert(data.mensagem);
-    } else {
-      console.log('Erro ao atualizar usuário: ' + data.mensagem);
-    }
-  })
-  .catch(error => {
-    console.error('Erro ao atualizar usuário:', error);
-  });
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'sucesso') {
+        alert(data.mensagem);
+      } else {
+        console.log('Erro ao atualizar usuário: ' + data.mensagem);
+      }
+    })
+    .catch(error => {
+      console.error('Erro ao atualizar usuário:', error);
+    });
 });

@@ -44,5 +44,14 @@ class UserService
     {
         return $this->userModel->updateMeta($meta_fields, $user_id);
     }
+    
+    public function createRelatedUser($user_id, $current_user_id)
+    {
+        if (!is_wp_error($user_id)) {
+            return $this->userModel->createRelated($user_id, $current_user_id);
+        }
+
+        return null;
+    }
 
 }

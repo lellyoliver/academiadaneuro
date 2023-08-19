@@ -36,10 +36,11 @@ form.addEventListener('submit', (event) => {
   })
     .then(response => response.json())
     .then(data => {
-      if (data.status === 'sucesso') {
-        alert(data.mensagem);
+      if (data.status === 'sucesso') {   
+        // Redireciona para a página "/dashboard"
+        window.location.href = '/academiadaneurociencia/dashboard';
       } else {
-        console.log('Erro ao atualizar usuário: ' + data.mensagem);
+        alert('Erro ao atualizar usuário: ' + data.mensagem);
       }
     })
     .catch(error => {

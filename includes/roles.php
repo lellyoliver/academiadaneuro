@@ -88,6 +88,7 @@ class Roles
                 'manage_options' => true,
             ));
         }
+        
         //usuário relacional
         if (get_role('coachingRelation')) {
             remove_role('coachingRelation');

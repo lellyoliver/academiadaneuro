@@ -29,8 +29,6 @@ class UserController
         $states = $request->get_param('states');
         $city = $request->get_param('city');
         $user_role = $request->get_param('role');
-        $meta_user = $request->get_param('meta_user');
-
         $fields = [
             'billing_first_name' => $name,
             'billing_phone' => $phone,
@@ -44,9 +42,6 @@ class UserController
 
         if ($user_id) {
             $meta_fields = $this->userService->updateMetaUser($fields, $user_id);
-            if (is_page(18)) {
-                $user_related = $this->userService->createRelatedUser($user_id, $meta_user); // Passa o ID do usuário atual
-            }
             $response = array(
                 'status' => 'sucesso',
                 'mensagem' => 'Usuário criado com sucesso',

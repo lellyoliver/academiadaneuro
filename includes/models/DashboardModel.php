@@ -52,5 +52,11 @@ class UserModel
         return get_user_meta($user_id);
     }
 
+    public function createRelated($user_id, $current_user_id)
+    {
+        add_user_meta($user_id, 'connected_user', $current_user_id); // Adiciona a relação com o usuário atual
+
+        return $user_id;
+    }
 
 }

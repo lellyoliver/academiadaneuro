@@ -20,8 +20,29 @@ function verifyStringData() {
         }
 
         billingDataInput.value = value;
-        
+
     });
+
+    const cepInput = document.getElementById('cep');
+    cepInput.addEventListener('input', () => {
+        let value = cepInput.value.replace(/\D/g, '');
+        if (value.length === 8) {
+            value = value.replace(/(\d{5})(\d{3})/, '$1-$2');
+        }
+        cepInput.value = value;
+    });
+
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', () => {
+        let value = phoneInput.value.replace(/\D/g, '');
+        if (value.length === 11) {
+            value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+        }
+        phoneInput.value = value;
+    })
 
 }
 verifyStringData();
+
+
+

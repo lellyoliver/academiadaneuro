@@ -34,6 +34,17 @@ class UserService
     }
 
     /**
+     * Update an existing user in the WordPress database.
+     *
+     * @param int $user_id The ID of the user to be updated.
+     * @return bool Whether the update was successful.
+     */
+    public function updateUser($name, $email, $user_id)
+    {
+        return $this->userModel->updateUser($name, $email, $user_id);
+    }
+
+    /**
      * Update user meta fields in WordPress database.
      *
      * @param array $meta_fields An array of user meta fields to be updated.
@@ -45,4 +56,19 @@ class UserService
         return $this->userModel->updateMeta($meta_fields, $user_id);
     }
 
+    /**
+     * Get user details by ID.
+     *
+     * @param int $id The ID of the user.
+     * @return array|WP_Error The user details or an error response.
+     */
+    public function getUserById($id)
+    {
+        return $this->userModel->getUserById($id);
+    }
+
+    public function getLatestOrders($id)
+    {
+        return $this->userModel->getLatestOrders($id);
+    }
 }

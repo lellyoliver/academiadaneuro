@@ -72,6 +72,7 @@ class UserRelatedService
 
         return null;
     }
+    
 
     /**
      * List related users for a given user.

@@ -46,6 +46,9 @@ class UserRelatedController
         if ($user_id) {
             $meta = $this->userRelatedService->updateMetaUser($meta_fields, $user_id);
             $user_related = $this->userRelatedService->createRelatedUser($user_id, $connected_user); // Passa o ID do usuário atual);
+            if ($user_related) {
+                update_user_meta($connected_user, 'can_register_users', false);
+            }
             $response = array(
                 'status' => 'sucesso',
                 'mensagem' => 'Usuário criado com sucesso',
@@ -82,7 +85,6 @@ class UserRelatedController
         $description = $request->get_param('description');
         $email = $request->get_param('email');
 
-
         $meta_fields = [
             'billing_first_name' => $name,
             'user_pass' => $password,
@@ -95,7 +97,7 @@ class UserRelatedController
         ];
 
         $updated = $this->userRelatedService->updateUser($name, $email, $user_id, $password, $description);
-        
+
         $meta = $this->userRelatedService->updateMetaUser($meta_fields, $user_id);
 
         if ($updated) {
@@ -154,9 +156,10 @@ class UserRelatedController
             wp_redirect('/academiadaneurociencia/404/');
             exit;
         }
-
+        
+        $can_register = $this->can_register_new_user();
         $listUser = $this->getListRelated();
-
+        
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/users/UserRelatedView.php';
         $output = ob_get_contents();
@@ -188,4 +191,13 @@ class UserRelatedController
     {
         return $user = $this->userRelatedService->getUserById($id);
     }
+
+    public function can_register_new_user()
+    {
+        $can_register = current_user_can('create_users');
+        $user_can_register = get_user_meta(get_current_user_id(), 'can_register_users', true);
+
+        return ($can_register && $user_can_register);
+    }
+
 }

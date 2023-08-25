@@ -29,6 +29,7 @@ class UserRelatedModel
             'first_name' => $name,
             'role' => $user_role,
             'description' => $description,
+            'show_admin_bar_front' => false,
         );
 
         $user_id = wp_insert_user($userdata);
@@ -99,7 +100,7 @@ class UserRelatedModel
      */
     public function createRelated($user_id, $current_user_id)
     {
-        add_user_meta($user_id, 'connected_user', $current_user_id); // Adiciona a relação com o usuário atual
+        add_user_meta($user_id, 'connected_user', $current_user_id);
 
         return $user_id;
     }
@@ -154,4 +155,5 @@ class UserRelatedModel
 
         return $user_data;
     }
+
 }

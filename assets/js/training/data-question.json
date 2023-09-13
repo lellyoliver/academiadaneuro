@@ -1,0 +1,290 @@
+[
+    {
+      "number": 1,
+      "category": "Qualidade de sono",
+      "question": "Você tem dificuldade para dormir à noite?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 2,
+      "category": "Qualidade de sono",
+      "question": "Sente-se cansado(a) mesmo depois de uma noite de sono completa?ttn",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 3,
+      "category": "Qualidade de sono",
+      "question": "Você acorda no meio da noite e tem dificuldade para voltar a dormir?ttn",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 4,
+      "category": "Qualidade de sono",
+      "question": "Sente-se sonolento(a) ou sem energia durante o dia?ttn",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 5,
+      "category": "Qualidade de sono",
+      "question": "Você tem sonhos ou pesadelos que interrompem seu sono?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 6,
+      "category": "Fadiga Mental",
+      "question": "Você se sente mentalmente exausto(a) no final do dia?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 7,
+      "category": "Fadiga Mental",
+      "question": "Você tem dificuldade para tomar decisões ou resolver problemas quando está cansado(a)?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 8,
+      "category": "Fadiga Mental",
+      "question": "Você sente que precisa de um tempo para recarregar depois de atividades mentalmente exigentes?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 9,
+      "category": "Fadiga Mental",
+      "question": "Você sente que sua energia mental diminui ao longo do dia?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 10,
+      "category": "Fadiga Mental",
+      "question": "Você tem dificuldade para se concentrar ou pensar claramente quando está cansado(a)?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 11,
+      "category": "Percepção da Mente e do Corpo",
+      "question": "Você sente que sua mente e seu corpo não estão em sincronia",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 12,
+      "category": "Percepção da Mente e do Corpo",
+      "question": "Você sente que não tem controle sobre seu corpo?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 13,
+      "category": "Percepção da Mente e do Corpo",
+      "question": "Você sente que seu corpo não responde às suas ações ou intenções como você gostaria?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 14,
+      "category": "Controle de Ansiedade",
+      "question": "Sente-se frequentemente ansioso(a) ou preocupado(a)?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 15,
+      "category": "Controle de Ansiedade",
+      "question": "Sente que sua ansiedade é difícil de controlar?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 16,
+      "category": "Controle de Ansiedade",
+      "question": "Sente-se frequentemente inquieto(a) ou nervoso(a)?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 17,
+      "category": "Controle de Ansiedade",
+      "question": "Você se preocupa exageradamente com coisas diferentes?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 18,
+      "category": "Controle de Ansiedade",
+      "question": "Sente medo ou pânico sem motivo aparente?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 19,
+      "category": "Controle de Ansiedade",
+      "question": "Sente que suas emoções estão fora de controle?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 20,
+      "category": "Controle de Ansiedade",
+      "question": "Você tem mudanças bruscas de humor?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 21,
+      "category": "Controle de Ansiedade",
+      "question": "Sente-se frequentemente dominado(a) por suas emoções?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 22,
+      "category": "Controle de Ansiedade",
+      "question": "Você tem dificuldade para se acalmar depois de se sentir irritado(a) ou agitado(a)?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 23,
+      "category": "Controle de Ansiedade",
+      "question": "Sente que não consegue controlar sua raiva ou a deixa dominar?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 24,
+      "category": "Estresse",
+      "question": "Você sente que está sob muito estresse?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 25,
+      "category": "Estresse",
+      "question": "Você tem dificuldade para relaxar ou descomprimir?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 26,
+      "category": "Estresse",
+      "question": "Você se sente constantemente sofrendo pela falta de tempo?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 27,
+      "category": "Estresse",
+      "question": "Você se sente sobrecarregado(a) por suas responsabilidades?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 28,
+      "category": "Estresse",
+      "question": "Você sente que o estresse está afetando sua saúde física ou mental?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 29,
+      "category": "Dores no Corpo",
+      "question": "Você sente dores no corpo regularmente?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 30,
+      "category": "Dores no Corpo",
+      "question": "Suas dores no corpo limitam suas atividades diárias?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 31,
+      "category": "Dores no Corpo",
+      "question": "Você sente dor em mais de uma área do corpo?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 32,
+      "category": "Dores no Corpo",
+      "question": "Sua dor no corpo piora em situações de estresse ou ansiedade?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 33,
+      "category": "Dores no Corpo",
+      "question": "Você sente dores no corpo que não parecem ter uma causa física clara?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 34,
+      "category": "Cores de Cabeça",
+      "question": "Você sofre de dores de cabeça frequentes?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 35,
+      "category": "Cores de Cabeça",
+      "question": "As dores de cabeça tiram sua capacidade de funcionar normalmente?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 36,
+      "category": "Cores de Cabeça",
+      "question": "Você experimenta dores de cabeça após períodos de estresse mental ou físico intenso?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 37,
+      "category": "Cores de Cabeça",
+      "question": "As dores de cabeça são geralmente várias ou debilitantes?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 38,
+      "category": "Cores de Cabeça",
+      "question": "As dores de cabeça vêm acompanhadas de outros sintomas, como náuseas ou sensibilidade à luz?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 39,
+      "category": "Estímulos Externosnque Causam Ansiedade",
+      "question": "Você se sente ansioso(a) oundesconfortável em locais públicos ou lotados?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 40,
+      "category": "Estímulos Externosnque Causam Ansiedade",
+      "question": "Você sente ansiedade ou medo irracional de certos objetos, lugares ou situações?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 41,
+      "category": "Estímulos Externosnque Causam Ansiedade",
+      "question": "Você evita certas situações ou atividades por causa da ansiedade que elas causam?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 42,
+      "category": "Estímulos Externosnque Causam Ansiedade",
+      "question": "Você sente ansiedade em situações sociais ou ao conhecer novas pessoas?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 43,
+      "category": "Estímulos Externosnque Causam Ansiedade",
+      "question": "Você sente um aumento na ansiedade ou no estresse em resposta a certos filhos, luzes ou sensações táteis?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 44,
+      "category": "Pensamentos Invasivos, Negativos e Pensamentos em Geral",
+      "question": "Você tem pensamentos negativos que parecem incontroláveis?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 45,
+      "category": "Pensamentos Invasivos, Negativos e Pensamentos em Geral",
+      "question": "Você se preocupa constantemente com coisas que poderiam dar errado?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 46,
+      "category": "Pensamentos Invasivos, Negativos e Pensamentos em Geral",
+      "question": "Você tem dificuldade em parar de pensar em algo uma vez que começa?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 47,
+      "category": "Pensamentos Invasivos, Negativos e Pensamentos em Geral",
+      "question": "Você sente que seus pensamentos são invasivos e interrompem sua concentração?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    },
+    {
+      "number": 48,
+      "category": "Pensamentos Invasivos, Negativos e Pensamentos em Geral",
+      "question": "Você tem dificuldade em controlar sua raiva ou está deixando você?",
+      "replies": ["sempre","quase sempre", "às vezes", "raramente","Nunca"]
+    }
+   ]

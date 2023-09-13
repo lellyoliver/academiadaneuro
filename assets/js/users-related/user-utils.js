@@ -45,4 +45,24 @@ function verifyStringData() {
 verifyStringData();
 
 
+function tableCustom() {
+    const wideMobile = document.getElementById('tableRelated');
+    const screenWidth = window.screen.width;
 
+    if (wideMobile) { // Verifica se o elemento foi encontrado
+        wideMobile.dataset.pageSize = screenWidth > 900 ? '3' : '1';
+    }
+}
+
+tableCustom();
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    setTimeout(function () {
+        const loader = document.getElementById("loader");
+        loader.style.display = "none";
+
+        const conteudo = document.getElementById("conteudo");
+        conteudo.style.display = "block";
+    }, 2000);
+});

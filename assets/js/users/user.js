@@ -106,13 +106,13 @@ function viewUser() {
     const cityInput = document.getElementById('city');
     const cepInput = document.getElementById('cep');
     const statesInput = document.getElementById('states');
-    const cpfInput = document.getElementById('billing_data');
+    const userName = document.getElementById('user_name');
     const userID = document.getElementById('userId');
 
     fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users/view/${userID.value}`)
       .then(response => response.json())
       .then(data => {
-        cpfInput.value = data.user_login;
+        userName.textContent = data.user_login;
         nameInput.value = data.billing_first_name;
         emailInput.value = data.user_email;
         phoneInput.value = data.billing_phone;

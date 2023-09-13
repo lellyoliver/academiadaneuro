@@ -29,13 +29,15 @@ function adn_scripts()
     if (is_page(18)) {
         wp_enqueue_script('userutilsjs', plugins_url('assets/js/users-related/user-utils.js', __FILE__), '1.0.0', true);
         wp_enqueue_script('userrelatedjs', plugins_url('assets/js/users-related/user-related.js', __FILE__), '1.0.0', true);
-
     }
     if (is_page(11)) {
         wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), '1.0.0', true);
     }
     if (is_page(44)) {
         wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), '1.0.0', true);
+    }
+    if (is_page(114)) {
+        wp_enqueue_script('userjs', plugins_url('assets/js/training/training-questions.js', __FILE__), '1.0.0', true);
     }
 
     //Bootstrap
@@ -95,6 +97,19 @@ function adn_page_dashboard($template)
 }
 add_filter('page_template', 'adn_page_dashboard');
 
+function adn_page_myTraining($template)
+{
+    if (get_the_ID() == 114) {
+        $template_myTraining = plugin_dir_path(__FILE__) . 'templates/my-training.php';
+        if (file_exists($template_myTraining)) {
+            return $template_myTraining;
+        }
+    }
+    return $template;
+}
+add_filter('page_template', 'adn_page_myTraining');
+
+
 function adn_product_woo($template)
 {
     if (is_singular('product')) {
@@ -111,28 +126,36 @@ add_filter('template_include', 'adn_product_woo');
 /**
  * Include user roles
  */
-require_once plugin_dir_path(__FILE__) . 'includes/roles.php';
+require_once plugin_dir_path(__FILE__) . 'includes/Roles.php';
 
 /**
  * Include Meta Custom User.
  */
 require_once plugin_dir_path(__FILE__) . 'includes/MetaCustomUser.php';
 
+/**
+ * Include Meta Custom User.
+ */
+require_once plugin_dir_path(__FILE__) . 'includes/MetaCustomQuestion.php';
+
+/**
+ * Include post_type.
+ */
+require_once plugin_dir_path(__FILE__) . 'includes/PostType.php';
 
 /**
  * Compras
  */
 
  function check_and_enable_registration($order_id) {
-    $product_ids = array(110, 109, 26); // Substitua pelos IDs dos produtos específicos
+    $product_ids = array(110, 109, 26);
     $order = wc_get_order($order_id);
 
     if ($order) {
-        $user_id = $order->get_customer_id(); // ID do usuário associado ao pedido
+        $user_id = $order->get_customer_id();
 
         foreach ($order->get_items() as $item_id => $item) {
             if (in_array($item->get_product_id(), $product_ids)) {
-                // Habilitar a permissão para cadastrar novos usuários
                 update_user_meta($user_id, 'can_register_users', true);
                 break;
             }
@@ -141,3 +164,9 @@ require_once plugin_dir_path(__FILE__) . 'includes/MetaCustomUser.php';
 }
 add_action('woocommerce_order_status_completed', 'check_and_enable_registration');
 
+
+/**
+ * Create data Table
+ */
+$training_model = new TrainingModel();
+register_activation_hook(__FILE__, array($training_model, 'createTableTrainingReplies'));

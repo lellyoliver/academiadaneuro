@@ -117,11 +117,9 @@ class UserController
     {
         $user_id = get_current_user_id();
 
-        if (is_page(18)) {
-            if (!is_user_logged_in()) {
-                wp_redirect('/academiadaneurociencia/404/');
-                exit;
-            }
+        if (!is_user_logged_in()) {
+            wp_redirect('/academiadaneurociencia/404/');
+            exit;
         }
         
         $orders = $this->getOrderId($user_id);

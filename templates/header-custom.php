@@ -38,12 +38,16 @@ $search_enabled = get_theme_mod('search_enabled', '1'); // Get custom meta-value
                             <li class="nav-item">
                                 <a class="nav-link" href="<?php echo get_site_url(); ?>/dashboard">Dashboard</a>
                             </li>
+                            <li class="nav-item active">
+                                <a class="nav-link" href="<?php echo get_site_url(); ?>/meus-treinamentos/">Meus
+                                    Treinamentos</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?php echo get_site_url(); ?>/cursos">Cursos</a>
                             </li>
                             <li class="nav-item active">
-                                <a class="nav-link"
-                                    href="<?php echo get_site_url(); ?>/meus-pacientes/">Meus Pacientes</a>
+                                <a class="nav-link" href="<?php echo get_site_url(); ?>/meus-pacientes/">Meus
+                                    Pacientes</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?php echo get_site_url(); ?>/meu-perfil">Perfil</a>

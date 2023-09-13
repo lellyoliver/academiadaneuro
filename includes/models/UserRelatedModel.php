@@ -10,11 +10,6 @@ class UserRelatedModel
         $this->textProcessor = new TextProcessor();
     }
 
-    /**
-     * Create a new user in WordPress database.
-     *
-     * @return int|WP_Error The user ID if successful, or WP_Error object on failure.
-     */
     public function createUser($name, $email, $billing_data, $user_role, $password, $description)
     {
 
@@ -60,28 +55,18 @@ class UserRelatedModel
     {
         global $wpdb;
 
-        // Delete user meta
         $wpdb->delete($wpdb->usermeta, array('user_id' => $id));
-
-        // Delete user
         $wpdb->delete($wpdb->users, array('ID' => $id));
 
-        // Check if the user and usermeta were successfully deleted
         $deleted_user = get_user_by('ID', $id);
+
         if (!$deleted_user) {
-            return true; // Successfully deleted
+            return true;
         } else {
-            return false; // Deletion failed
+            return false;
         }
     }
 
-    /**
-     * Update user meta fields in WordPress database.
-     *
-     * @param array $meta_fields An array of user meta fields to be updated.
-     * @param int $user_id The ID of the user whose meta data will be updated.
-     * @return array An array containing the updated user meta data.
-     */
     public function updateMeta($meta_fields, $user_id)
     {
         foreach ($meta_fields as $key => $value) {
@@ -91,13 +76,6 @@ class UserRelatedModel
         return get_user_meta($user_id);
     }
 
-    /**
-     * Create a related user entry.
-     *
-     * @param int $user_id The ID of the user to be related.
-     * @param int $current_user_id The ID of the current user.
-     * @return int The ID of the related user entry.
-     */
     public function createRelated($user_id, $current_user_id)
     {
         add_user_meta($user_id, 'connected_user', $current_user_id);
@@ -105,13 +83,6 @@ class UserRelatedModel
         return $user_id;
     }
 
-    /**
-     * Get a list of users related to the given user.
-     *
-     * @param int $current_user_id The ID of the current user.
-     * @param int|string $user_id The ID of the user (optional).
-     * @return array An array containing user data.
-     */
     public function getListUserRelated($current_user_id, $user_id = "0")
     {
         $metadata = array(
@@ -125,12 +96,6 @@ class UserRelatedModel
         return $users_data;
     }
 
-    /**
-     * Get user details by ID.
-     *
-     * @param int $id The ID of the user.
-     * @return array|WP_Error The user details or an error response.
-     */
     public function getUserById($id)
     {
         $user = get_userdata($id);

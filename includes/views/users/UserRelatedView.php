@@ -1,47 +1,54 @@
-<div class="card card-blue-dark mb-3">
+<div id="loader">
+    <img src="https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/09/logo_carregamento.png"
+        alt="Carregando...">
+</div>
+<div class="card mb-3">
     <div class="container padding-container-card">
         <div class="card-body">
-            <h6 class="card-title fw-bold mb-3 mt-3 title-cards text-uppercase">
-                <?php echo esc_html('Meus Pacientes'); ?>
-                <?php if ($can_register): ?>
-                <a role="button" class="btn btn-sm btn-primary font-uppercase fw-bold btn-user" data-bs-toggle="modal"
-                    data-bs-target="#modalAddUserRelated">
-                    <i class="fa-solid fa-user-plus"></i>
-                </a>
-                <?php endif;?>
+            <div class="d-flex align-items-center align-self-center mb-3">
+                <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0">
+                    <?php echo esc_html('Meus Pacientes'); ?>
+                </h6>
                 <a role="button"
                     href="https://lellyoliver.com.br/academiadaneurociencia/product/estimulacao-cerebral-menrsal/"
-                    class="btn btn-sm btn-primary font-uppercase fw-bold btn-buy">Comprar Agora <i
-                        class="fa-solid fa-cart-shopping"></i></a>
+                    class="btn btn-secondary me-2"><i class="fa-solid fa-cart-shopping"></i></a>
+                <?php if ($can_register): ?>
+                <a role="button" class="btn btn-secondary display-desktop" data-bs-toggle="modal"
+                    data-bs-target="#modalAddUserRelated" id="btn_user"><i class="fa-solid fa-user-plus"></i>
+                </a>
+            </div>
 
-            </h6>
-            <hr>
-            <table class="table" id="tableRelated" data-toggle="table" data-pagination="true" data-page-size="5"
+            <?php endif;?>
+            <table class="table" id="tableRelated" data-toggle="table" data-pagination="true" data-page-size="3"
                 data-search="false" data-pagination-parts="[pageList]">
-                <p class="mb-3 mt-3 display-mobile text-center"><small><i class="fa-solid fa-hand"></i> Click para ver
-                        mais</small>
-                <p>
-                    <thead>
-                        <tr>
-                            <th data-field="display_name">Nome do Paciente</th>
-                            <th data-field="user_email">E-mail</th>
-                            <th data-field="description">Quadro Clinico</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($listUser as $listUsers): ?>
-                        <tr class="view-user" data-bs-toggle="modal" data-bs-target="#modalViewUserRelated"
-                            data-userid="<?php echo $listUsers->ID; ?>">
-                            <td data-label="Nome do Paciente"><?php echo $listUsers->display_name; ?></td>
-                            <td data-label="E-mail"><?php echo $listUsers->user_email; ?></td>
-                            <td data-label="Quadro Clinico"><?php echo $listUsers->description; ?></td>
-                        </tr>
-                        <?php endforeach;?>
-                    </tbody>
+                <thead>
+                    <tr>
+                        <th data-field="display_name">Nome do Paciente</th>
+                        <th data-field="user_email">E-mail</th>
+                        <th data-field="description">Quadro Clinico</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($listUser as $listUsers): ?>
+                    <tr class="view-user" data-bs-toggle="modal" data-bs-target="#modalViewUserRelated"
+                        data-userid="<?php echo $listUsers->ID; ?>">
+                        <td data-label="Nome do Paciente"><?php echo $listUsers->display_name; ?></td>
+                        <td data-label="E-mail"><?php echo $listUsers->user_email; ?></td>
+                        <td data-label="Quadro Clinico"><?php echo $listUsers->description; ?></td>
+                    </tr>
+                    <?php endforeach;?>
+                </tbody>
             </table>
+            <?php if ($can_register): ?>
+            <div class="row m-0 m-auto mt-3 display-mobile">
+                <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="modal"
+                    data-bs-target="#modalAddUserRelated" id="btn_user"><i class="fa-solid fa-user-plus me-5"></i> Novo
+                    Paciente
+                </button>
+            </div>
+            <?php endif;?>
         </div>
     </div>
-</div>
 </div>
 
 <!-- Modal Related -->
@@ -57,60 +64,74 @@
             </div>
             <form id="form-create" method="post">
                 <div class="modal-body">
-                    <div class="form-floating mb-3">
-                        <input class="form-control" type="text" id="name" name="name">
-                        <label for="name" class="mb-2"><?php echo esc_html('Nome / Razão Social'); ?></label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" type="text" id="billing_data" name="billing_data">
-                        <label for="billing_data" class="mb-2"><?php echo esc_html('CPF / CNPJ'); ?></label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" type="email" id="email" name="email">
-                        <label for="email" class="mb-2"><?php echo esc_html('Email'); ?></label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <textarea class="form-control" id="description" name="description"
-                            style="height: 200px"></textarea>
-                        <label for="description" class="mb-2"><?php echo esc_html('Quadro Clínico'); ?></label>
-                    </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" id="phone" name="phone">
+                        <div class="col-md-6 mb-3">
+                            <span class="label-float">
+                                <input type="text" id="name" name="name">
+                                <label for="name" class="mb-2"><?php echo esc_html('Nome / Razão Social'); ?></label>
+                            </span>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float">
+                                <input type="text" id="billing_data" name="billing_data">
+                                <label for="billing_data" class="mb-2"><?php echo esc_html('CPF / CNPJ'); ?></label>
+                            </span>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float">
+                                <input type="email" id="email" name="email">
+                                <label for="email" class="mb-2"><?php echo esc_html('Email'); ?></label>
+                            </span>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float">
+                                <textarea id="description" name="description" style="height: 200px"></textarea>
+                                <label for="description" class="mb-2"><?php echo esc_html('Quadro Clínico'); ?></label>
+                            </span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <span class="label-float">
+                                <input type="text" id="phone" name="phone">
                                 <label for="phone" class="mb-2"><?php echo esc_html('Telefone'); ?></label>
-                            </div>
+                            </span>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" id="cep" name="cep">
+                        <div class="col-md-6 mb-3">
+                            <span class="label-float">
+                                <input type="text" id="cep" name="cep">
                                 <label for="cep" class="mb-2"><?php echo esc_html('CEP'); ?></label>
-                            </div>
+                            </span>
                         </div>
-                    </div>
 
-                    <div class="form-floating mb-3">
-                        <input class="form-control" type="text" id="address" name="address">
-                        <label for="address" class="mb-2"><?php echo esc_html('Endereço'); ?></label>
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float">
+                                <input type="text" id="address" name="address">
+                                <label for="address" class="mb-2"><?php echo esc_html('Endereço'); ?></label>
+                            </span>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float">
+                                <input type="text" id="city" name="city">
+                                <label for="city" class="mb-2"><?php echo esc_html('Cidade'); ?></label>
+                            </span>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float">
+                                <input type="text" id="states" name="states">
+                                <label for="states" class="mb-2"><?php echo esc_html('Estado'); ?></label>
+                            </span>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float">
+                                <input type="password" id="password" name="password">
+                                <label for="password" class="mb-2"><?php echo esc_html('Senha'); ?></label>
+                            </span>
+                        </div>
+                        <input type="hidden" name="role" value="coachingRelation">
+                        <input type="hidden" name="connected_user" value="<?php echo get_current_user_id(); ?>">
                     </div>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" type="text" id="city" name="city">
-                        <label for="city" class="mb-2"><?php echo esc_html('Cidade'); ?></label>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input class="form-control" type="text" id="states" name="states">
-                        <label for="states" class="mb-2"><?php echo esc_html('Estado'); ?></label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input class="form-control" type="password" id="password" name="password">
-                        <label for="password" class="mb-2"><?php echo esc_html('Senha'); ?></label>
-                    </div>
-                    <input type="hidden" name="role" value="coachingRelation">
-                    <input type="hidden" name="connected_user" value="<?php echo get_current_user_id(); ?>">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-gray" data-bs-dismiss="modal"
+                    <button type="button" class="btn btn-grey" data-bs-dismiss="modal"
                         id="cancel-create">Cancelar</button>
                     <?php if ($can_register): ?>
                     <button type="submit"
@@ -135,62 +156,61 @@
             <form id="form-update" method="post">
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" id="nameUpdate" name="name">
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float">
+                                <input type="text" id="nameUpdate" name="name">
                                 <label for="nameUpdate"
                                     class="mb-2"><?php echo esc_html('Nome / Razão Social'); ?></label>
-                            </div>
+                            </span>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="email" id="emailUpdate" name="email">
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float mb-3">
+                                <input type="email" id="emailUpdate" name="email">
                                 <label for="emailUpdate" class="mb-2"><?php echo esc_html('Email'); ?></label>
-                            </div>
+                            </span>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-floating mb-3">
-                                <textarea class="form-control" id="descriptionUpdate" name="description"
-                                    style="height: 200px"></textarea>
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float mb-3">
+                                <textarea id="descriptionUpdate" name="description" style="height: 200px"></textarea>
                                 <label for="descriptionUpdate"
-                                    class="mb-2"><?php echo esc_html('Quadro Clínico'); ?></label>
-                            </div>
+                                    class="mb-2 textarea"><?php echo esc_html('Quadro Clínico'); ?></label>
+                            </span>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" id="phoneUpdate" name="phone">
+                        <div class="col-md-6 mb-3">
+                            <span class="label-float mb-3">
+                                <input type="text" id="phoneUpdate" name="phone">
                                 <label for="phoneUpdate" class="mb-2"><?php echo esc_html('Telefone'); ?></label>
-                            </div>
+                            </span>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" id="cepUpdate" name="cep">
+                        <div class="col-md-6 mb-3">
+                            <span class="label-float mb-3">
+                                <input type="text" id="cepUpdate" name="cep">
                                 <label for="cepUpdate" class="mb-2"><?php echo esc_html('CEP'); ?></label>
-                            </div>
+                            </span>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" id="addressUpdate" name="address">
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float mb-3">
+                                <input type="text" id="addressUpdate" name="address">
                                 <label for="addressUpdate" class="mb-2"><?php echo esc_html('Endereço'); ?></label>
-                            </div>
+                            </span>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" id="cityUpdate" name="city">
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float mb-3">
+                                <input type="text" id="cityUpdate" name="city">
                                 <label for="cityUpdate" class="mb-2"><?php echo esc_html('Cidade'); ?></label>
-                            </div>
+                            </span>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="text" id="statesUpdate" name="states">
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float mb-3">
+                                <input type="text" id="statesUpdate" name="states">
                                 <label for="statesUpdate" class="mb-2"><?php echo esc_html('Estado'); ?></label>
-                            </div>
+                            </span>
                         </div>
-                        <div class="col-md-12">
-                            <div class="form-floating mb-3">
-                                <input class="form-control" type="password" id="passwordUpdate" name="password">
+                        <div class="col-md-12 mb-3">
+                            <span class="label-float mb-3">
+                                <input type="password" id="passwordUpdate" name="password">
                                 <label for="passwordUpdate" class="mb-2"><?php echo esc_html('Senha'); ?></label>
-                            </div>
+                            </span>
                         </div>
                     </div>
                     <input type="hidden" name="user_id" id="userId" value="">

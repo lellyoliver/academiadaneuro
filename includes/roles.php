@@ -64,7 +64,7 @@ class Roles
             ));
         }
 
-        //Professores/Escolas
+        //Profissionais da Saúde
         if (get_role('health-pro') === null) {
             add_role('health-pro', 'Profissionais da Saúde', array(
                 'read' => true,
@@ -88,7 +88,7 @@ class Roles
                 'manage_options' => true,
             ));
         }
-        
+
         //usuário relacional
         if (get_role('coachingRelation')) {
             remove_role('coachingRelation');

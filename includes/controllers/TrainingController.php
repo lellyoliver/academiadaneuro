@@ -1,8 +1,6 @@
 <?php
 
 require_once plugin_dir_path(__FILE__) . '../services/TrainingService.php';
-require_once plugin_dir_path(__FILE__) . '../models/TrainingModel.php';
-require_once ABSPATH . '/wp-admin/includes/file.php';
 
 class TrainingController
 {
@@ -12,17 +10,77 @@ class TrainingController
     public function __construct()
     {
         $this->trainingService = new TrainingService();
-        $this->trainingModel = new TrainingModel();
+    }
+
+    public function create($request)
+    {
+        $sleepQuality = $request->get_param('sleepQuality');
+        $mentalFatigue = $request->get_param('mentalFatigue');
+        $perceptionMindBody = $request->get_param('perceptionMindBody');
+        $controlofAnxiety = $request->get_param('controlofAnxiety');
+        $emotionalControl = $request->get_param('emotionalControl');
+        $stress = $request->get_param('stress');
+        $bodyPain = $request->get_param('bodyPain');
+        $headache = $request->get_param('headache');
+        $stimuliAnxiety = $request->get_param('stimuliAnxiety');
+        $thoughtsInvasive = $request->get_param('thoughtsInvasive');
+        $mentalActivity = $request->get_param('mentalActivity');
+        $creativity = $request->get_param('creativity');
+        $learningAndMemory = $request->get_param('learningAndMemory');
+        $focusAndAttention = $request->get_param('focusAndAttention');
+        $concentration = $request->get_param('concentration');
+        $user_id = $request->get_param('user_id');
+
+        $fields = [
+            'Bem-estar Cerebral' => [
+                'sleepQuality' => $sleepQuality,
+                'mentalFatigue' => $mentalFatigue,
+                'perceptionMindBody' => $perceptionMindBody,
+                'controlofAnxiety' => $controlofAnxiety,
+                'emotionalControl' => $emotionalControl,
+                'stress' => $stress,
+                'bodyPain' => $bodyPain,
+                'headache' => $headache,
+                'stimuliAnxiety' => $stimuliAnxiety,
+                'thoughtsInvasive' => $thoughtsInvasive,
+            ],
+            'Desempenho Cognitivo' => [
+                'mentalActivity' => $mentalActivity,
+                'creativity' => $creativity,
+                'learningAndMemory' => $learningAndMemory,
+                'focusAndAttention' => $focusAndAttention,
+                'concentration' => $concentration,
+            ],
+        ];
+
+        $result = $this->trainingService->insertTrainingReplies($user_id, $fields);
+
+        if ($result) {
+            $response = array(
+                'status' => 'sucesso',
+                'mensagem' => 'Treinamento criado com sucesso',
+                'user_id' => $user_id,
+                'replies' => $fields,
+            );
+            return new WP_REST_Response($response, 200);
+        }
+
+        $response = array(
+            'status' => 'erro',
+            'mensagem' => 'Não foi possível criar um treinamento',
+        );
+        return new WP_REST_Response($response, 500);
 
     }
 
     public function show()
     {
-
         if (!is_user_logged_in()) {
             wp_redirect('/academiadaneurociencia/404/');
             exit;
         }
+
+        $users = $this->getListRelated();
 
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/training/TrainingView.php';
@@ -31,9 +89,13 @@ class TrainingController
         return $output;
     }
 
-    public function getTrainingReplies($response)
+    public function getListRelated()
     {
-        return $this->trainingService->insertTrainingReplies($response);
+        $current_user_id = get_current_user_id();
+
+        $list = $this->trainingService->listUserRelated($current_user_id);
+
+        return $list;
     }
 
 }

@@ -4,14 +4,13 @@ require_once plugin_dir_path(__FILE__) . 'controllers/UserController.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/UserRelatedController.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/DashboardController.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/TrainingController.php';
-require_once ABSPATH . '/wp-admin/includes/file.php';
-require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
-require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+require_once plugin_dir_path(__FILE__) . 'controllers/MyTrainingController.php';
 
 $userController = new UserController();
 $userRelatedController = new UserRelatedController();
 $dashboardController = new DashboardController();
 $trainingController = new TrainingController();
+$myTrainingController = new MyTrainingController();
 
 add_action('rest_api_init', function () use ($userController) {
     register_rest_route('adn-plugin/v1', '/users', array(
@@ -115,7 +114,7 @@ add_action('rest_api_init', function () use ($dashboardController) {
 });
 
 add_action('rest_api_init', function () use ($trainingController) {
-    register_rest_route('adn-plugin/v1', '/my-training', array(
+    register_rest_route('adn-plugin/v1', '/training', array(
         'methods' => 'POST',
         'callback' => function (WP_REST_Request $request) use ($trainingController) {
             if ($request->get_method() !== 'POST') {
@@ -127,8 +126,22 @@ add_action('rest_api_init', function () use ($trainingController) {
     ));
 });
 
+add_action('rest_api_init', function () use ($myTrainingController) {
+    register_rest_route('adn-plugin/v1', '/training', array(
+        'methods' => 'POST',
+        'callback' => function (WP_REST_Request $request) use ($myTrainingController) {
+            if ($request->get_method() !== 'POST') {
+                return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
+            }
+            return $myTrainingController->create($request);
+        },
+        'permission_callback' => '__return_true',
+    ));
+});
+
 add_shortcode('user-perfil', array($userController, 'show'));
 add_shortcode('register-user', array($userController, 'show'));
 add_shortcode('register-user-related', array($userRelatedController, 'show'));
 add_shortcode('user-training', array($trainingController, 'show'));
+add_shortcode('user-myTraining', array($myTrainingController, 'show'));
 add_shortcode('dashboard', array($dashboardController, 'show'));

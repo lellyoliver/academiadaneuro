@@ -26,16 +26,29 @@ class TrainingModel
         dbDelta($sql);
     }
 
-    public function insertTrainingReplies($response)
+    public function insertTrainingReplies($user_id, $fields)
     {
-        $data_replies = array(
+        global $wpdb;
+
+        $replies_data = array(
             'user_id' => $user_id,
-            'post_id' => $post_id,
-            'replies' => json_encode($response),
+            'replies' => json_encode($fields),
         );
 
-        $wpdb->insert($this->table_name, $data_replies);
+        return $wpdb->insert($this->table_name, $replies_data);
+    }
 
+    public function getListUserRelated($current_user_id)
+    {
+        $metadata = array(
+            'meta_key' => 'connected_user', // Substitua pelo nome da sua meta
+            'meta_value' => $current_user_id,
+            'fields' => 'all_with_meta',
+        );
+
+        $users_data = get_users($metadata);
+
+        return $users_data;
     }
 
 }

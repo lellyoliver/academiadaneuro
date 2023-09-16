@@ -551,3 +551,18 @@ img.img-perfil {
   width: 100px;
   /* Tamanho desejado para o GIF de carregamento */
 }
+
+.audio-container {
+  position: relative;
+  width: 300px;
+  /* Defina o tamanho desejado para a caixa de áudio */
+}
+
+.audio-container audio {
+  width: 100%;
+}
+
+/* Esconda o botão de download */
+.audio-container audio::-webkit-media-controls-enclosure {
+  display: none !important;
+}

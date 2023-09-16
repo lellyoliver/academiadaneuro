@@ -83,7 +83,7 @@ class UserRelatedModel
         return $user_id;
     }
 
-    public function getListUserRelated($current_user_id, $user_id = "0")
+    public function getListUserRelated($current_user_id)
     {
         $metadata = array(
             'meta_key' => 'connected_user', // Substitua pelo nome da sua meta

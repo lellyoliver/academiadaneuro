@@ -28,7 +28,7 @@ function adn_scripts()
 
     if (is_page(18)) {
         wp_enqueue_script('userutilsjs', plugins_url('assets/js/users-related/user-utils.js', __FILE__), '1.0.0', true);
-        wp_enqueue_script('userrelatedjs', plugins_url('assets/js/users-related/user-related.js', __FILE__), '1.0.0', true);
+        wp_enqueue_script('userRelatedjs', plugins_url('assets/js/users-related/user-related.js', __FILE__), '1.0.0', true);
     }
     if (is_page(11)) {
         wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), '1.0.0', true);
@@ -36,8 +36,15 @@ function adn_scripts()
     if (is_page(44)) {
         wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), '1.0.0', true);
     }
+    if (is_page(154)) {
+        wp_enqueue_script('userTrainingjs', plugins_url('assets/js/training/user-training.js', __FILE__), '1.0.0', true);
+    }
     if (is_page(114)) {
-        wp_enqueue_script('userjs', plugins_url('assets/js/training/training-questions.js', __FILE__), '1.0.0', true);
+        wp_enqueue_script('userMyTrainingjs', plugins_url('assets/js/training/user-myTraining.js', __FILE__), '1.0.0', true);
+        //green audio
+        wp_enqueue_style('greenAudioPlayerMincss', plugins_url('assets/lib/green-audio-player/green-audio-player.min.css', __FILE__), array(), '1.0.0', false);
+        wp_enqueue_script('greenAudioPlayerMinjs', plugins_url('assets/lib/green-audio-player/green-audio-player.min.js', __FILE__), '1.0.0', false);
+
     }
 
     //Bootstrap
@@ -97,18 +104,29 @@ function adn_page_dashboard($template)
 }
 add_filter('page_template', 'adn_page_dashboard');
 
-function adn_page_myTraining($template)
+function adn_page_training($template)
 {
-    if (get_the_ID() == 114) {
-        $template_myTraining = plugin_dir_path(__FILE__) . 'templates/my-training.php';
-        if (file_exists($template_myTraining)) {
-            return $template_myTraining;
+    if (get_the_ID() == 154) {
+        $template_training = plugin_dir_path(__FILE__) . 'templates/user-training.php';
+        if (file_exists($template_training)) {
+            return $template_training;
         }
     }
     return $template;
 }
-add_filter('page_template', 'adn_page_myTraining');
+add_filter('page_template', 'adn_page_training');
 
+function adn_page_Mytraining($template)
+{
+    if (get_the_ID() == 114) {
+        $template_Mytraining = plugin_dir_path(__FILE__) . 'templates/user-Mytraining.php';
+        if (file_exists($template_Mytraining)) {
+            return $template_Mytraining;
+        }
+    }
+    return $template;
+}
+add_filter('page_template', 'adn_page_Mytraining');
 
 function adn_product_woo($template)
 {
@@ -136,7 +154,7 @@ require_once plugin_dir_path(__FILE__) . 'includes/MetaCustomUser.php';
 /**
  * Include Meta Custom User.
  */
-require_once plugin_dir_path(__FILE__) . 'includes/MetaCustomQuestion.php';
+require_once plugin_dir_path(__FILE__) . 'includes/MetaCustomTraining.php';
 
 /**
  * Include post_type.
@@ -147,7 +165,8 @@ require_once plugin_dir_path(__FILE__) . 'includes/PostType.php';
  * Compras
  */
 
- function check_and_enable_registration($order_id) {
+function check_and_enable_registration($order_id)
+{
     $product_ids = array(110, 109, 26);
     $order = wc_get_order($order_id);
 
@@ -163,7 +182,6 @@ require_once plugin_dir_path(__FILE__) . 'includes/PostType.php';
     }
 }
 add_action('woocommerce_order_status_completed', 'check_and_enable_registration');
-
 
 /**
  * Create data Table

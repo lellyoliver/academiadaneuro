@@ -1,16 +1,26 @@
 <?php
 
 require_once plugin_dir_path(__FILE__) . '../services/TrainingService.php';
+require_once plugin_dir_path(__FILE__) . '../services/UserRelatedService.php';
 
 class TrainingController
 {
     private $trainingService;
-    private $trainingModel;
+    private $userRelatedService;
 
     public function __construct()
     {
         $this->trainingService = new TrainingService();
+        $this->userRelatedService = new UserRelatedService();
+
     }
+
+    /**
+     * Create a new user based on the provided data.
+     *
+     * @param WP_REST_Request $request The REST request containing user data.
+     * @return WP_REST_Response The REST response with the result of the operation.
+     */
 
     public function create($request)
     {
@@ -73,6 +83,12 @@ class TrainingController
 
     }
 
+    /**
+     * Display the user registration form.
+     *
+     * @return string The HTML/PHP content of the user registration form.
+     */
+
     public function show()
     {
         if (!is_user_logged_in()) {
@@ -92,9 +108,7 @@ class TrainingController
     public function getListRelated()
     {
         $current_user_id = get_current_user_id();
-
-        $list = $this->trainingService->listUserRelated($current_user_id);
-
+        $list = $this->userRelatedService->listUserRelated($current_user_id);
         return $list;
     }
 

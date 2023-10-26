@@ -16,6 +16,7 @@ class UserRelatedController
      * @param WP_REST_Request $request The REST request containing user data.
      * @return WP_REST_Response The REST response with the result of the operation.
      */
+
     public function create($request)
     {
 
@@ -72,18 +73,19 @@ class UserRelatedController
      * @param WP_REST_Request $request The REST request containing updated user data.
      * @return WP_REST_Response The REST response with the result of the operation.
      */
+
     public function update($request)
     {
         $user_id = $request->get_param('user_id');
-        $name = $request->get_param('name');
-        $password = $request->get_param('password');
-        $phone = $request->get_param('phone');
-        $cep = $request->get_param('cep');
-        $address = $request->get_param('address');
-        $states = $request->get_param('states');
-        $city = $request->get_param('city');
-        $description = $request->get_param('description');
-        $email = $request->get_param('email');
+        $name = $request->get_param('nameUpdate');
+        $password = $request->get_param('passwordUpdate');
+        $phone = $request->get_param('phoneUpdate');
+        $cep = $request->get_param('cepUpdate');
+        $address = $request->get_param('addressUpdate');
+        $states = $request->get_param('statesUpdate');
+        $city = $request->get_param('cityUpdate');
+        $description = $request->get_param('descriptionUpdate');
+        $email = $request->get_param('emailUpdate');
 
         $meta_fields = [
             'billing_first_name' => $name,
@@ -156,10 +158,10 @@ class UserRelatedController
             wp_redirect('/academiadaneurociencia/404/');
             exit;
         }
-        
+
         $can_register = $this->can_register_new_user();
         $listUser = $this->getListRelated();
-        
+        $getUser = $this->getListedUserRelated();
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/users/UserRelatedView.php';
         $output = ob_get_contents();
@@ -200,4 +202,16 @@ class UserRelatedController
         return ($can_register && $user_can_register);
     }
 
+    public function getListedUserRelated()
+    {
+        $array = $this->getListRelated();
+        $getUser = [];
+
+        foreach ($array as $user) {
+            $id = $user->ID;
+            $getUser[] = $this->getUserID($id);
+        }
+
+        return $getUser;
+    }
 }

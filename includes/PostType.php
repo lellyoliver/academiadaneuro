@@ -4,6 +4,8 @@ class PostType
     public function __construct()
     {
         add_action('init', array($this, 'TrainingPostType'));
+        add_action('init', array($this, 'BrainGroupTaxonomy'));
+
     }
 
     public function TrainingPostType()
@@ -43,6 +45,39 @@ class PostType
         );
 
         register_post_type('training', $args);
+    }
+
+    public function BrainGroupTaxonomy()
+    {
+        $labels = array(
+            'name' => _x('Categorias Cerebral', 'taxonomy general name', 'adn-plugin'),
+            'singular_name' => _x('Categorias Cerebral', 'taxonomy singular name', 'adn-plugin'),
+            'search_items' => __('Pesquisar Categoria Cerebral', 'adn-plugin'),
+            'popular_items' => __('Categoria Cerebral Populares', 'adn-plugin'),
+            'all_items' => __('Todas os Categorias Cerebrais', 'adn-plugin'),
+            'parent_item' => null,
+            'parent_item_colon' => null,
+            'edit_item' => __('Editar', 'adn-plugin'),
+            'update_item' => __('Atualizar', 'adn-plugin'),
+            'add_new_item' => __('Adicionar Nova', 'adn-plugin'),
+            'new_item_name' => __('Nova Categoria Cerebral', 'adn-plugin'),
+            'separate_items_with_commas' => __('Separe as Categorias Cerebrais por vírgulas', 'adn-plugin'),
+            'add_or_remove_items' => __('Adicionar ou remover Categorias Cerebrais', 'adn-plugin'),
+            'choose_from_most_used' => __('Escolha entre as Categorias Cerebrais mais usados', 'adn-plugin'),
+            'not_found' => __('Nenhuma Categoria foi encontrada.', 'adn-plugin'),
+            'menu_name' => __('Categorias Cerebral', 'adn-plugin'),
+        );
+
+        $args = array(
+            'hierarchical' => true,
+            'labels' => $labels,
+            'show_ui' => true,
+            'show_admin_column' => true,
+            'query_var' => true,
+            'rewrite' => array('slug' => 'brain-group'),
+        );
+
+        register_taxonomy('brainGroup', 'training', $args);
     }
 
 }

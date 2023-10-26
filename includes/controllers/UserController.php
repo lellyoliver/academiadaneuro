@@ -121,7 +121,7 @@ class UserController
             wp_redirect('/academiadaneurociencia/404/');
             exit;
         }
-        
+
         $orders = $this->getOrderId($user_id);
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/users/UserView.php';
@@ -130,7 +130,7 @@ class UserController
         return $output;
     }
 
-        /**
+    /**
      * Get user details by ID.
      *
      * @param int $id The ID of the user.
@@ -144,5 +144,10 @@ class UserController
     public function getOrderId($id)
     {
         return $user = $this->userService->getLatestOrders($id);
+    }
+
+    public function getAvatar()
+    {
+        return;
     }
 }

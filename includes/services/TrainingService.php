@@ -14,15 +14,4 @@ class TrainingService
     {
         return $this->trainingModel->insertTrainingReplies($user_id, $fields);
     }
-
-    /**
-     * List related users for a given user.
-     *
-     * @param int $current_user_id The ID of the current user.
-     * @return array An array containing the list of related users.
-     */
-    public function listUserRelated($current_user_id)
-    {
-        return $this->trainingModel->getListUserRelated($current_user_id);
-    }
 }

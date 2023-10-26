@@ -4,9 +4,10 @@
             <form id="form-update" method="post">
                 <div class="row d-flex align-items-center">
                     <div class="col-md">
-                        <div class="row mb-3">
+                        <div class="row mb-3 perfil">
                             <img src="https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/09/user-perfil.svg"
                                 alt="user-perfil" class="img-perfil mb-3">
+                            <span class="edit-pen-perfil"><i class="fa-solid fa-pen"></i></span>
                             <h5 class="card-title text-center fw-bold mb-3 title-cards text-uppercase">
                                 <?php echo esc_html('Meu Perfil'); ?>
                             </h5>

@@ -15,12 +15,40 @@ class TrainingModel
 
     public function createTableTrainingReplies()
     {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'training_replies';
+
         $sql = "CREATE TABLE $this->table_name (
-            id INT NOT NULL AUTO_INCREMENT,
-            id_user BIGINT UNSIGNED NOT NULL,
+            reply_id INT NOT NULL AUTO_INCREMENT,
+            user_id BIGINT UNSIGNED NOT NULL,
             replies LONGTEXT NOT NULL,
-            PRIMARY KEY (id)
+            PRIMARY KEY (reply_id)
         ) $this->charset_collate;";
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta($sql);
+    }
+
+    public function createTableTrainingProgress()
+    {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'training_progress';
+
+        $sql = "CREATE TABLE $table_name (
+        progress_id INT NOT NULL AUTO_INCREMENT,
+        user_id BIGINT UNSIGNED NOT NULL,
+        post_id BIGINT UNSIGNED NOT NULL,
+        dh_enter DATETIME NOT NULL,
+        dh_exit TIME NOT NULL,
+        neuralResonance TIME NOT NULL,
+        cognitiveStimulation TIME NOT NULL,
+        neuralBreathing TIME NOT NULL,
+        updateProgress DATE NOT NULL,
+        PRIMARY KEY (progress_id)
+
+    ) $this->charset_collate;";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta($sql);
@@ -37,18 +65,4 @@ class TrainingModel
 
         return $wpdb->insert($this->table_name, $replies_data);
     }
-
-    public function getListUserRelated($current_user_id)
-    {
-        $metadata = array(
-            'meta_key' => 'connected_user', // Substitua pelo nome da sua meta
-            'meta_value' => $current_user_id,
-            'fields' => 'all_with_meta',
-        );
-
-        $users_data = get_users($metadata);
-
-        return $users_data;
-    }
-
 }

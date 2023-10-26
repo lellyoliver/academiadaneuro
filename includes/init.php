@@ -127,13 +127,13 @@ add_action('rest_api_init', function () use ($trainingController) {
 });
 
 add_action('rest_api_init', function () use ($myTrainingController) {
-    register_rest_route('adn-plugin/v1', '/training', array(
+    register_rest_route('adn-plugin/v1', '/myTrainingProgress', array(
         'methods' => 'POST',
         'callback' => function (WP_REST_Request $request) use ($myTrainingController) {
             if ($request->get_method() !== 'POST') {
                 return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
             }
-            return $myTrainingController->create($request);
+            return $myTrainingController->getTrainingProgress($request);
         },
         'permission_callback' => '__return_true',
     ));

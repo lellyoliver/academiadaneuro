@@ -1,62 +1,133 @@
 <?php
-require_once plugin_dir_path(__FILE__) . '../TextProcessor.php';
+require_once plugin_dir_path(__FILE__) . '../services/UserRelatedService.php';
 
-class UserModel
+class DashboardModel
 {
-    private $textProcessor;
+
+    private $table_name;
+    private $userRelatedService;
 
     public function __construct()
     {
-        $this->textProcessor = new TextProcessor();
+        global $wpdb;
+        $this->table_name = $wpdb->prefix . 'training_progress';
+        $this->userRelatedService = new UserRelatedService();
     }
 
-    /**
-     * Create a new user in WordPress database.
-     *
-     * @return int|WP_Error The user ID if successful, or WP_Error object on failure.
-     */
-
-    public function createUser($name, $email, $billing_data, $user_role, $password)
+    public function getListRelated()
     {
+        $current_user_id = get_current_user_id();
+        $list = $this->userRelatedService->listUserRelated($current_user_id);
+        return $list;
+    }
 
-        $user_name = $this->textProcessor->sanitizeText($billing_data);
+    public function getProgress($user_id)
+    {
+        global $wpdb;
 
-        $userdata = array(
-            'user_login' => $user_name,
-            'user_pass' => $password,
-            'user_email' => $email,
-            'display_name' => $name,
-            'nickname' => $name,
-            'first_name' => $name,
-            'role' => $user_role,
+        $query = $wpdb->prepare(
+            "SELECT neuralResonance, cognitiveStimulation, neuralBreathing, user_id FROM $this->table_name WHERE user_id = %d",
+            $user_id
         );
 
-        $user_id = wp_insert_user($userdata);
+        $results = $wpdb->get_results($query);
 
-        return $user_id;
+        return $results;
     }
 
-    /**
-     * Update user meta fields in WordPress database.
-     *
-     * @param array $meta_fields An array of user meta fields to be updated.
-     * @param int $user_id The ID of the user whose meta data will be updated.
-     * @return array An array containing the updated user meta data.
-     */
-    public function updateMeta($meta_fields, $user_id)
+    public function getProgressTraining()
     {
-        foreach ($meta_fields as $key => $value) {
-            update_user_meta($user_id, $key, $value);
+        $list_related = $this->getListRelated();
+        $progressResults = [];
+
+        foreach ($list_related as $user) {
+            $user_id = $user->ID;
+            $progressResults[] = $this->getProgress($user_id);
+        }
+        return $progressResults;
+    }
+
+    public function getListProgress()
+    {
+        $results = $this->getProgressTraining();
+        $dh_enter_seconds = strtotime('01:00:00') - strtotime('00:00:00');
+        $status = array();
+
+        foreach ($results as $userProgress) {
+            $user_id = $userProgress[0]->user_id; // Assume que o user_id é o mesmo para todas as entradas do usuário
+
+            $user_status = array();
+            foreach ($userProgress as $result) {
+                $result_seconds = array();
+                foreach (get_object_vars($result) as $category => $time) {
+                    $result_seconds[$category] = strtotime($time) - strtotime('00:00:00');
+                }
+
+                $category_status = array();
+                foreach ($result_seconds as $category => $seconds) {
+                    if ($seconds >= $dh_enter_seconds) {
+                        $category_status[$category] = "100";
+                    } else {
+                        $percentage = $seconds > 0 ? round(($seconds / $dh_enter_seconds) * 100, 0) : "0";
+                        $category_status[$category] = $percentage;
+                    }
+                }
+
+                // Correção aqui para usar o user_id correto
+                $category_status['user_id'] = $user_id;
+
+                $user_status[] = $category_status;
+            }
+
+            $status[$user_id] = $user_status;
         }
 
-        return get_user_meta($user_id);
+        return $status;
     }
 
-    public function createRelated($user_id, $current_user_id)
+    public function getTotalProgress()
     {
-        add_user_meta($user_id, 'connected_user', $current_user_id); // Adiciona a relação com o usuário atual
+        $progressArray = $this->getListProgress();
 
-        return $user_id;
+        $categorySums = [];
+
+        foreach ($progressArray as $userId => $userProgress) {
+            $categoryCounts = [
+                'neuralResonance' => 0,
+                'cognitiveStimulation' => 0,
+                'neuralBreathing' => 0,
+            ];
+
+            foreach ($userProgress as $entry) {
+                foreach ($entry as $category => $value) {
+                    if ($category !== 'user_id') {
+                        // Verifica se o valor é numérico antes de somar
+                        if (is_numeric($value)) {
+                            $categorySums[$userId][$category] = isset($categorySums[$userId][$category]) ?
+                            $categorySums[$userId][$category] + $value :
+                            $value;
+                            $categoryCounts[$category]++;
+                        }
+                    }
+                }
+            }
+
+            // Calcula as médias
+            foreach ($categoryCounts as $category => $count) {
+                $categorySums[$userId][$category] = $count > 0 ?
+                round($categorySums[$userId][$category] / $count, 0) :
+                0;
+            }
+
+            // Adiciona o user_id ao array resultante
+            $categorySums[$userId]['user_id'] = $userId;
+
+            // Calcula o totalProgress corretamente
+            $total = array_sum($categorySums[$userId]) - $categorySums[$userId]['user_id']; // Subtrai o 'user_id'
+            $categorySums[$userId]['totalProgress'] = round($total / (count($categorySums[$userId]) - 1), 0); // Subtrai 1 para não contar o 'user_id'
+        }
+
+        return $categorySums;
     }
 
 }

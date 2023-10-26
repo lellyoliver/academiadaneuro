@@ -1,5 +1,5 @@
 <?php
-// require_once plugin_dir_path(__FILE__) . '../services/DashboardService.php';
+require_once plugin_dir_path(__FILE__) . '../services/DashboardService.php';
 
 class DashboardController
 {
@@ -7,7 +7,7 @@ class DashboardController
 
     public function __construct()
     {
-        // $this->dashboardService = new DashboardService();
+        $this->dashboardService = new DashboardService();
     }
 
     /**
@@ -17,19 +17,21 @@ class DashboardController
      */
     public function show()
     {
-        if (is_page(30)) {
-            if (!is_user_logged_in()) {
-                wp_redirect('/academiadaneurociencia/404/');
-                exit;
-            }
+        if (!is_user_logged_in()) {
+            wp_redirect('/academiadaneurociencia/404/');
+            exit;
         }
+
+        $list_progress_unify = $this->dashboardService->getListProgress();
+        // $list_progress_total = $this->dashboardService->getTotalProgress();
+        $name_patient = $this->dashboardService->getListRelated();
+        $progress = $this->dashboardService->getTotalProgress();
+
         ob_start();
-
-        // Display menu links based on user's roles
         require_once plugin_dir_path(__FILE__) . '../views/dashboard/DashboardView.php';
-
         $output = ob_get_contents();
         ob_end_clean();
         return $output;
     }
+
 }

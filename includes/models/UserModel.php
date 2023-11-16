@@ -23,12 +23,13 @@ class UserModel
 
         $userdata = array(
             'user_login' => $user_name,
-            'user_pass' => $password,
+            'user_pass' => md5($password),
             'user_email' => $email,
             'display_name' => $name,
             'nickname' => $name,
             'first_name' => $name,
             'role' => $user_role,
+            'show_admin_bar_front' => false,
         );
 
         $user_id = wp_insert_user($userdata);
@@ -85,7 +86,6 @@ class UserModel
 
         $user_data = array(
             'ID' => $user->ID,
-            // 'user_pass' => $user->user_pass,
             'user_email' => $user->user_email,
             'user_login' => $user->user_login,
             'billing_first_name' => $user->billing_first_name,
@@ -94,7 +94,7 @@ class UserModel
             'billing_address_1' => $user->billing_address_1,
             'billing_state' => $user->billing_state,
             'billing_city' => $user->billing_city,
-
+            'billing_avatar' => wp_get_attachment_image_url($user->billing_avatar, ''),
         );
 
         return $user_data;
@@ -117,6 +117,39 @@ class UserModel
 
             return $orders;
         }
+    }
+
+    /**
+     * Handle avatar upload.
+     *
+     */
+    public function handleAvatarUpload($file, $post_id, $user_id)
+    {
+        if (isset($file, $post_id)) {
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+
+            $attachment_id = media_handle_upload('avatar_file', $post_id);
+
+            if (!is_wp_error($attachment_id)) {
+
+                // $avatar_url = wp_get_attachment_image_url($attachment_id, '');
+                return $attachment_id;
+
+            } else {
+
+                return "Não foi possível enviar arquivo";
+
+            }
+        }
+    }
+
+    public function getTermsAndServices($user_id, $current_user_id)
+    {
+        add_user_meta($user_id, 'connected_user', $current_user_id);
+
+        return $user_id;
     }
 
 }

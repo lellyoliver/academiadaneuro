@@ -1,17 +1,27 @@
+<?php 
+$current_user = wp_get_current_user();
+$allowed_roles_2 = ['coach', 'health-pro', 'administrator'];
+?>
 <div class="card mb-3">
-    <div class="container padding-container-card">
+    <div class="container padding_container__card">
         <div class="card-body">
-            <form id="form-update" method="post">
+            <form id="form-update" method="post" enctype="multipart/form-data">
                 <div class="row d-flex align-items-center">
                     <div class="col-md">
                         <div class="row mb-3 perfil">
                             <img src="https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/09/user-perfil.svg"
-                                alt="user-perfil" class="img-perfil mb-3">
-                            <span class="edit-pen-perfil"><i class="fa-solid fa-pen"></i></span>
+                                id="avatar-preview" alt="user-perfil" class="img-perfil mb-3">
+                            <input type="file" class="display-none" name="avatar_file" id="avatar_file" accept="image/*"
+                                size="1048576" />
+                            <input type="hidden" name="post_id" id="post_id" value="<?php echo get_the_ID()?>">
+                            <span class="edit-pen-perfil" id="edit-avatar" title="limite de Upload é de 1MB"><i
+                                    class="fa-solid fa-pen"></i></span>
                             <h5 class="card-title text-center fw-bold mb-3 title-cards text-uppercase">
                                 <?php echo esc_html('Meu Perfil'); ?>
                             </h5>
                             <p id="user_name" class="text-center"></p>
+                            <p class="text-center" style="font-size:10px;">Limite de upload de 1MB
+                            </p>
                         </div>
                     </div>
                     <div class="col-md-9">
@@ -37,6 +47,7 @@
                                     <label for="phone"><?php echo esc_html('Telefone'); ?></label>
                                 </span>
                             </div>
+                            <?php if (array_intersect($allowed_roles_2, $current_user->roles)): ?>
                             <div class="col-md-3 mb-3">
                                 <span class="label-float">
                                     <input type="text" id="cep" name="cep">
@@ -63,6 +74,7 @@
                                     <label for="states"><?php echo esc_html('Estado'); ?></label>
                                 </span>
                             </div>
+                            <?php endif; ?>
                             <input type="hidden" name="user_id" id="userId"
                                 value="<?php echo get_current_user_id(); ?>">
                             <div class="row m-0 m-auto">
@@ -76,9 +88,9 @@
         </div>
     </div>
 </div>
-
+<?php if (array_intersect($allowed_roles_2, $current_user->roles)): ?>
 <div class="card mb-3">
-    <div class="container padding-container-card">
+    <div class="container padding_container__card">
         <div class="card-body">
             <h5 class="card-title fw-bold title-cards text-uppercase">
                 <?php echo esc_html('Pedidos e Assinaturas'); ?>
@@ -124,3 +136,10 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
+
+<script>
+document.getElementById('edit-avatar').addEventListener('click', function() {
+    document.getElementById('avatar_file').click();
+});
+</script>

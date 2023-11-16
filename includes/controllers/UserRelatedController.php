@@ -25,10 +25,6 @@ class UserRelatedController
         $password = $request->get_param('password');
         $billing_data = $request->get_param('billing_data');
         $phone = $request->get_param('phone');
-        $cep = $request->get_param('cep');
-        $address = $request->get_param('address');
-        $states = $request->get_param('states');
-        $city = $request->get_param('city');
         $user_role = $request->get_param('role');
         $connected_user = $request->get_param('connected_user');
         $description = $request->get_param('description');
@@ -36,10 +32,6 @@ class UserRelatedController
         $meta_fields = [
             'billing_first_name' => $name,
             'billing_phone' => $phone,
-            'billing_postcode' => $cep,
-            'billing_address_1' => $address,
-            'billing_state' => $states,
-            'billing_city' => $city,
         ];
 
         $user_id = $this->userRelatedService->createUser($name, $email, $billing_data, $user_role, $password, $description);
@@ -80,10 +72,6 @@ class UserRelatedController
         $name = $request->get_param('nameUpdate');
         $password = $request->get_param('passwordUpdate');
         $phone = $request->get_param('phoneUpdate');
-        $cep = $request->get_param('cepUpdate');
-        $address = $request->get_param('addressUpdate');
-        $states = $request->get_param('statesUpdate');
-        $city = $request->get_param('cityUpdate');
         $description = $request->get_param('descriptionUpdate');
         $email = $request->get_param('emailUpdate');
 
@@ -91,10 +79,6 @@ class UserRelatedController
             'billing_first_name' => $name,
             'user_pass' => $password,
             'billing_phone' => $phone,
-            'billing_postcode' => $cep,
-            'billing_address_1' => $address,
-            'billing_state' => $states,
-            'billing_city' => $city,
             'description' => $description,
         ];
 
@@ -163,7 +147,7 @@ class UserRelatedController
         $listUser = $this->getListRelated();
         $getUser = $this->getListedUserRelated();
         ob_start();
-        require_once plugin_dir_path(__FILE__) . '../views/users/UserRelatedView.php';
+        require_once plugin_dir_path(__FILE__) . '../views/userRelated/UserRelatedView.php';
         $output = ob_get_contents();
         ob_end_clean();
         return $output;

@@ -71,4 +71,9 @@ class UserService
     {
         return $this->userModel->getLatestOrders($id);
     }
+
+    public function handleAvatarUpload($file, $post_id)
+    {
+        return $this->userModel->handleAvatarUpload($file, $post_id, $user_id);
+    }
 }

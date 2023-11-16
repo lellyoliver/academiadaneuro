@@ -14,4 +14,9 @@ class TrainingService
     {
         return $this->trainingModel->insertTrainingReplies($user_id, $fields);
     }
+
+    public function getTrainings($categories)
+    {
+        return $this->trainingModel->getTrainings($categories);
+    }
 }

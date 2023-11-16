@@ -1,4 +1,3 @@
-// Função para exibir a caixa de diálogo antes de salvar
 function showSaveConfirmationDialog() {
     Swal.fire({
         icon: 'warning',
@@ -42,7 +41,7 @@ function saveTraining() {
         .then((response) => response.json())
         .then((data) => {
             if (data.status === 'sucesso') {
-                // Se o salvamento for bem-sucedido, você pode adicionar lógica adicional aqui se necessário
+                location.reload();
             } else {
                 alert('Erro ao salvar o treinamento: ' + data.mensagem);
             }
@@ -60,8 +59,6 @@ if (btnSave) {
     });
 }
 
-
-//Inicio da página dh_exit
 document.addEventListener('DOMContentLoaded', function () {
     cronometroExit('DH_exit');
 });
@@ -86,9 +83,6 @@ function cronometroExit(id) {
     return cronometro;
 }
 
-
-
-//neuralResonance
 function playerAudio() {
     const audioPlayer = document.getElementById('audioPlayer');
 
@@ -105,9 +99,6 @@ function playerAudio() {
 
 playerAudio();
 
-
-//neuralBreathing
-
 function playerVideo() {
     const videoPlayer = document.getElementById('videoPlayer');
     let intervaloCronometro;
@@ -123,20 +114,23 @@ function playerVideo() {
 
 playerVideo();
 
-
-//neuralBreathing
-
 function playerGame() {
     const gamePlayer = document.getElementById('gameplay');
     let intervaloCronometro;
     let isCronometroAtivo = false;
+
     gamePlayer.addEventListener('click', function (event) {
+        event.preventDefault();
+
         if (isCronometroAtivo) {
             clearInterval(intervaloCronometro);
             intervaloCronometro = null;
             gamePlayer.innerText = 'Iniciar';
         } else {
-            // Se não estiver ativo, inicia o cronômetro
+
+            if (gamePlayer.innerText === 'Iniciar') {
+                window.open(gamePlayer.href, '_blank');
+            }
             intervaloCronometro = cronometroExit('cognitiveStimulation');
             gamePlayer.innerText = 'Pausar';
         }
@@ -145,3 +139,33 @@ function playerGame() {
 }
 
 playerGame();
+
+
+/**
+ * View API LINKS
+ */
+
+function viewTraining() {
+    const postID = document.getElementById('post_id').value;
+    const audioPlayer = document.getElementById('audioPlayer');
+    const videoPlayer__2 = document.getElementById('videoPlayer');
+    const gameplay = document.getElementById('gameplay');
+
+    fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/myTraining/view/${postID}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+
+                audioPlayer.src = data.neuralResonance;
+                videoPlayer__2.src = data.neuralBreathing;
+                gameplay.href = data.cognitiveStimulation;
+
+            } else {
+                console.error('Áudio não encontrado');
+            }
+        })
+        .catch(error => console.error('Erro ao recuperar dados', error));
+}
+
+
+viewTraining();

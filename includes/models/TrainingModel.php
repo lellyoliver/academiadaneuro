@@ -13,56 +13,59 @@ class TrainingModel
 
     }
 
-    public function createTableTrainingReplies()
-    {
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'training_replies';
-
-        $sql = "CREATE TABLE $this->table_name (
-            reply_id INT NOT NULL AUTO_INCREMENT,
-            user_id BIGINT UNSIGNED NOT NULL,
-            replies LONGTEXT NOT NULL,
-            PRIMARY KEY (reply_id)
-        ) $this->charset_collate;";
-
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql);
-    }
-
-    public function createTableTrainingProgress()
-    {
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'training_progress';
-
-        $sql = "CREATE TABLE $table_name (
-        progress_id INT NOT NULL AUTO_INCREMENT,
-        user_id BIGINT UNSIGNED NOT NULL,
-        post_id BIGINT UNSIGNED NOT NULL,
-        dh_enter DATETIME NOT NULL,
-        dh_exit TIME NOT NULL,
-        neuralResonance TIME NOT NULL,
-        cognitiveStimulation TIME NOT NULL,
-        neuralBreathing TIME NOT NULL,
-        updateProgress DATE NOT NULL,
-        PRIMARY KEY (progress_id)
-
-    ) $this->charset_collate;";
-
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-        dbDelta($sql);
-    }
-
     public function insertTrainingReplies($user_id, $fields)
     {
         global $wpdb;
+
+        // Verifique se algum valor em $fields é igual a zero
+        foreach ($fields as $category => $values) {
+            foreach ($values as $value) {
+                if ($value == "0") {
+                    return [
+                        'success' => false,
+                        'message' => 'Nenhum valor em "fields" pode ser igual a zero.',
+                    ];
+                }
+            }
+        }
+
+        // Verifique se já existe um registro para o usuário especificado
+        $existing_entry = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$this->table_name} WHERE user_id = %d",
+            $user_id
+        ));
 
         $replies_data = array(
             'user_id' => $user_id,
             'replies' => json_encode($fields),
         );
 
-        return $wpdb->insert($this->table_name, $replies_data);
+        if (!$existing_entry) {
+            return $wpdb->insert($this->table_name, $replies_data);
+        }
     }
+
+    public function getTrainings($categories)
+    {
+        $postslist = [];
+
+        foreach ($categories as $category) {
+            $args = array(
+                'post_type' => 'training',
+                'tax_query' => array(
+                    array(
+                        'taxonomy' => 'brainGroup',
+                        'field' => 'slug',
+                        'terms' => $category,
+                    ),
+                ),
+            );
+            $posts = get_posts($args);
+
+            $postslist[$category] = $posts;
+        }
+
+        return $postslist;
+    }
+
 }

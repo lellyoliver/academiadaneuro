@@ -24,7 +24,7 @@ function adn_scripts()
     wp_enqueue_script('utilsjs', plugins_url('assets/js/utils.js', __FILE__), '1.0.0', true);
 
     if (is_page(18)) {
-        wp_enqueue_script('userutilsjs', plugins_url('assets/js/users-related/user-utils.js', __FILE__), '1.0.0', true);
+        wp_enqueue_script('userrelatedutilsjs', plugins_url('assets/js/users-related/user-related-utils.js', __FILE__), '1.0.0', true);
         wp_enqueue_script('userRelatedjs', plugins_url('assets/js/users-related/user-related.js', __FILE__), '1.0.0', true);
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
@@ -35,20 +35,25 @@ function adn_scripts()
     }
     if (is_page(44)) {
         wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), '1.0.0', true);
+        wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
+        wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
+
     }
     if (is_page(154)) {
         wp_enqueue_script('userTrainingjs', plugins_url('assets/js/training/user-training.js', __FILE__), '1.0.0', true);
+        wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
+        wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
+
     }
     if (is_single() && 'training' == get_post_type()) {
         wp_enqueue_script('userMyTrainingjs', plugins_url('assets/js/training/user-myTraining.js', __FILE__), '1.0.0', true);
-        //green audio
-        wp_enqueue_style('greenAudioPlayerMincss', plugins_url('assets/lib/green-audio-player/green-audio-player.min.css', __FILE__), array(), '1.0.0', false);
-        wp_enqueue_script('greenAudioPlayerMinjs', plugins_url('assets/lib/green-audio-player/green-audio-player.min.js', __FILE__), '1.0.0', false);
-        //youtube
-        wp_enqueue_script('YouTubeToHtml5js', plugins_url('assets/lib/YouTubeToHtml5/YouTubeToHtml5.js', __FILE__), '5.0.0', false);
         //sweet-alert-2
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
+        
+        //plyr
+        wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/plyr/plyr.css', __FILE__), array(), '3.6.8', false);
+        wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/plyr/plyr.js', __FILE__), '3.6.8', false);
 
     }
 
@@ -67,9 +72,21 @@ add_action('wp_enqueue_scripts', 'adn_scripts');
 /**
  * Override template for user registration page.
  */
+function adn_page_register_user_related($template)
+{
+    if (get_the_ID() == 18) {
+        $template_user_create_related = plugin_dir_path(__FILE__) . 'templates/user-create-related.php';
+        if (file_exists($template_user_create_related)) {
+            return $template_user_create_related;
+        }
+    }
+    return $template;
+}
+add_filter('page_template', 'adn_page_register_user_related');
+
 function adn_page_register_user($template)
 {
-    if (get_the_ID() == 11 || get_the_ID() == 18) {
+    if (get_the_ID() == 11) {
         $template_user_create = plugin_dir_path(__FILE__) . 'templates/user-create.php';
         if (file_exists($template_user_create)) {
             return $template_user_create;
@@ -112,7 +129,13 @@ add_filter('page_template', 'adn_page_dashboard');
 function adn_page_training($template)
 {
     if (get_the_ID() == 154) {
-        $template_training = plugin_dir_path(__FILE__) . 'templates/user-training.php';
+        $current_user = wp_get_current_user();
+        $allowed_roles_2 = ['coach', 'health-pro', 'administrator'];
+        if (!array_intersect($allowed_roles_2, $current_user->roles)) {
+            $template_training = plugin_dir_path(__FILE__) . 'templates/user-training.php';
+        }else{
+            $template_training = plugin_dir_path(__FILE__) . 'templates/user-training-choice.php';
+        }
         if (file_exists($template_training)) {
             return $template_training;
         }
@@ -220,10 +243,14 @@ add_action('woocommerce_order_status_completed', 'check_and_enable_registration'
 /**
  * Create data Table
  */
-$training_model = new TrainingModel();
+function adn_activate_db()
+{
+    $dbCustom = new DBCustom();
+    $dbCustom->createTableTrainingReplies();
+    $dbCustom->createTableTrainingProgress();
+}
 
-register_activation_hook(__FILE__, array($training_model, 'createTableTrainingReplies'));
-register_activation_hook(__FILE__, array($training_model, 'createTableTrainingProgress'));
+register_activation_hook(__FILE__, 'adn_activate_db');
 
 /**
  * Include Rewrite
@@ -241,7 +268,6 @@ function adn_add_product_checkout()
 
             global $woocommerce;
 
-            // Limpar o carrinho antes de adicionar um novo produto
             $woocommerce->cart->empty_cart();
 
             $product_id = intval($_POST['product_id']);
@@ -254,3 +280,71 @@ function adn_add_product_checkout()
 }
 
 add_action('template_redirect', 'adn_add_product_checkout');
+
+function custom_login_redirect($redirect_to, $request, $user)
+{
+    if (is_a($user, 'WP_User')) {
+        $user_roles = $user->roles;
+        $dashboard_roles = array('health-pro', 'Coach');
+
+        if (array_intersect($user_roles, $dashboard_roles)) {
+            return home_url('/dashboard');
+        } else {
+            return home_url('/meus-treinamentos');
+        }
+    }
+    return $redirect_to;
+}
+add_filter('login_redirect', 'custom_login_redirect', 10, 3);
+
+/**
+ * Woocomerce
+ */
+
+add_filter('woocommerce_locate_template', 'adn_custom__checkout', 20, 3);
+
+function adn_custom__checkout($template, $template_name, $template_path)
+{
+    if ('checkout/form-checkout.php' == $template_name) {
+        $template = plugin_dir_path(__FILE__) . 'templates/checkout/form-checkout.php';
+    }
+    if ('checkout/review-order.php' == $template_name) {
+        $template = plugin_dir_path(__FILE__) . 'templates/checkout/review-order.php';
+    }
+    return $template;
+}
+
+function adn_custom_woocommerce_input_class($args, $key, $value)
+{
+
+    if ($key === 'billing_states') {
+        $args['input_class'] = array('form-select');
+    } elseif (in_array($key, array('billing_first_name', 'billing_last_name', 'billing_city', 'billing_postcode', 'billing_phone', 'billing_email', 'billing_address_1'))) {
+        $args['input_class'][] = 'form-control';
+    }
+    return $args;
+}
+
+add_filter('woocommerce_form_field_args', 'adn_custom_woocommerce_input_class', 10, 3);
+
+function adn_custom_checkout_user_fullfil($fields)
+{
+    // Verifique se o usuário está logado.
+    if (is_user_logged_in()) {
+        $current_user = wp_get_current_user();
+
+        // Preencha os campos de endereço de faturamento com as informações do usuário atual.
+        $fields['billing']['billing_first_name']['default'] = $current_user->first_name;
+        $fields['billing']['billing_last_name']['default'] = $current_user->last_name;
+        $fields['billing']['billing_email']['default'] = $current_user->user_email;
+        $fields['billing']['billing_phone']['default'] = get_user_meta($current_user->ID, 'billing_phone', true);
+        $fields['billing']['billing_address_1']['default'] = get_user_meta($current_user->ID, 'billing_address_1', true);
+        $fields['billing']['billing_city']['default'] = get_user_meta($current_user->ID, 'billing_city', true);
+        $fields['billing']['billing_postcode']['default'] = get_user_meta($current_user->ID, 'billing_postcode', true);
+        $fields['billing']['billing_state']['default'] = get_user_meta($current_user->ID, 'billing_state', true);
+        $fields['billing']['billing_country']['default'] = get_user_meta($current_user->ID, 'billing_country', true);
+    }
+
+    return $fields;
+}
+add_filter('woocommerce_checkout_fields', 'adn_custom_checkout_user_fullfil');

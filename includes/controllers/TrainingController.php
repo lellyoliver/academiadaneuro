@@ -28,7 +28,6 @@ class TrainingController
         $mentalFatigue = $request->get_param('mentalFatigue');
         $perceptionMindBody = $request->get_param('perceptionMindBody');
         $controlofAnxiety = $request->get_param('controlofAnxiety');
-        $emotionalControl = $request->get_param('emotionalControl');
         $stress = $request->get_param('stress');
         $bodyPain = $request->get_param('bodyPain');
         $headache = $request->get_param('headache');
@@ -47,7 +46,6 @@ class TrainingController
                 'mentalFatigue' => $mentalFatigue,
                 'perceptionMindBody' => $perceptionMindBody,
                 'controlofAnxiety' => $controlofAnxiety,
-                'emotionalControl' => $emotionalControl,
                 'stress' => $stress,
                 'bodyPain' => $bodyPain,
                 'headache' => $headache,
@@ -83,6 +81,34 @@ class TrainingController
 
     }
 
+    public function createChoice($request)
+    {
+        $post_ids = $request->get_param('post_id');
+        $user_id = $request->get_param('user_id');
+
+        $fields = [
+            'post_id' => $post_ids,
+        ];
+
+        $result = $this->trainingService->insertTrainingReplies($user_id, $fields);
+
+        if ($result) {
+            $response = array(
+                'status' => 'sucesso',
+                'mensagem' => 'Treinamento criado com sucesso',
+                'user_id' => $user_id,
+                'replies' => $fields,
+            );
+            return new WP_REST_Response($response, 200);
+        }
+
+        $response = array(
+            'status' => 'erro',
+            'mensagem' => 'Não foi possível criar um treinamento',
+        );
+        return new WP_REST_Response($response, 500);
+    }
+
     /**
      * Display the user registration form.
      *
@@ -96,20 +122,57 @@ class TrainingController
             exit;
         }
 
-        $users = $this->getListRelated();
-
         ob_start();
+        $users = $this->getListRelated();
         require_once plugin_dir_path(__FILE__) . '../views/training/TrainingView.php';
         $output = ob_get_contents();
         ob_end_clean();
         return $output;
     }
 
+    public function showChoice()
+    {
+
+        if (!is_user_logged_in()) {
+            wp_redirect('/academiadaneurociencia/404/');
+            exit;
+        }
+
+        ob_start();
+        $users = $this->getListRelated();
+        $training = $this->getListTraining();
+        require_once plugin_dir_path(__FILE__) . '../views/training/TrainingChoiceView.php';
+        $output = ob_get_contents();
+        ob_end_clean();
+        return $output;
+    }
+
+    /**
+     * Retrieves a list of users related to the current logged-in user.
+     *
+     * This function first obtains the ID of the currently logged-in user using the WordPress function
+     * get_current_user_id().
+     *
+     * @return array An array of users related to the current user.
+     */
     public function getListRelated()
     {
         $current_user_id = get_current_user_id();
         $list = $this->userRelatedService->listUserRelated($current_user_id);
         return $list;
+    }
+
+    public function getListTraining()
+    {
+        $categories = [
+            'categoria-1',
+            'categoria-2',
+            'categoria-3',
+            'categoria-4',
+            'categoria-5',
+        ];
+        $trainings = $this->trainingService->getTrainings($categories);
+        return $trainings;
     }
 
 }

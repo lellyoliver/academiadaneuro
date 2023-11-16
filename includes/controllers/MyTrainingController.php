@@ -18,6 +18,10 @@ class MyTrainingController
             exit;
         }
         $trainings = $this->getMyTrainings();
+        if (empty($trainings)) {
+            wp_redirect('academiadaneurociencia/novo-treinamento/');
+            exit;
+        }
         $progress = $this->getProgressTraining();
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/training/MyTrainingView.php';
@@ -26,26 +30,52 @@ class MyTrainingController
         return $output;
     }
 
+    /**
+     * Get the user's training data.
+     *
+     * @return array An array of user's training data.
+     */
     public function getMyTrainings()
     {
         $current_user_id = get_current_user_id();
         $myTraining = $this->myTrainingService->getResultsTraining($current_user_id);
-        $myTrainings = $this->myTrainingService->getCategoriesTrainings($myTraining);
+
+        if (empty($myTraining)) {
+            return array();
+        }
+
+        if (is_array($myTraining) && isset($myTraining['Bem-estar Cerebral'])) {
+
+            $myTrainings = $this->myTrainingService->getCategoriesTrainings($myTraining);
+
+        } elseif (is_array($myTraining) && isset($myTraining['post_id'])) {
+            $myTrainings = $this->myTrainingService->getCompareTrainingsPostID($myTraining);
+        }
+
         return $myTrainings;
-
     }
-    public function getTrainingProgress($request)
-    {
-        $DH_enter = $request->get_param('DH_enter');
-        $DH_exit = $request->get_param('DH_exit');
-        $neuralResonance = $request->get_param('neuralResonance');
-        $cognitiveStimulation = $request->get_param('cognitiveStimulation');
-        $neuralBreathing = $request->get_param('neuralBreathing');
-        $updateProgress = $request->get_param('updateProgress');
-        $current_user_id = $request->get_param('user_id');
-        $post_id = $request->get_param('post_id');
 
-        $result = $this->myTrainingService->insertTrainingProgress($current_user_id, $post_id, $DH_enter, $DH_exit, $neuralResonance, $cognitiveStimulation, $neuralBreathing, $updateProgress);
+    /**
+     * Save the training progress for a specific training.
+     *
+     * @param object $request The request object containing training progress data.
+     * @return WP_REST_Response The response containing training progress information.
+     */
+
+    public function saveTrainingProgress($request)
+    {
+        $data = array(
+            'DH_enter' => $request->get_param('DH_enter'),
+            'DH_exit' => $request->get_param('DH_exit'),
+            'neuralResonance' => $request->get_param('neuralResonance'),
+            'cognitiveStimulation' => $request->get_param('cognitiveStimulation'),
+            'neuralBreathing' => $request->get_param('neuralBreathing'),
+            'updateProgress' => $request->get_param('updateProgress'),
+            'user_id' => $request->get_param('user_id'),
+            'post_id' => $request->get_param('post_id'),
+        );
+
+        $result = $this->myTrainingService->insertTrainingProgress($data);
 
         if ($result) {
             $response = array(
@@ -72,6 +102,11 @@ class MyTrainingController
 
     }
 
+    /**
+     * Get the progress of all user's trainings.
+     *
+     * @return array An array of training progress data for all user's trainings.
+     */
     public function getProgressTraining()
     {
         $current_user_id = get_current_user_id();
@@ -90,6 +125,11 @@ class MyTrainingController
         }
 
         return $progress;
+    }
+
+    public function getMetaTrainings($id)
+    {
+        return $this->myTrainingService->getMetaTrainings($id);
     }
 
 }

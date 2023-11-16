@@ -11,6 +11,12 @@ class MyTrainingModel
 
     }
 
+    /**
+     * Get the training results for a specific user.
+     *
+     * @param int $current_user_id The ID of the current user.
+     * @return array An array of training results for the user.
+     */
     public function getResultsTraining($current_user_id)
     {
         global $wpdb;
@@ -30,25 +36,31 @@ class MyTrainingModel
                 return array();
             }
         } else {
-            // Nenhum resultado encontrado para o usuário ou usuário não ativo.
             return array();
         }
     }
-
+/**
+ * Categorize the user's trainings based on specific criteria.
+ *
+ * @param array $myTraining An array of user's training data.
+ * @return array An array of categorized trainings.
+ */
     public function getCategoriesTrainings($myTraining)
     {
         $categories = [
-            'categoria-1' => ['sleepQuality', 'mentalFatigue', 'controlofAnxiety', 'emotionalControl'],
+            'categoria-1' => ['sleepQuality', 'mentalFatigue', 'controlofAnxiety'],
             'categoria-2' => ['stress', 'bodyPain', 'headache'],
             'categoria-3' => ['stimuliAnxiety', 'thoughtsInvasive', 'perceptionMindBody'],
+            'categoria-4' => ['mentalActivity', 'creativity', 'learningAndMemory'],
+            'categoria-5' => ['focusAndAttention', 'concentration'],
         ];
 
         $categoryTerms = [];
 
         foreach ($categories as $categoryKey => $category) {
             $totalSum = 0;
-            foreach ($myTraining["Bem-estar Cerebral"] as $categoryName => $values) {
-                if (in_array($categoryName, $category)) {
+            foreach ($myTraining as $trainingCategory => $values) {
+                if (is_array($values) && in_array($trainingCategory, $category)) {
                     foreach ($values as $value) {
                         $intValue = intval($value);
                         $totalSum += $intValue;
@@ -58,12 +70,16 @@ class MyTrainingModel
             $categoryTerms[$categoryKey] = $totalSum;
         }
 
-        arsort($categoryTerms); // Classifica o array de soma do maior para o menor
+        arsort($categoryTerms);
 
-        return $this->getCompareTrainings(array_keys($categoryTerms)); // Envia as chaves (nomes das categorias) em vez dos valores.
-
+        return $this->getCompareTrainings(array_keys($categoryTerms));
     }
-
+/**
+ * Retrieve and compare trainings based on specified categories.
+ *
+ * @param array $categories An array of training categories to compare.
+ * @return array An array of compared trainings.
+ */
     public function getCompareTrainings($categories)
     {
 
@@ -76,7 +92,7 @@ class MyTrainingModel
                     array(
                         'taxonomy' => 'brainGroup',
                         'field' => 'slug',
-                        'terms' => $category, // Use a categoria atual como termo de pesquisa.
+                        'terms' => $category,
                     ),
                 ),
             );
@@ -87,32 +103,57 @@ class MyTrainingModel
 
     }
 
-    public function insertTrainingProgress($current_user_id, $post_id, $DH_enter, $DH_exit, $neuralResonance, $cognitiveStimulation, $neuralBreathing, $updateProgress)
+    /**
+     * Retrieve and compare trainings based on specified post IDs.
+     *
+     * @param array $post_ids An array of post IDs to retrieve and compare trainings.
+     * @return array An array of compared trainings.
+     */
+    public function getCompareTrainingsPostID($postIDs)
+    {
+        if (!is_array($postIDs) || !isset($postIDs['post_id'])) {
+            return array();
+        }
+
+        $postIDsArray = $postIDs['post_id'];
+
+        $postslist = [];
+
+        foreach ($postIDsArray as $postID) {
+            $args = array(
+                'post_type' => 'training',
+                'post__in' => array($postID),
+            );
+
+            $postslist[] = get_posts($args);
+        }
+
+        return $postslist;
+    }
+
+    public function insertTrainingProgress($data)
     {
         global $wpdb;
+        $current_user_id = $data['user_id'];
+        $post_id = $data['post_id'];
 
-        // Verificar se o usuário já existe na tabela
         $existing_user = $wpdb->get_row(
             $wpdb->prepare("SELECT * FROM $this->table_name_progress WHERE user_id = %d AND post_id = %d", $current_user_id, $post_id)
         );
 
         if ($existing_user) {
-            $time_exit = strtotime($existing_user->dh_exit) + strtotime($DH_exit);
-            $time_neuralResonance = strtotime($existing_user->neuralResonance) + strtotime($neuralResonance);
-            $time_cognitiveStimulation = strtotime($existing_user->cognitiveStimulation) + strtotime($cognitiveStimulation);
-            $time_neuralBreathing = strtotime($existing_user->neuralBreathing) + strtotime($neuralBreathing);
-
-            $DH_exit_time = gmdate("H:i:s", $time_exit);
-            $DH_exit_time_neuralResonance = gmdate("H:i:s", $time_neuralResonance);
-            $DH_exit_time_cognitiveStimulation = gmdate("H:i:s", $time_cognitiveStimulation);
-            $DH_exit_time_neuralBreathing = gmdate("H:i:s", $time_neuralBreathing);
+            // Calcular os novos valores aqui
+            $new_dh_exit = strtotime($existing_user->dh_exit) + strtotime($data['DH_exit']);
+            $new_neuralResonance = strtotime($existing_user->neuralResonance) + strtotime($data['neuralResonance']);
+            $new_cognitiveStimulation = strtotime($existing_user->cognitiveStimulation) + strtotime($data['cognitiveStimulation']);
+            $new_neuralBreathing = strtotime($existing_user->neuralBreathing) + strtotime($data['neuralBreathing']);
 
             $progress_data = array(
-                'dh_exit' => $DH_exit_time,
-                'neuralResonance' => $DH_exit_time_neuralResonance,
-                'cognitiveStimulation' => $DH_exit_time_cognitiveStimulation,
-                'neuralBreathing' => $DH_exit_time_neuralBreathing,
-                'updateProgress' => $updateProgress,
+                'dh_exit' => gmdate("H:i:s", $new_dh_exit),
+                'neuralResonance' => gmdate("H:i:s", $new_neuralResonance),
+                'cognitiveStimulation' => gmdate("H:i:s", $new_cognitiveStimulation),
+                'neuralBreathing' => gmdate("H:i:s", $new_neuralBreathing),
+                'updateProgress' => $data['updateProgress'],
             );
 
             $where = array(
@@ -122,15 +163,16 @@ class MyTrainingModel
 
             return $wpdb->update($this->table_name_progress, $progress_data, $where);
         } else {
+            // Preparar os dados para inserção
             $progress_data = array(
                 'user_id' => $current_user_id,
                 'post_id' => $post_id,
-                'dh_enter' => $DH_enter,
-                'dh_exit' => $DH_exit,
-                'neuralResonance' => $neuralResonance,
-                'cognitiveStimulation' => $cognitiveStimulation,
-                'neuralBreathing' => $neuralBreathing,
-                'updateProgress' => $updateProgress,
+                'dh_enter' => $data['DH_enter'],
+                'dh_exit' => $data['DH_exit'],
+                'neuralResonance' => $data['neuralResonance'],
+                'cognitiveStimulation' => $data['cognitiveStimulation'],
+                'neuralBreathing' => $data['neuralBreathing'],
+                'updateProgress' => $data['updateProgress'],
             );
 
             return $wpdb->insert($this->table_name_progress, $progress_data);
@@ -175,6 +217,24 @@ class MyTrainingModel
         );
 
         return $progress_bar;
+    }
+
+    public function getMetaTrainings($post_id)
+    {
+        $neuralResonance = get_post_meta($post_id, 'neuralResonance', true);
+        // $videoTraining = get_post_meta($post_id, 'videoTraining', true);
+        $neuralBreathing = get_post_meta($post_id, 'neuralBreathing', true);
+        $cognitiveStimulation = get_post_meta($post_id, 'cognitiveStimulation', true);
+
+        $response_data = array(
+            'neuralResonance' => $neuralResonance,
+            // 'videoTraining' => $videoTraining,
+            'neuralBreathing' => $neuralBreathing,
+            'cognitiveStimulation' => $cognitiveStimulation,
+        );
+
+        return $response_data;
+
     }
 
 }

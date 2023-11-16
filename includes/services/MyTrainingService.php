@@ -20,13 +20,23 @@ class MyTrainingService
         return $this->myTrainingModel->getCategoriesTrainings($myTraining);
     }
 
-    public function insertTrainingProgress($current_user_id, $post_id, $DH_enter, $DH_exit, $neuralResonance, $cognitiveStimulation, $neuralBreathing, $updateProgress)
+    public function insertTrainingProgress($data)
     {
-        return $this->myTrainingModel->insertTrainingProgress($current_user_id, $post_id, $DH_enter, $DH_exit, $neuralResonance, $cognitiveStimulation, $neuralBreathing, $updateProgress);
+        return $this->myTrainingModel->insertTrainingProgress($data);
     }
 
     public function progressTraining($current_user_id, $post_id)
     {
         return $this->myTrainingModel->progressTraining($current_user_id, $post_id);
+    }
+
+    public function getCompareTrainingsPostID($post_id)
+    {
+        return $this->myTrainingModel->getCompareTrainingsPostID($post_id);
+    }
+
+    public function getMetaTrainings($post_id)
+    {
+        return $this->myTrainingModel->getMetaTrainings($post_id);
     }
 }

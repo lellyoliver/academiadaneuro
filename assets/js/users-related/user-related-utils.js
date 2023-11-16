@@ -1,5 +1,5 @@
-// function verifyStringData() {
-//     const billingDataInput = document.getElementById('billing_data');
+// function verifyStringData(billingData, billingCEP, billingPhone) {
+//     const billingDataInput = document.getElementById(billingData);
 
 //     billingDataInput.addEventListener('input', () => {
 //         let value = billingDataInput.value.replace(/\D/g, '');
@@ -23,7 +23,7 @@
 
 //     });
 
-//     const cepInput = document.getElementById('cep');
+//     const cepInput = document.getElementById(billingCEP);
 //     cepInput.addEventListener('input', () => {
 //         let value = cepInput.value.replace(/\D/g, '');
 //         if (value.length === 8) {
@@ -32,7 +32,7 @@
 //         cepInput.value = value;
 //     });
 
-//     const phoneInput = document.getElementById('phone');
+//     const phoneInput = document.getElementById(billingPhone);
 //     phoneInput.addEventListener('input', () => {
 //         let value = phoneInput.value.replace(/\D/g, '');
 //         if (value.length === 11) {
@@ -42,8 +42,8 @@
 //     })
 
 // }
-// verifyStringData();
 
+// verifyStringData('', 'cep', 'phone');
 
 // document.addEventListener("DOMContentLoaded", function () {
 //     setTimeout(function () {

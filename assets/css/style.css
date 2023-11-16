@@ -9,12 +9,57 @@
   --red: #D23200;
 }
 
-header {
+header#header-home {
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+}
+
+.nav-link {
+  color: #1f1f1f;
+}
+
+/**Dropdown**/
+.dropdown-menu[data-bs-popper] {
+  left: -112px !important;
+}
+
+/**offcanvas**/
+/* CSS para a animação de deslocamento para a esquerda */
+@keyframes slideOutLeft {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Estilos para o offcanvasBackground */
+#offcanvasBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
+
+body#body-signin {
+  background-color: #fff;
 }
 
 .color-secondary {
   color: var(--secondary)
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
 }
 
 /***BTN**/
@@ -237,11 +282,11 @@ i.fas.fa-bell {
     position: fixed;
     top: 0;
     left: -100%;
-    width: 70%;
+    width: 85%;
     height: 100%;
     background-color: #fff;
     transition: left .3s ease;
-    z-index: 1000;
+    z-index: 999999;
     padding-left: 26px;
     padding-top: 16px;
   }
@@ -308,15 +353,36 @@ img.img-perfil {
   width: 150px;
   text-align: center;
   margin: 0 auto;
+  border-radius: 100%;
 }
 
 .perfil .edit-pen-perfil {
   position: absolute;
-  left: 206px;
+  left: 204px;
   top: 87px;
+  width: 0;
 }
 
+span.edit-pen-perfil i {
+  padding: 5px;
+  background: #00a9e7;
+  border-radius: 7px;
+  color: white;
+}
+
+@media screen and (max-width: 900px) {
+  .perfil .edit-pen-perfil {
+    position: absolute;
+    left: 210px;
+    top: 59px;
+    width: 0;
+  }
+}
+
+
 /**form**/
+
+/**text**/
 .label-float {
   position: relative;
   padding-top: 30px;
@@ -383,6 +449,8 @@ img.img-perfil {
   font-weight: 600;
 }
 
+/**textarea**/
+
 .label-float textarea {
   background-color: #ffffff;
 }
@@ -434,6 +502,64 @@ img.img-perfil {
   margin-top: -168px;
 }
 
+
+/**select**/
+
+.label-float select {
+  background-color: #ffffff;
+}
+
+.label-float select {
+  border: 2px solid var(--grey-light);
+  border-radius: 8px;
+  outline: none;
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 16px;
+  transition: all .1s linear;
+  -webkit-transition: all .1s linear;
+  -moz-transition: all .1s linear;
+  -webkit-appearance: none;
+  color: var(--grey);
+}
+
+.label-select label {
+  top: -11px !important
+}
+
+.label-float select:focus {
+  border: 2px solid #55c2e9;
+}
+
+
+.label-float select::placeholder {
+  color: transparent;
+}
+
+.label-float select:required:invalid+label {
+  color: var(--red);
+}
+
+.label-float select:focus:required:invalid {
+  border: 2px solid #ce5a36;
+}
+
+.label-float select:required:invalid+label:before {
+  content: '*';
+}
+
+.label-float select:focus+label,
+.label-float select:not(:placeholder-shown)+label {
+  font-size: 13px;
+  top: 0;
+  color: var(--grey);
+  font-weight: 600;
+}
+
+.label-float .select {
+  margin-top: -168px;
+}
+
 .form-perfil {
   border: 0;
 }
@@ -444,6 +570,14 @@ img.img-perfil {
 
 .display-desktop {
   display: block !important;
+}
+
+.display-none {
+  display: none;
+}
+
+li.nav-item {
+  margin-left: 22px;
 }
 
 @media screen and (max-width: 600px) {
@@ -457,6 +591,10 @@ img.img-perfil {
 
   .text-center-perfil {
     text-align: center;
+  }
+
+  li.nav-item {
+    margin-left: 0px;
   }
 }
 
@@ -510,7 +648,7 @@ img.img-perfil {
 
 
 /**MEUS PACIENTES**/
-.padding-container-card {
+.padding_container__card {
   padding: 6px;
 }
 
@@ -523,7 +661,7 @@ img.img-perfil {
 }
 
 @media screen and (max-width: 900px) {
-  .container.padding-container-card {
+  .container.padding_container__card {
     padding: 0;
   }
 
@@ -533,6 +671,24 @@ img.img-perfil {
 
 }
 
+.swal2-container {
+  z-index: 999999 !important;
+}
+
+.modal {
+  top: 20px !important;
+}
+
+.offcanvas-bottom,
+.offcanvas-top {
+  height: 80vh !important;
+}
+
+.offcanvas {
+  border-top-left-radius: 7px !important;
+  border-top-right-radius: 7px !important;
+  border: 0;
+}
 
 #loader {
   position: fixed;
@@ -589,11 +745,15 @@ div.class-mytrainings-list p {
   white-space: nowrap;
 }
 
-.lines-trainings {
+.class__trainings {
+  width: 100%;
+}
+
+.lines__trainings {
   width: 55px;
 
 
-  .dot-trainings {
+  .dot__trainings {
     width: 14px;
     height: 14px;
     border-radius: 7px;
@@ -608,23 +768,36 @@ div.class-mytrainings-list p {
 
 }
 
-.timeline-trainings {
+.timeline__trainings {
   display: flex;
   flex-wrap: nowrap;
+  width:100%;
 }
 
-.timeline-trainings p {
+.timeline__trainings p {
   font-size: 14px;
   margin-bottom: 0;
   color: var(--grey);
 }
 
-.timeline-trainings h5 {
+.timeline__trainings h5 {
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 0;
   color: #555555 !important;
   margin-top: 10px;
+}
+
+.class_training__video {
+  margin-bottom: 80px;
+}
+
+.class_training__video_2{
+  width:30%;
+}
+
+.class_trainings__gameplay{
+  width:30%;
 }
 
 .card-black {
@@ -636,8 +809,30 @@ video {
   border-radius: 8px;
 }
 
-audio#audioPlayer {
-  width: 250px !important;
+.class_training__audio{
+  width:30%;
+}
+
+.button#saveTraining{
+  width:30%;
+}
+
+@media screen and (max-width: 900px) {
+  .class_training__audio{
+    width:100%!important;
+  }
+  .class_trainings__gameplay{
+    width:100%!important;
+  }
+  .class_training__video_2{
+    width:100%!important;
+  }
+  .button#saveTraining{
+    width:100%!important;
+  }
+  .class_training__video {
+    margin-bottom: 40px;
+  }
 }
 
 span.progress-bar {
@@ -652,8 +847,9 @@ span.progress-bar {
 }
 
 /**DASHBOARD**/
+
 .accordion-header {
-  background-color: #DFF6FF;
+  background-color: #ebebeb;
 }
 
 .accordion-wrapper {
@@ -665,9 +861,8 @@ span.progress-bar {
 
 .accordion-name {
   width: 40%;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-right: 15px;
+  font-weight: 500;
+  margin-right: 12px;
 }
 
 /* .accordion-date {
@@ -812,4 +1007,136 @@ select#installments {
   }
 
 
+}
+
+/**Register**/
+.spacing-signin {
+  margin-bottom: 80px;
+}
+
+.bg-signin-photo {
+  background-image: url(https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/10/bg_signin_02.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.navbar-brand-signin img {
+  width: 200px;
+  position: fixed;
+}
+
+.form-order {
+  padding: 10px 50px 50px 50px !important;
+}
+
+@media screen and (max-width: 900px) {
+  .bg-signin-photo {
+    height: 346px;
+    order: 1;
+    margin-top: 86px !important;
+  }
+
+  .form-order {
+    order: 2;
+  }
+
+  .navbar-brand-signin img {
+    width: 60%;
+    position: absolute;
+    top: 28px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+  }
+
+  .spacing-signin {
+    margin-bottom: 40px;
+  }
+
+  .form-order {
+    padding: 0 !important;
+  }
+}
+
+.breadcrumbs-text a {
+  color: #000;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.card-plans {
+  box-shadow: 0px 0px 4px 2px rgb(0 0 0 / 13%) !important;
+  padding: 7px !important;
+  cursor: pointer;
+}
+
+.card-plans:hover {
+  border: var(--secondary) 2px solid !important;
+}
+
+/**Screen Novo Treinamento para especialistas**/
+
+.question-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  cursor: GRAB;
+  margin-bottom: 10px;
+}
+
+.question-container:hover {
+  border-color: var(--secondary);
+}
+
+.selected-questions {
+  border: 2px dashed var(--secondary);
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.selected-question {
+  margin-top: 10px;
+  border-bottom: 2px solid #cccc;
+  padding-bottom: 10px;
+}
+
+.delete-button {
+  color: red;
+  cursor: pointer;
+}
+
+.mobile-order-1 {
+  order: 1 !important;
+}
+
+.mobile-order-2 {
+  order: 2 !important;
+}
+
+.scroll-mobile {
+  overflow-y: hidden;
+  height: 100%;
+}
+
+@media screen and (max-width: 900px) {
+  .mobile-order-1 {
+    order: 1 !important;
+  }
+
+  .mobile-order-2 {
+    order: 2 !important;
+  }
+
+  .scroll-mobile {
+    overflow-y: scroll;
+    height: 400px;
+  }
+
+}
+
+.rotate {
+  transform: rotate(180deg);
+  /* Gire a seta 180 graus */
+  transition: transform 0.3s ease;
+  /* Adicione uma transição suave */
 }

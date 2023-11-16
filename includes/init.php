@@ -107,7 +107,7 @@ add_action('rest_api_init', function () use ($dashboardController) {
             if ($request->get_method() !== 'POST') {
                 return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
             }
-            return $dashboardController->create($request);
+            return $dashboardController->getMetaTrainings($id);
         },
         'permission_callback' => '__return_true',
     ));
@@ -126,6 +126,19 @@ add_action('rest_api_init', function () use ($trainingController) {
     ));
 });
 
+add_action('rest_api_init', function () use ($trainingController) {
+    register_rest_route('adn-plugin/v1', '/trainingChoice', array(
+        'methods' => 'POST',
+        'callback' => function (WP_REST_Request $request) use ($trainingController) {
+            if ($request->get_method() !== 'POST') {
+                return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
+            }
+            return $trainingController->createChoice($request);
+        },
+        'permission_callback' => '__return_true',
+    ));
+});
+
 add_action('rest_api_init', function () use ($myTrainingController) {
     register_rest_route('adn-plugin/v1', '/myTrainingProgress', array(
         'methods' => 'POST',
@@ -133,15 +146,28 @@ add_action('rest_api_init', function () use ($myTrainingController) {
             if ($request->get_method() !== 'POST') {
                 return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
             }
-            return $myTrainingController->getTrainingProgress($request);
+            return $myTrainingController->saveTrainingProgress($request);
+        },
+        'permission_callback' => '__return_true',
+    ));
+});
+
+add_action('rest_api_init', function () use ($myTrainingController) {
+    register_rest_route('adn-plugin/v1', '/myTraining/view/(?P<id>\d+)', array(
+        'methods' => 'GET',
+        'callback' => function (WP_REST_Request $request) use ($myTrainingController) {
+            $post_id = $request->get_param('id');
+            $training = $myTrainingController->getMetaTrainings($post_id);
+            return new WP_REST_Response($training , 200);
         },
         'permission_callback' => '__return_true',
     ));
 });
 
 add_shortcode('user-perfil', array($userController, 'show'));
-add_shortcode('register-user', array($userController, 'show'));
+add_shortcode('register-user', array($userController, 'signinUser'));
 add_shortcode('register-user-related', array($userRelatedController, 'show'));
 add_shortcode('user-training', array($trainingController, 'show'));
+add_shortcode('user-training-choice', array($trainingController, 'showChoice'));
 add_shortcode('user-myTraining', array($myTrainingController, 'show'));
 add_shortcode('dashboard', array($dashboardController, 'show'));

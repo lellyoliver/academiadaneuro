@@ -112,10 +112,6 @@ class UserRelatedModel
             'description' => $user->description,
             'billing_first_name' => $user->billing_first_name,
             'billing_phone' => $user->billing_phone,
-            'billing_postcode' => $user->billing_postcode,
-            'billing_address_1' => $user->billing_address_1,
-            'billing_state' => $user->billing_state,
-            'billing_city' => $user->billing_city,
         );
 
         return $user_data;

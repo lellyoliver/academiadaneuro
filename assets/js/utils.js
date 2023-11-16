@@ -1,42 +1,56 @@
-function offcanvasNav() {
-    if (document.getElementById('closeOffcanvas')) {
-        const button = document.getElementById('closeOffcanvas');
+window.addEventListener("DOMContentLoaded", function () {
+    function offcanvasNav() {
+        const closeButton = document.getElementById('closeOffcanvas');
         const offcanvasContent = document.getElementById('navbarNav');
+        let touchStartX = null;
 
-        button.addEventListener("click", () => {
-            offcanvasContent.classList.remove("show");
+        function closeOffcanvas() {
+            offcanvasContent.style.animation = 'slideOutLeft 0.3s';
+            setTimeout(() => {
+                offcanvasContent.classList.remove("show");
+                offcanvasContent.style.animation = '';
+            }, 300);
+            touchStartX = null;
+        }
+
+        closeButton.addEventListener("click", closeOffcanvas);
+
+        document.addEventListener("touchstart", (event) => {
+            if (!offcanvasContent.contains(event.target)) {
+                closeOffcanvas();
+            }
+        });
+
+        document.addEventListener("touchmove", (event) => {
+            if (touchStartX !== null && event.touches[0].clientX - touchStartX <= -20) {
+                closeOffcanvas();
+            }
+        });
+
+        document.addEventListener("touchstart", (event) => {
+            touchStartX = event.touches[0].clientX;
+        });
+
+        document.addEventListener("touchend", () => {
+            touchStartX = null;
         });
     }
-}
+    offcanvasNav();
 
-offcanvasNav();
-
-window.addEventListener("DOMContentLoaded", function () {
-    if (document.querySelector(".input-text")) {
-        const inputText = document.querySelectorAll(".input-text");
-        if (inputText) {
-
-            for (let i = 0; i < inputText.length; i++) {
-                inputText[i].classList.replace("input-text", "form-control");
+    function accordionDashboard() {
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+            for (let i = 0; i < accordionHeaders.length; i++) {
+                accordionHeaders[i].addEventListener('click', function () {
+                    const accordionArrow = this.querySelector('.accordion-arrow i');
+                    if (accordionArrow.classList.contains('rotate')) {
+                        accordionArrow.classList.remove('rotate');
+                    } else {
+                        accordionArrow.classList.add('rotate');
+                    }
+                });
             }
-
-            const inputSelect = document.querySelector(".country_select");
-            inputSelect.classList.add("form-select");
-        }
-
-        const orderHeading = document.getElementById('order_review_heading');
-        const orderReview = document.getElementById('order_review');
-        const paymentDiv = document.getElementById('payment');
-        const col2 = document.querySelector('.col-2')
-        if (orderHeading && orderReview) {
-            orderReview.insertBefore(orderHeading, orderReview.firstChild);
-        }
-        if (orderReview && paymentDiv) {
-            orderReview.parentNode.insertBefore(paymentDiv, orderReview.nextSibling);
-        }
-        if (col2 && orderReview) {
-            col2.appendChild(orderReview);
-        }
-
     }
+    accordionDashboard();
+
 });
+

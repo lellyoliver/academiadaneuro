@@ -1,101 +1,108 @@
-// function createUser() {
-//   const form = document.getElementById('form-create');
-//   if (form) {
-//     form.addEventListener('submit', (event) => {
-//       event.preventDefault();
-//       const formData = new FormData(form);
-//       const name = formData.get('name');
-//       const email = formData.get('email');
-//       const password = formData.get('password');
-//       const billing_data = formData.get('billing_data');
-//       const phone = formData.get('phone');
-//       const cep = formData.get('cep');
-//       const address = formData.get('address');
-//       const states = formData.get('states');
-//       const role = formData.get('role');
-//       const city = formData.get('city');
-//       const connectedUser = formData.get('connected_user');
-//       const description = formData.get('description');
+function createUser() {
+  const form = document.getElementById('form-create');
+  if (form) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const name = formData.get('name');
+      const email = formData.get('email');
+      const billing_data = formData.get('billing_data');
+      const city = formData.get('city');
+      const phone = formData.get('phone');
+      const role = formData.get('role');
+      const password = formData.get('password');
 
-//       fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users-related', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//           name: name,
-//           email: email,
-//           password: password,
-//           billing_data: billing_data,
-//           phone: phone,
-//           cep: cep,
-//           city: city,
-//           address: address,
-//           states: states,
-//           role: role,
-//           connected_user: connectedUser,
-//           description: description,
-//         })
-//       })
-//         .then(response => response.json())
-//         .then(data => {
-//           if (data.status === 'sucesso') {
-//             location.reload()
-//           } else {
-//             alert('Erro ao atualizar usuário: ' + data.mensagem);
-//           }
-//         })
-//         .catch(error => {
-//           console.error('Erro ao atualizar usuário:', error);
-//         });
-//     });
-//   }
-
-// }
+      fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: password,
+          billing_data: billing_data,
+          phone: phone,
+          phone: city,
+          role: role,
+        }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          if (data.status === 'sucesso') {
+          } else {
+            alert('Erro ao atualizar usuário: ' + data.mensagem);
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao atualizar usuário:', error);
+        });
+    });
+  }
+}
 
 function updateUser() {
   const formUpdate = document.getElementById('form-update');
+  const inputFile = document.getElementById('avatar_file');
 
   formUpdate.addEventListener('submit', (event) => {
     event.preventDefault();
-    const userId = document.getElementById('userId');
-    const name = document.getElementById('name');
-    const email = document.getElementById('email');
-    const phone = document.getElementById('phone');
-    const cep = document.getElementById('cep');
-    const city = document.getElementById('city');
-    const address = document.getElementById('address');
-    const states = document.getElementById('states');
+    Swal.fire({
+      text: 'Deseja atualizar seu perfil?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const formData = new FormData(formUpdate);
+        formData.append('avatar_file', inputFile.files[0]);
 
-    fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users/update', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        user_id: userId.value,
-        name: name.value,
-        email: email.value,
-        phone: phone.value,
-        cep: cep.value,
-        city: city.value,
-        address: address.value,
-        states: states.value,
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'sucesso') {
-          location.reload();
-        } else {
-          alert('Erro ao atualizar usuário: ' + data.mensagem);
-        }
-      })
-      .catch(error => {
-        console.error('Erro ao atualizar usuário:', error);
-      });
+        fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users/update', {
+          method: 'POST',
+          body: formData,
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'sucesso') {
+              Swal.fire('Sucesso!', 'Perfil atualizado com sucesso.', 'success').then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire('Erro!', 'Erro ao atualizar o perfil: ' + data.mensagem, 'error');
+            }
+          })
+          .catch(error => {
+            console.error('Erro ao atualizar usuário:', error);
+          });
+      }
+
+    });
+
   });
 }
+
+function avatar() {
+  if(avatarInput){
+    const avatarInput = document.getElementById('avatar_file');
+    avatarInput.addEventListener('change', () => {
+      const preview = document.getElementById('avatar-preview');
+      const file = avatarInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+    
+        reader.onload = function (e) {
+          preview.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+}
+
 
 function viewUser() {
   window.addEventListener('load', function () {
@@ -106,13 +113,19 @@ function viewUser() {
     const cityInput = document.getElementById('city');
     const cepInput = document.getElementById('cep');
     const statesInput = document.getElementById('states');
-    const userName = document.getElementById('user_name');
+    const CPF = document.getElementById('user_name');
     const userID = document.getElementById('userId');
 
     fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users/view/${userID.value}`)
       .then(response => response.json())
       .then(data => {
-        userName.textContent = data.user_login;
+        CPF.innerHTML = data.user_login;
+
+        try {
+          document.getElementById('avatar-preview').src = data.billing_avatar;
+        } catch (error) {
+          document.getElementById('avatar-preview').src = `https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/09/user-perfil.svg`;
+        }
         nameInput.value = data.billing_first_name;
         emailInput.value = data.user_email;
         phoneInput.value = data.billing_phone;
@@ -124,6 +137,8 @@ function viewUser() {
       .catch(error => console.error('Erro ao buscar detalhes do usuário:', error));
   });
 }
+
+
 
 // function deleteUser() {
 //   window.addEventListener('load', function () {
@@ -169,7 +184,7 @@ function viewUser() {
 //   })
 // }
 
-// createUser();
+createUser();
 updateUser();
 viewUser();
 // deleteUser();

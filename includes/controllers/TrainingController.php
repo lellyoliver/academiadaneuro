@@ -2,16 +2,22 @@
 
 require_once plugin_dir_path(__FILE__) . '../services/TrainingService.php';
 require_once plugin_dir_path(__FILE__) . '../services/UserRelatedService.php';
+require_once plugin_dir_path(__FILE__) . '../services/UserService.php';
+
 
 class TrainingController
 {
     private $trainingService;
     private $userRelatedService;
+    private $userService;
+
 
     public function __construct()
     {
         $this->trainingService = new TrainingService();
         $this->userRelatedService = new UserRelatedService();
+        $this->userService = new UserService();
+
 
     }
 
@@ -89,15 +95,14 @@ class TrainingController
         $fields = [
             'post_id' => $post_ids,
         ];
-
-        $result = $this->trainingService->insertTrainingReplies($user_id, $fields);
+        if(!empty($user_id) && !empty($post_ids) ){
+            $result = $this->trainingService->insertTrainingReplies($user_id, $fields);
+        }
 
         if ($result) {
             $response = array(
                 'status' => 'sucesso',
                 'mensagem' => 'Treinamento criado com sucesso',
-                'user_id' => $user_id,
-                'replies' => $fields,
             );
             return new WP_REST_Response($response, 200);
         }
@@ -118,7 +123,13 @@ class TrainingController
     public function show()
     {
         if (!is_user_logged_in()) {
-            wp_redirect('/academiadaneurociencia/404/');
+            wp_redirect(site_url('/login', 'https'));
+            exit;
+        }
+        $userExpired = $this->userExpired();
+
+        if(!$userExpired[0]["status"]){
+            wp_redirect(site_url('/meu-perfil', 'https'));
             exit;
         }
 
@@ -134,7 +145,14 @@ class TrainingController
     {
 
         if (!is_user_logged_in()) {
-            wp_redirect('/academiadaneurociencia/404/');
+            wp_redirect(site_url('/login', 'https'));
+            exit;
+        }
+
+        $userExpired = $this->userExpired();
+
+        if(!$userExpired[0]["status"]){
+            wp_redirect(site_url('/meu-perfil', 'https'));
             exit;
         }
 
@@ -173,6 +191,11 @@ class TrainingController
         ];
         $trainings = $this->trainingService->getTrainings($categories);
         return $trainings;
+    }
+    
+    public function userExpired()
+    {
+        return $this->userService->userExpiredData();
     }
 
 }

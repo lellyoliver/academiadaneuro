@@ -163,7 +163,6 @@ class MyTrainingModel
 
             return $wpdb->update($this->table_name_progress, $progress_data, $where);
         } else {
-            // Preparar os dados para inserção
             $progress_data = array(
                 'user_id' => $current_user_id,
                 'post_id' => $post_id,
@@ -206,7 +205,6 @@ class MyTrainingModel
             }
         }
 
-        // Cria a barra de progresso
         $progress_bar = sprintf(
             '<span class="progress" style="width:500px;">
                 <span class="progress-bar" role="progressbar" style="width:%s;" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100">%s%%</span>
@@ -222,13 +220,13 @@ class MyTrainingModel
     public function getMetaTrainings($post_id)
     {
         $neuralResonance = get_post_meta($post_id, 'neuralResonance', true);
-        // $videoTraining = get_post_meta($post_id, 'videoTraining', true);
+        $videoTraining = get_post_meta($post_id, 'videoTraining', true);
         $neuralBreathing = get_post_meta($post_id, 'neuralBreathing', true);
         $cognitiveStimulation = get_post_meta($post_id, 'cognitiveStimulation', true);
 
         $response_data = array(
             'neuralResonance' => $neuralResonance,
-            // 'videoTraining' => $videoTraining,
+            'videoTraining' => $videoTraining,
             'neuralBreathing' => $neuralBreathing,
             'cognitiveStimulation' => $cognitiveStimulation,
         );

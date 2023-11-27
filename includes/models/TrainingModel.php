@@ -17,7 +17,6 @@ class TrainingModel
     {
         global $wpdb;
 
-        // Verifique se algum valor em $fields é igual a zero
         foreach ($fields as $category => $values) {
             foreach ($values as $value) {
                 if ($value == "0") {
@@ -29,7 +28,6 @@ class TrainingModel
             }
         }
 
-        // Verifique se já existe um registro para o usuário especificado
         $existing_entry = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$this->table_name} WHERE user_id = %d",
             $user_id
@@ -42,6 +40,8 @@ class TrainingModel
 
         if (!$existing_entry) {
             return $wpdb->insert($this->table_name, $replies_data);
+        } else {
+            return $wpdb->update($this->table_name, $replies_data, array('user_id' => $user_id));
         }
     }
 

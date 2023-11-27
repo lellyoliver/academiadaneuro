@@ -1,13 +1,19 @@
 <?php
 require_once plugin_dir_path(__FILE__) . '../services/UserRelatedService.php';
+require_once plugin_dir_path(__FILE__) . '../services/UserService.php';
+
 
 class UserRelatedController
 {
     private $userRelatedService;
+    private $userService;
+
 
     public function __construct()
     {
         $this->userRelatedService = new UserRelatedService();
+        $this->userService = new UserService();
+
     }
 
     /**
@@ -23,31 +29,25 @@ class UserRelatedController
         $name = $request->get_param('name');
         $email = $request->get_param('email');
         $password = $request->get_param('password');
-        $billing_data = $request->get_param('billing_data');
         $phone = $request->get_param('phone');
-        $user_role = $request->get_param('role');
         $connected_user = $request->get_param('connected_user');
         $description = $request->get_param('description');
 
-        $meta_fields = [
-            'billing_first_name' => $name,
-            'billing_phone' => $phone,
-        ];
+        $user_data = array(
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'password' => $password,
+            'description' => $description,
+        );
 
-        $user_id = $this->userRelatedService->createUser($name, $email, $billing_data, $user_role, $password, $description);
+        $user_id = $this->userRelatedService->createUser($user_data);
 
         if ($user_id) {
-            $meta = $this->userRelatedService->updateMetaUser($meta_fields, $user_id);
             $user_related = $this->userRelatedService->createRelatedUser($user_id, $connected_user); // Passa o ID do usuário atual);
-            if ($user_related) {
-                update_user_meta($connected_user, 'can_register_users', false);
-            }
             $response = array(
                 'status' => 'sucesso',
                 'mensagem' => 'Usuário criado com sucesso',
-                'user_id' => $user_id,
-                'fields' => $meta_fields,
-                'connected_user' => $user_related,
             );
             return new WP_REST_Response($response, 200);
         }
@@ -119,7 +119,6 @@ class UserRelatedController
             $response = array(
                 'status' => 'sucesso',
                 'mensagem' => 'Usuário excluído com sucesso',
-                'user_id' => $id,
             );
             return new WP_REST_Response($response, 200);
         }
@@ -139,11 +138,17 @@ class UserRelatedController
     public function show()
     {
         if (!is_user_logged_in()) {
-            wp_redirect('/academiadaneurociencia/404/');
+            wp_redirect(site_url('/login', 'https'));
             exit;
         }
 
-        $can_register = $this->can_register_new_user();
+        $userExpired = $this->userExpired();
+
+        if(!$userExpired[0]["status"]){
+            wp_redirect(site_url('/meu-perfil', 'https'));
+            exit;
+        }
+        $expired = $this->userExpiredData();
         $listUser = $this->getListRelated();
         $getUser = $this->getListedUserRelated();
         ob_start();
@@ -178,13 +183,12 @@ class UserRelatedController
         return $user = $this->userRelatedService->getUserById($id);
     }
 
-    public function can_register_new_user()
-    {
-        $can_register = current_user_can('create_users');
-        $user_can_register = get_user_meta(get_current_user_id(), 'can_register_users', true);
+    // public function can_register_new_user()
+    // {
+    //     $user_can_register = get_user_meta(get_current_user_id(), 'can_register_users', true);
 
-        return ($can_register && $user_can_register);
-    }
+    //     return $user_can_register;
+    // }
 
     public function getListedUserRelated()
     {
@@ -197,5 +201,15 @@ class UserRelatedController
         }
 
         return $getUser;
+    }
+
+    public function userExpiredData()
+    {
+        return $this->userRelatedService->userExpiredData();
+    }
+
+    public function userExpired()
+    {
+        return $this->userService->userExpiredData();
     }
 }

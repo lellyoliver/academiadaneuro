@@ -15,17 +15,15 @@ class UserRelatedService
      *
      * @return int|WP_Error The user ID if successful, or WP_Error object on failure.
      */
-    public function createUser($name, $email, $billing_data, $user_role, $password, $description)
+    public function createUser($user_data)
     {
+        $email = $user_data['email'];
+
         if (email_exists($email)) {
             return new WP_Error('email_exists', 'O e-mail fornecido já está em uso por outro usuário.', array('status' => 400));
         }
 
-        if (username_exists($billing_data)) {
-            return new WP_Error('username_exists', 'O nome de usuário fornecido já está em uso por outro usuário.', array('status' => 400));
-        }
-
-        return $this->userRelatedModel->createUser($name, $email, $billing_data, $user_role, $password, $description);
+        return $this->userRelatedModel->createUser($user_data);
     }
 
     /**
@@ -39,12 +37,6 @@ class UserRelatedService
     {
         return $this->userRelatedModel->updateUser($name, $email, $user_id, $password, $description);
     }
-
-    public function deleteUser($id)
-    {
-        return $this->userRelatedModel->deleteUser($id);
-    }
-
     /**
      * Update user meta fields in WordPress database.
      *
@@ -55,6 +47,11 @@ class UserRelatedService
     public function updateMetaUser($meta_fields, $user_id)
     {
         return $this->userRelatedModel->updateMeta($meta_fields, $user_id);
+    }
+
+    public function deleteUser($id)
+    {
+        return $this->userRelatedModel->deleteUser($id);
     }
 
     /**
@@ -72,7 +69,6 @@ class UserRelatedService
 
         return null;
     }
-    
 
     /**
      * List related users for a given user.
@@ -95,4 +91,15 @@ class UserRelatedService
     {
         return $this->userRelatedModel->getUserById($id);
     }
+
+    public function getUserExpired()
+    {
+        return $this->userRelatedModel->getUserExpired();
+    }
+
+    public function userExpiredData()
+    {
+        return $this->userRelatedModel->userExpiredData();
+    }
+
 }

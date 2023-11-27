@@ -11,8 +11,9 @@ class TextProcessor
 
     public static function sanitizeText($text)
     {
+        $sanitize = sanitize_text_field($text);
         $pattern = '/[[:punct:]]/u';
-        $textoSemPontuacoes = preg_replace($pattern, '', $text);
+        $textoSemPontuacoes = preg_replace($pattern, '', $sanitize);
         return $textoSemPontuacoes;
     }
 }

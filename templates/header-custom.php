@@ -59,11 +59,11 @@ $allowed_roles_2 = ['coach', 'health-pro', 'administrator'];
                             </li>
                             <?php endif;?>
 
-                            <?php if (in_array('health-pro', $current_user->roles)): ?>
-                            <li class="nav-item">
-                                <a class="nav-link" href="<?php echo get_site_url(); ?>/cursos">Cursos</a>
-                            </li>
-                            <?php endif;?>
+                            <?php ///if (in_array('health-pro', $current_user->roles)): ?>
+                            <!-- <li class="nav-item">
+                                <a class="nav-link" href="<?php //echo get_site_url(); ?>/cursos">Cursos</a>
+                            </li> -->
+                            <?php ////endif;?>
 
                             <?php if (array_intersect($allowed_roles_2, $current_user->roles)): ?>
                             <li class="nav-item">
@@ -77,7 +77,7 @@ $allowed_roles_2 = ['coach', 'health-pro', 'administrator'];
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link">Sair</a>
+                                <a class="nav-link" href="<?php echo wp_logout_url( site_url( '/login', 'https' ) ); ?>">Sair</a>
                             </li>
                         </ul>
                     </div>

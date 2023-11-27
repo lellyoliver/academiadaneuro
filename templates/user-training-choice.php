@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Training
+ * Template Name: Training Choice
  */
 
 include_once plugin_dir_path(__FILE__) . 'header-custom.php';

@@ -80,9 +80,9 @@ function createTraining() {
 createTraining();
 
 function createTrainingChoice() {
-    const form = document.getElementById('create-choice-form');
-    if (form) {
-        form.addEventListener('submit', (event) => {
+    const formChoices = document.getElementById('create-choice-form');
+    if (formChoices) {
+        formChoices.addEventListener('submit', (event) => {
             event.preventDefault();
 
             Swal.fire({
@@ -96,7 +96,7 @@ function createTrainingChoice() {
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const formData = new FormData(form);
+                    const formData = new FormData(formChoices);
 
                     const postIDs = formData.getAll('post_id[]'); // Use 'post_id[]' para pegar todos os valores em um array
                     const userID = formData.get('user_id');
@@ -133,75 +133,78 @@ createTrainingChoice();
 
 function choicesCard() {
     const questionContainers = document.querySelectorAll('.question-container');
-    const selectedQuestionsContainer = document.getElementById('selected-questions');
-    let draggedElement = null;
+    if (questionContainers) {
+        const selectedQuestionsContainer = document.getElementById('selected-questions');
+        let draggedElement = null;
 
-    function handleDragStart(e) {
-        draggedElement = this;
-        e.dataTransfer.setData('text/post-id', this.getAttribute('data-post-id'));
-        e.dataTransfer.setData('text/question-title', this.getAttribute('data-question-title'));
-    }
+        function handleDragStart(e) {
+            draggedElement = this;
+            e.dataTransfer.setData('text/post-id', this.getAttribute('data-post-id'));
+            e.dataTransfer.setData('text/question-title', this.getAttribute('data-question-title'));
+        }
 
-    function handleDragOver(e) {
-        e.preventDefault();
-        selectedQuestionsContainer.style.border = '2px dashed #000';
-    }
+        function handleDragOver(e) {
+            e.preventDefault();
+            selectedQuestionsContainer.style.border = '2px dashed #000';
+        }
 
-    function handleDragLeave(e) {
-        e.preventDefault();
-        selectedQuestionsContainer.style.border = '';
-    }
+        function handleDragLeave(e) {
+            e.preventDefault();
+            selectedQuestionsContainer.style.border = '';
+        }
 
-    function handleDrop(e) {
-        e.preventDefault();
-        selectedQuestionsContainer.style.border = '';
-        
-        if (draggedElement) {
-            const questionPostID = draggedElement.getAttribute('data-post-id');
-            const questionTitle = draggedElement.getAttribute('data-question-title');
-            const selectedQuestion = document.createElement('div');
-            selectedQuestion.className = 'selected-question';
+        function handleDrop(e) {
+            e.preventDefault();
+            selectedQuestionsContainer.style.border = '';
 
-            const titleSpan = document.createElement('small');
-            titleSpan.textContent = questionTitle;
+            if (draggedElement) {
+                const questionPostID = draggedElement.getAttribute('data-post-id');
+                const questionTitle = draggedElement.getAttribute('data-question-title');
+                const selectedQuestion = document.createElement('div');
+                selectedQuestion.className = 'selected-question';
 
-            const categoryHidden = document.createElement('input');
-            categoryHidden.type = 'hidden';
-            categoryHidden.name = 'post_id[]';
-            categoryHidden.value = questionPostID;
+                const titleSpan = document.createElement('small');
+                titleSpan.textContent = questionTitle;
 
-            const deleteButton = document.createElement('button');
-            deleteButton.type = 'button';
-            deleteButton.className = 'ms-3 btn btn-sm btn-danger';
-            deleteButton.innerHTML = `<i class="fa-solid fa-trash"></i>`;
-            deleteButton.addEventListener('click', () => {
-                selectedQuestionsContainer.removeChild(selectedQuestion);
+                const categoryHidden = document.createElement('input');
+                categoryHidden.type = 'hidden';
+                categoryHidden.name = 'post_id[]';
+                categoryHidden.value = questionPostID;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.type = 'button';
+                deleteButton.className = 'ms-3 btn btn-sm btn-danger';
+                deleteButton.innerHTML = `<i class="fa-solid fa-trash"></i>`;
+                deleteButton.addEventListener('click', () => {
+                    selectedQuestionsContainer.removeChild(selectedQuestion);
+                });
+
+                selectedQuestion.appendChild(titleSpan);
+                selectedQuestion.appendChild(categoryHidden);
+                selectedQuestion.appendChild(deleteButton);
+
+                selectedQuestionsContainer.appendChild(selectedQuestion);
+                draggedElement = null;
+            }
+        }
+
+        questionContainers.forEach(container => {
+            container.addEventListener('dragstart', handleDragStart);
+
+            // Adicione eventos de toque para dispositivos móveis
+            container.addEventListener('touchstart', handleDragStart);
+            container.addEventListener('touchmove', (e) => {
+                // Impedir o comportamento padrão de toque, que pode interferir no arrastar e soltar
+                e.preventDefault();
             });
-
-            selectedQuestion.appendChild(titleSpan);
-            selectedQuestion.appendChild(categoryHidden);
-            selectedQuestion.appendChild(deleteButton);
-
-            selectedQuestionsContainer.appendChild(selectedQuestion);
-            draggedElement = null;
+            container.addEventListener('touchend', handleDrop);
+        });
+        if(selectedQuestionsContainer){
+            selectedQuestionsContainer.addEventListener('dragover', handleDragOver);
+            selectedQuestionsContainer.addEventListener('dragleave', handleDragLeave);
+            selectedQuestionsContainer.addEventListener('drop', handleDrop);
         }
     }
-
-    questionContainers.forEach(container => {
-        container.addEventListener('dragstart', handleDragStart);
-        
-        // Adicione eventos de toque para dispositivos móveis
-        container.addEventListener('touchstart', handleDragStart);
-        container.addEventListener('touchmove', (e) => {
-            // Impedir o comportamento padrão de toque, que pode interferir no arrastar e soltar
-            e.preventDefault();
-        });
-        container.addEventListener('touchend', handleDrop);
-    });
-
-    selectedQuestionsContainer.addEventListener('dragover', handleDragOver);
-    selectedQuestionsContainer.addEventListener('dragleave', handleDragLeave);
-    selectedQuestionsContainer.addEventListener('drop', handleDrop);
 }
 
 choicesCard();

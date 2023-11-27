@@ -8,11 +8,10 @@ function createUser() {
                 // Exibe a Sweet Alert para confirmar a criação do usuário
                 Swal.fire({
                     title: 'Deseja criar usuário?',
-                    text: 'Você tem certeza que deseja criar o usuário?',
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#0A3876',
+                    cancelButtonColor: '#dc3545',
                     confirmButtonText: 'Sim, Criar!',
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
@@ -24,7 +23,6 @@ function createUser() {
                         const password = formData.get('password');
                         const billing_data = formData.get('billing_data');
                         const phone = formData.get('phone');
-                        const role = formData.get('role');
                         const connectedUser = formData.get('connected_user');
                         const description = formData.get('description');
 
@@ -39,7 +37,6 @@ function createUser() {
                                 password: password,
                                 billing_data: billing_data,
                                 phone: phone,
-                                role: role,
                                 connected_user: connectedUser,
                                 description: description,
                             })
@@ -75,7 +72,6 @@ function updateUser() {
                 // Exibe a Sweet Alert para confirmar a atualização
                 Swal.fire({
                     title: 'Deseja Atualizar?',
-                    text: 'Você tem certeza que deseja atualizar o usuário?',
                     icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -110,7 +106,7 @@ function updateUser() {
                             .then(data => {
                                 if (data.status === 'sucesso') {
                                     Swal.fire('Sucesso!', 'Usuário atualizado com sucesso.', 'success').then(() => {
-                                        location.reload();
+                                        // location.reload();
                                     });
                                 } else {
 
@@ -205,10 +201,27 @@ function tableCustom() {
     }
 }
 
-
+function cartCheckout() {
+    window.addEventListener('show.bs.offcanvas', function () {
+        const userRelatedId = document.querySelectorAll('[name="user_related_id"]');
+        const btnsViewCart = document.querySelectorAll('.view-cart');
+        
+        for (let index = 0; index < btnsViewCart.length; index++) {
+            const btn = btnsViewCart[index];
+            btn.addEventListener('click', (event) => {
+                event.preventDefault();
+                const dataTarget = btn.getAttribute("data-userid");
+                userRelatedId.forEach((element, index) => {
+                    element.value = dataTarget;
+                });
+            })
+        }
+    });
+}
 
 createUser();
 updateUser();
 viewUser();
 deleteUser();
 tableCustom();
+cartCheckout();

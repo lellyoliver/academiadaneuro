@@ -16,7 +16,7 @@
 
 // function formatCEP(value) {
 //     value = value.replace(/\D/g, '');
-//     if (value.length === 8) {
+//     if (value.length == 8) {
 //         value = value.replace(/(\d{5})(\d{3})/, '$1-$2');
 //     }
 //     return value;
@@ -24,7 +24,7 @@
 
 // function formatPhone(value) {
 //     value = value.replace(/\D/g, '');
-//     if (value.length === 11) {
+//     if (value.length == 11) {
 //         value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
 //     }
 //     return value;

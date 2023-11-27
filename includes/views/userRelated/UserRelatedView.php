@@ -5,15 +5,9 @@
                 <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0">
                     <?php echo esc_html('Meus Pacientes'); ?>
                 </h6>
-                <button type="submit" class="btn btn-secondary me-2" data-bs-target="#cartUserRelated"
-                    data-bs-toggle="offcanvas">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                </button>
-                <?php if ($can_register): ?>
-                <a role="button" class="btn btn-secondary display-desktop" data-bs-toggle="offcanvas"
+                <a role="button" class="btn btn-secondary btn-sm display-desktop" data-bs-toggle="offcanvas"
                     data-bs-target="#viewCreateRelated" id="btn_user"><i class="fa-solid fa-user-plus"></i>
                 </a>
-                <?php endif;?>
             </div>
 
             <table class="table" id="tableRelated" data-toggle="table" data-pagination="true" data-page-size="3"
@@ -23,39 +17,55 @@
                         <th data-field="display_name">Nome do Paciente</th>
                         <th data-field="user_email">E-mail</th>
                         <th data-field="description">Quadro Clinico</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-foreach ($getUser as $getUsers): ?>
+                    <?php foreach ($getUser as $getUsers): ?>
                     <tr class="view-user" data-bs-toggle="offcanvas" data-bs-target="#viewUserRelated"
                         data-userid="<?php echo $getUsers['ID']; ?>" id="list-<?php echo $getUsers['ID']; ?>">
                         <td data-label="Nome do Paciente"><?php echo $getUsers['billing_first_name']; ?></td>
                         <td data-label="E-mail"><?php echo $getUsers['user_email']; ?></td>
                         <td data-label="Quadro Clinico"><?php echo $getUsers['description']; ?></td>
+                        <td class="status">
+                            <button type="submit" class="btn btn-sm btn-secondary me-2 mb-1 view-cart"
+                                id="cart-user-<?php echo $getUsers['ID']; ?>" data-bs-target="#cartUserRelated"
+                                data-bs-toggle="offcanvas" data-userid="<?php echo $getUsers['ID']; ?>">
+                                <i class="fa-solid fa-cart-shopping"></i>
+                            </button>
+                            <?php
+                            if(!empty($expired)){
+                                foreach ($expired as $expireds) {
+                                    if($expireds['user_related'] == $getUsers['ID']){
+                                        if($expireds['status']){
+                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="em dia" class="fa-solid fa-circle-check color-success" style="font-size:16px;"></i>';
+                                        }else{
+                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="em atraso" class="fa-solid fa-triangle-exclamation color-danger" style="font-size:16px;"></i>';
+                                        }
+                                    }
+                                }
+                            }
+                            ?>
+                        </td>
                     </tr>
                     <?php endforeach;?>
                 </tbody>
             </table>
-            <?php if ($can_register): ?>
             <div class="row m-0 m-auto mt-3 display-mobile">
-                <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="offcanvas"
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="offcanvas"
                     data-bs-target="#viewCreateRelated" id="btn_user"><i class="fa-solid fa-user-plus me-5"></i> Novo
                     Paciente
                 </button>
             </div>
-            <?php endif;?>
         </div>
     </div>
 </div>
 
 
 <!-- Modal Create -->
-<?php if ($can_register): ?>
-<div class="offcanvas offcanvas-bottom" tabindex="-1" id="viewCreateRelated" aria-labelledby="offcanvasBottomLabel"
-    style="z-index:9999!important;">
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="viewCreateRelated" style="z-index:9999!important;">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Adicione um novo paciente</h5>
+        <h6 class="card-title fw-bold title-cards text-uppercase">Adicione um novo paciente</h6>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body small">
@@ -100,7 +110,6 @@ foreach ($getUser as $getUsers): ?>
                         </span>
                     </div>
                 </div>
-                <input type="hidden" name="role" value="coachingRelation">
                 <input type="hidden" name="connected_user" value="<?php echo get_current_user_id(); ?>">
             </div>
             <div class="modal-footer">
@@ -110,15 +119,13 @@ foreach ($getUser as $getUsers): ?>
         </form>
     </div>
 </div>
-<?php endif;?>
 <!-- end Modal Create -->
 
 
 <!-- Modal Update -->
-<div class="offcanvas offcanvas-bottom" tabindex="-1" id="viewUserRelated" aria-labelledby="offcanvasBottomLabel"
-    style="z-index:9999!important;">
+<div class="offcanvas offcanvas-bottom" tabindex="-1" id="viewUserRelated" style="z-index:9999!important;">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasBottomLabel">Visualizar paciente</h5>
+        <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0">Visualizar paciente</h6>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body small">
@@ -160,8 +167,7 @@ foreach ($getUser as $getUsers): ?>
                 <input type="hidden" name="user_id" id="userId" value="">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn" data-bs-dismiss="modal" id="cancel-create">Sair</button>
-                <button type="button" class="btn btn-danger" id="deleteUser">Excluir</button>
+                <button type="button" class="btn btn-danger" id="deleteUser"><i class="fa-solid fa-trash"></i></button>
                 <button type="submit" class="btn btn-primary"
                     id="updateUser"><?php echo esc_html('Atualizar'); ?></button>
             </div>
@@ -172,8 +178,9 @@ foreach ($getUser as $getUsers): ?>
 <div class="offcanvas offcanvas-bottom" tabindex="-1" id="cartUserRelated" aria-labelledby="planos"
     style="z-index:9999!important;">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="planos" style="margin-right:12px;">Selecione o plano desejado para este novo
-            paciente:</h5>
+        <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0" id="planos" style="margin-right:12px;">
+            Selecione o plano desejado para este novo
+            paciente:</h6>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body small">
@@ -187,6 +194,7 @@ foreach ($getUser as $getUsers): ?>
                             <p class="card-text">Seu paciente terá acesso durante um mês à mentoria e aos exercícios de
                                 estimulação cerebral.</p>
                             <input type="hidden" name="product_id" value="26">
+                            <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
                 </form>
@@ -200,6 +208,7 @@ foreach ($getUser as $getUsers): ?>
                             <p class="card-text">Acesso semestral à mentoria e aos exercícios de estimulação cerebral
                                 para um compromisso mais prolongado.</p>
                             <input type="hidden" name="product_id" value="109">
+                            <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
                 </form>
@@ -213,6 +222,7 @@ foreach ($getUser as $getUsers): ?>
                             <p class="card-text">Acesso anual à mentoria e aos exercícios de estimulação cerebral para
                                 um compromisso de longo prazo.</p>
                             <input type="hidden" name="product_id" value="110">
+                            <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
                 </form>

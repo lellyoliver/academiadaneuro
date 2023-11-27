@@ -7,10 +7,12 @@ class MetaCustomTraining
     public function __construct()
     {
         $this->fields = [
-            "Video" => "videoTraining",
-            "Ressonância Neural" => "neuralResonance",
-            "Respiração Neural" => "neuralBreathing",
-            "Estímulo cognitivo" => "cognitiveStimulation",
+            "Título Geral" => "titleTraining",
+            "Fale mais sobre o treinamento" => "textTraining",
+            "URL Video" => "videoTraining",
+            "URL Ressonância Neural" => "neuralResonance",
+            "URL Respiração Neural" => "neuralBreathing",
+            "URL Estímulo cognitivo" => "cognitiveStimulation",
         ];
 
         add_action('add_meta_boxes', array($this, 'add_custom_fields_metabox'));

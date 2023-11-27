@@ -1,107 +1,88 @@
-function createUser() {
-  const form = document.getElementById('form-create');
-  if (form) {
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const formData = new FormData(form);
-      const name = formData.get('name');
-      const email = formData.get('email');
-      const billing_data = formData.get('billing_data');
-      const city = formData.get('city');
-      const phone = formData.get('phone');
-      const role = formData.get('role');
-      const password = formData.get('password');
-
-      fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          password: password,
-          billing_data: billing_data,
-          phone: phone,
-          phone: city,
-          role: role,
-        }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-          if (data.status === 'sucesso') {
-          } else {
-            alert('Erro ao atualizar usuário: ' + data.mensagem);
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao atualizar usuário:', error);
-        });
-    });
-  }
-}
-
 function updateUser() {
   const formUpdate = document.getElementById('form-update');
-  const inputFile = document.getElementById('avatar_file');
+  const loading = document.getElementById('loading');
 
-  formUpdate.addEventListener('submit', (event) => {
-    event.preventDefault();
-    Swal.fire({
-      text: 'Deseja atualizar seu perfil?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sim',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const formData = new FormData(formUpdate);
-        formData.append('avatar_file', inputFile.files[0]);
+  if (formUpdate) {
+    const inputFile = document.getElementById('avatar_file');
+    formUpdate.addEventListener('submit', (event) => {
+      event.preventDefault();
+      loading.style.display = '';
 
-        fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users/update', {
-          method: 'POST',
-          body: formData,
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.status === 'sucesso') {
-              Swal.fire('Sucesso!', 'Perfil atualizado com sucesso.', 'success').then(() => {
-                location.reload();
-              });
-            } else {
-              Swal.fire('Erro!', 'Erro ao atualizar o perfil: ' + data.mensagem, 'error');
-            }
+      Swal.fire({
+        text: 'Deseja atualizar seu perfil?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Cancelar',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const formData = new FormData(formUpdate);
+          formData.append('avatar_file', inputFile.files[0]);
+
+          fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users/update', {
+            method: 'POST',
+            body: formData,
           })
-          .catch(error => {
-            console.error('Erro ao atualizar usuário:', error);
-          });
-      }
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === 'sucesso') {
+                loading.style.display = 'none';
+                Swal.fire('Sucesso!', 'Perfil criado com sucesso.', 'success').then(() => {
+                  location.reload();
+                });
+              } else {
+                loading.style.display = 'none';
+                Swal.fire('Erro!', 'Erro ao criar um usuário: ' + data.mensagem, 'error');
+              }
+            })
+            .catch((error) => {
+              // Ocultar o loading em caso de erro
+              loading.style.display = 'none';
 
+              console.error('Erro ao criar usuário:', error);
+            });
+        }
+      });
     });
-
-  });
+  }
 }
 
+updateUser();
+
 function avatar() {
-  if(avatarInput){
-    const avatarInput = document.getElementById('avatar_file');
+  const avatarInput = document.getElementById('avatar_file');
+  const preview = document.getElementById('avatar-preview');
+
+  if (avatarInput) {
     avatarInput.addEventListener('change', () => {
-      const preview = document.getElementById('avatar-preview');
       const file = avatarInput.files[0];
+
       if (file) {
-        const reader = new FileReader();
-    
-        reader.onload = function (e) {
-          preview.src = e.target.result;
-        }
-        reader.readAsDataURL(file);
+        // Configurações do Compressor.js
+        const options = {
+          quality: 0.6,
+          success(result) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+              preview.src = e.target.result;
+            };
+            reader.readAsDataURL(result);
+          },
+          error(err) {
+            console.error('Erro ao redimensionar e comprimir a imagem:', err.message);
+          },
+        };
+        new Compressor(file, options);
       }
     });
   }
 }
+
+avatar();
+
 
 
 function viewUser() {
@@ -115,29 +96,29 @@ function viewUser() {
     const statesInput = document.getElementById('states');
     const CPF = document.getElementById('user_name');
     const userID = document.getElementById('userId');
+    const avatar = document.getElementById('avatar-preview');
+    const passwordInput = document.getElementById('user_pass');
 
     fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users/view/${userID.value}`)
       .then(response => response.json())
       .then(data => {
         CPF.innerHTML = data.user_login;
-
-        try {
-          document.getElementById('avatar-preview').src = data.billing_avatar;
-        } catch (error) {
-          document.getElementById('avatar-preview').src = `https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/09/user-perfil.svg`;
-        }
+        passwordInput.value = data.user_pass;
+        avatar.src = data.billing_avatar;
         nameInput.value = data.billing_first_name;
         emailInput.value = data.user_email;
         phoneInput.value = data.billing_phone;
-        addressInput.value = data.billing_address_1;
-        cityInput.value = data.billing_city;
-        cepInput.value = data.billing_postcode;
-        statesInput.value = data.billing_state;
+        if (addressInput) {
+          addressInput.value = data.billing_address_1;
+          cityInput.value = data.billing_city;
+          cepInput.value = data.billing_postcode;
+          statesInput.value = data.billing_state;
+        }
+
       })
       .catch(error => console.error('Erro ao buscar detalhes do usuário:', error));
   });
 }
-
 
 
 // function deleteUser() {
@@ -184,7 +165,6 @@ function viewUser() {
 //   })
 // }
 
-createUser();
 updateUser();
 viewUser();
 // deleteUser();

@@ -1,25 +1,37 @@
 <?php
 
 require_once plugin_dir_path(__FILE__) . '../services/MyTrainingService.php';
+require_once plugin_dir_path(__FILE__) . '../services/UserService.php';
+
 
 class MyTrainingController
 {
     private $myTrainingService;
+    private $userService;
+
 
     public function __construct()
     {
         $this->myTrainingService = new MyTrainingService();
+        $this->userService = new UserService();
     }
 
     public function show()
     {
         if (!is_user_logged_in()) {
-            wp_redirect('/academiadaneurociencia/404/');
+            wp_redirect(site_url('/login', 'https'));
             exit;
         }
+        $userExpired = $this->userExpired();
+
+        if(!$userExpired[0]["status"]){
+            wp_redirect(site_url('/meu-perfil', 'https'));
+            exit;
+        }
+        
         $trainings = $this->getMyTrainings();
         if (empty($trainings)) {
-            wp_redirect('academiadaneurociencia/novo-treinamento/');
+            wp_redirect(site_url('/novo-treinamento', 'https'));
             exit;
         }
         $progress = $this->getProgressTraining();
@@ -130,6 +142,11 @@ class MyTrainingController
     public function getMetaTrainings($id)
     {
         return $this->myTrainingService->getMetaTrainings($id);
+    }
+    
+    public function userExpired()
+    {
+        return $this->userService->userExpiredData();
     }
 
 }

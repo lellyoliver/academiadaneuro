@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: User Register
+ * Template Name: User Perfil
  */
 
  include_once plugin_dir_path(__FILE__) . 'header-custom.php';

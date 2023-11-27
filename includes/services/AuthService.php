@@ -1,22 +1,22 @@
 <?php
+require_once plugin_dir_path(__FILE__) . '../models/AuthModel.php';
 
 class AuthService
 {
-    public function login($email, $password)
+    private $authModel;
+
+    public function __construct()
     {
-        $credentials = array(
-            'user_login'    => $email,
-            'user_password' => $password,
-            'remember'      => true, // Defina como true se quiser lembrar do usuário em sessões futuras
-        );
-
-        $user = wp_signon($credentials, false);
-
-        if (!is_wp_error($user)) {
-            wp_set_current_user($user->ID);
-            wp_set_auth_cookie($user->ID);
-            exit;
-        }
+        $this->authModel = new AuthModel();
     }
-}
 
+    public function processEmail($user_id, $token)
+    {
+        return $this->authModel->sendEmail($user_id, $token);
+    }
+
+    public function processForgotPassword($data_register){
+        return $this->authModel->processForgotPassword($data_register);
+    }
+
+}

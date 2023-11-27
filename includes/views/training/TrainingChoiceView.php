@@ -43,7 +43,7 @@
                             </select>
                             <p class="fw-bold">Perguntas Selecionadas:</p>
                         </div>
-                        <button class="btn btn-secondary col-12 fw-bolder mb-3 display-desktop" type="submit">Gerar
+                        <button class="btn btn-secondary col-12 fw-bolder mb-3" type="submit">Gerar
                             Estímulo</button>
                     </form>
                 </div>

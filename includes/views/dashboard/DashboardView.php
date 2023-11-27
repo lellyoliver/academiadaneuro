@@ -1,22 +1,33 @@
 <div class="card mb-3">
     <div class="container padding_container__card">
         <div class="card-body">
-            <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0">
-                <?php echo esc_html('Pacientes em Progresso'); ?>
-            </h6>
+            <div class="row d-flex align-items-center">
+                <div class="col-md-6">
+                    <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0">
+                        <?php echo esc_html('Pacientes em Progresso'); ?>
+                    </h6>
+                </div>
+                <div class="col-md-6">
+                    <a class="btn btn-lg btn-secondary float-end"
+                        href="https://lellyoliver.com.br/academiadaneurociencia/novo-treinamento">Adicionar
+                        Treinamento</a>
+                </div>
+            </div>
             <br>
             <div class="accordion" id="accordionUser">
-                <?php foreach ($name_patient as $patient): ?>
-                <?php
-// Verifique se há progresso para o paciente atual
-if (isset($progress[$patient->ID])):
-?>
+                <?php foreach ($patients as $patient): ?>
+                <?php if (isset($progress[$patient->ID])): ?>
                 <div class="accordion-item">
                     <div class="accordion-header" id="heading<?php echo $patient->ID; ?>" data-bs-toggle="collapse"
                         data-bs-target="#collapse<?php echo $patient->ID; ?>" aria-expanded="true"
                         aria-controls="collapse<?php echo $patient->ID; ?>">
                         <div class="accordion-wrapper">
-                            <span class="accordion-name"><?php echo $patient->display_name; ?></span>
+                            <div class="d-flex flex-column align-content-start w-100">
+                                <p class="text-uppercase" style="font-size:12px;margin-bottom:-1px;">
+                                    <?php echo date_i18n('d M', strtotime($progress[$patient->ID]['updateProgress'])); ?>
+                                </p>
+                                <span class="accordion-name fw-bold w-100"><?php echo $patient->display_name; ?></span>
+                            </div>
                             <span class="progress" style="width: 100%;">
                                 <span class="progress-bar" role="progressbar"
                                     style="width: <?php echo $progress[$patient->ID]['totalProgress']; ?>%;"

@@ -10,17 +10,10 @@ class UserService
         $this->userModel = new UserModel();
     }
 
-    /**
-     * Create a new user in WordPress database.
-     *
-     * @param string $name The name of the user.
-     * @param string $email The email address of the user.
-     * @param string $billing_data The username (billing data) of the user.
-     * @param string $password The password of the user.
-     * @return int|WP_Error The user ID if successful, or WP_Error object on failure.
-     */
-    public function createUser($name, $email, $billing_data, $user_role, $password)
+    public function createUser($user_data)
     {
+        $email = $user_data['email'];
+        $billing_data = $user_data['billing_data'];
 
         if (email_exists($email)) {
             return new WP_Error('email_exists', 'O e-mail fornecido já está em uso por outro usuário.', array('status' => 400));
@@ -30,7 +23,7 @@ class UserService
             return new WP_Error('username_exists', 'O nome de usuário fornecido já está em uso por outro usuário.', array('status' => 400));
         }
 
-        return $this->userModel->createUser($name, $email, $billing_data, $user_role, $password);
+        return $this->userModel->createUser($user_data);
     }
 
     /**
@@ -39,9 +32,9 @@ class UserService
      * @param int $user_id The ID of the user to be updated.
      * @return bool Whether the update was successful.
      */
-    public function updateUser($name, $email, $user_id)
+    public function updateUser($name, $email, $password, $user_id)
     {
-        return $this->userModel->updateUser($name, $email, $user_id);
+        return $this->userModel->updateUser($name, $email, $password, $user_id);
     }
 
     /**
@@ -74,6 +67,14 @@ class UserService
 
     public function handleAvatarUpload($file, $post_id)
     {
-        return $this->userModel->handleAvatarUpload($file, $post_id, $user_id);
+        return $this->userModel->handleAvatarUpload($file, $post_id);
+    }
+
+    public function userExpiredData()
+    {
+        return $this->userModel->userExpiredData();
+    }
+    public function getUserExpired(){
+        return $this->userModel->getUserExpired();
     }
 }

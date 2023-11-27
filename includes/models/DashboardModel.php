@@ -26,7 +26,7 @@ class DashboardModel
         global $wpdb;
 
         $query = $wpdb->prepare(
-            "SELECT neuralResonance, cognitiveStimulation, neuralBreathing, user_id FROM $this->table_name WHERE user_id = %d",
+            "SELECT neuralResonance, cognitiveStimulation, neuralBreathing, updateProgress, user_id FROM $this->table_name WHERE user_id = %d",
             $user_id
         );
 
@@ -55,7 +55,7 @@ class DashboardModel
 
         foreach ($results as $userProgress) {
             $user_id = $userProgress[0]->user_id; // Assume que o user_id é o mesmo para todas as entradas do usuário
-
+            $updateProgress = $userProgress[0]->updateProgress;
             $user_status = array();
             foreach ($userProgress as $result) {
                 $result_seconds = array();
@@ -73,13 +73,15 @@ class DashboardModel
                     }
                 }
 
-                // Correção aqui para usar o user_id correto
                 $category_status['user_id'] = $user_id;
+                $category_status['updateProgress'] = $updateProgress;
+
 
                 $user_status[] = $category_status;
             }
 
             $status[$user_id] = $user_status;
+
         }
 
         return $status;
@@ -92,6 +94,7 @@ class DashboardModel
         $categorySums = [];
 
         foreach ($progressArray as $userId => $userProgress) {
+            $updateProgress = $userProgress[0]['updateProgress'];
             $categoryCounts = [
                 'neuralResonance' => 0,
                 'cognitiveStimulation' => 0,
@@ -100,8 +103,7 @@ class DashboardModel
 
             foreach ($userProgress as $entry) {
                 foreach ($entry as $category => $value) {
-                    if ($category !== 'user_id') {
-                        // Verifica se o valor é numérico antes de somar
+                    if ($category !== 'user_id' && $category !== 'updateProgress') {
                         if (is_numeric($value)) {
                             $categorySums[$userId][$category] = isset($categorySums[$userId][$category]) ?
                             $categorySums[$userId][$category] + $value :
@@ -112,19 +114,18 @@ class DashboardModel
                 }
             }
 
-            // Calcula as médias
             foreach ($categoryCounts as $category => $count) {
                 $categorySums[$userId][$category] = $count > 0 ?
                 round($categorySums[$userId][$category] / $count, 0) :
                 0;
             }
 
-            // Adiciona o user_id ao array resultante
             $categorySums[$userId]['user_id'] = $userId;
+            $categorySums[$userId]['updateProgress'] = $updateProgress;
 
-            // Calcula o totalProgress corretamente
-            $total = array_sum($categorySums[$userId]) - $categorySums[$userId]['user_id']; // Subtrai o 'user_id'
-            $categorySums[$userId]['totalProgress'] = round($total / (count($categorySums[$userId]) - 1), 0); // Subtrai 1 para não contar o 'user_id'
+
+            $total = array_sum($categorySums[$userId]) - $categorySums[$userId]['user_id'] - $categorySums[$userId]['updateProgress'];
+            $categorySums[$userId]['totalProgress'] = round($total / (count($categorySums[$userId]) - 2), 0); // Subtrai 1 para não contar o 'user_id'
         }
 
         return $categorySums;

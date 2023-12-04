@@ -19,7 +19,7 @@ define('ACADEMIA_DA_NEURO_VERSION', '1.0.0');
  * Includes plugin endpoints.
  */
 
-require_once plugin_dir_path(__FILE__) . 'includes/AcademiaPluginInstaller.php';
+// require_once plugin_dir_path(__FILE__) . 'includes/AcademiaPluginInstaller.php';
 
 require_once plugin_dir_path(__FILE__) . 'includes/init.php';
 
@@ -33,7 +33,20 @@ require_once plugin_dir_path(__FILE__) . 'includes/PostType.php';
 
 require_once plugin_dir_path(__FILE__) . 'includes/RewriteRules.php';
 
+require_once plugin_dir_path(__FILE__) . 'includes/db.php';
 
+
+function adn_activate()
+{
+    $dbCustom = new DBCustom();
+    $createPages = new CreatePages();
+
+    $createPages->createPages();
+    $dbCustom->createTableTrainingReplies();
+    $dbCustom->createTableTrainingProgress();
+}
+
+register_activation_hook(__FILE__, 'adn_activate');
 
 
 function adn_scripts()

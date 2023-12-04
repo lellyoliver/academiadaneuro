@@ -1,4 +1,6 @@
 <?php
+include_once plugin_dir_path(__FILE__) . 'db.php';
+
 class AcademiaPluginInstaller
 {
     public function __construct()
@@ -45,8 +47,14 @@ class AcademiaPluginInstaller
     private function createDatabaseTables()
     {
         $dbCustom = new DBCustom();
-        $dbCustom->createTableTrainingReplies();
-        $dbCustom->createTableTrainingProgress();
+
+        if (!$dbCustom->doesTableExist('training_replies')) {
+            $dbCustom->createTableTrainingReplies();
+        }
+
+        if (!$dbCustom->doesTableExist('training_progress')) {
+            $dbCustom->createTableTrainingProgress();
+        }
     }
 }
 

@@ -35,6 +35,9 @@ require_once plugin_dir_path(__FILE__) . 'includes/RewriteRules.php';
 
 require_once plugin_dir_path(__FILE__) . 'includes/db.php';
 
+require_once plugin_dir_path(__FILE__) . 'includes/CreatePages.php';
+
+
 
 function adn_activate()
 {

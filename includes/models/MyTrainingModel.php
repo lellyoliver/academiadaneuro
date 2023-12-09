@@ -223,12 +223,14 @@ class MyTrainingModel
         $videoTraining = get_post_meta($post_id, 'videoTraining', true);
         $neuralBreathing = get_post_meta($post_id, 'neuralBreathing', true);
         $cognitiveStimulation = get_post_meta($post_id, 'cognitiveStimulation', true);
+        $textTraining = get_post_meta($post_id, 'textTraining', true);
 
         $response_data = array(
             'neuralResonance' => $neuralResonance,
             'videoTraining' => $videoTraining,
             'neuralBreathing' => $neuralBreathing,
             'cognitiveStimulation' => $cognitiveStimulation,
+            'textTraining' => $textTraining,
         );
 
         return $response_data;

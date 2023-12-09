@@ -3,7 +3,6 @@ require_once plugin_dir_path(__FILE__) . '../TextProcessor.php';
 
 class UserRelatedModel
 {
-
     public function createUser($user_data)
     {
 
@@ -88,6 +87,8 @@ class UserRelatedModel
             'meta_key' => 'connected_user',
             'meta_value' => $current_user_id,
             'fields' => 'all_with_meta',
+            'orderby' => 'display_name',
+            'order' => 'ASC',
         );
 
         $users_data = get_users($metadata);

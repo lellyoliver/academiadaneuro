@@ -17,7 +17,7 @@ class DBCustom
 
         $table_name = $wpdb->prefix . 'training_replies';
 
-        $sql = "CREATE TABLE $this->table_name (
+        $sql = "CREATE TABLE $table_name (
             reply_id INT NOT NULL AUTO_INCREMENT,
             user_id BIGINT UNSIGNED NOT NULL,
             replies LONGTEXT NOT NULL,

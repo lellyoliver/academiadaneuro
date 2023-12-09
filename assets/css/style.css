@@ -1,9 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 :root {
   --primary: #0A3876;
   --secondary: #00a9e7;
   --grey: #555555;
   --grey-light: lightgrey;
-  --purple:#6f42c1;
+  --purple: #6f42c1;
   --orange: #fd7e14;
   --yellow: #ffc107;
   --green: #198754;
@@ -14,10 +16,29 @@ header#header-home {
   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
 }
 
+.bg-header {
+  background-color: var(--secondary);
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
 
 .nav-link {
-  color: #1f1f1f;
+  color: white !important;
   font-size: 14px;
+}
+
+.nav-link:hover {
+  font-weight: 600;
+}
+
+.active-link {
+  font-weight: 600;
+}
+
+.nav-link {
+  cursor: pointer;
 }
 
 /**Dropdown**/
@@ -25,8 +46,10 @@ header#header-home {
   left: -112px !important;
 }
 
-p, span{
+p,
+span {
   font-size: 14px;
+  font-weight: 500;
 }
 
 /**offcanvas**/
@@ -62,11 +85,11 @@ body#body-signin {
 }
 
 .color-danger {
-  color: var(--red)!important;
+  color: var(--red) !important;
 }
 
-.color-success{
-  color:var(--green)!important;
+.color-success {
+  color: var(--green) !important;
 }
 
 .loading {
@@ -87,17 +110,22 @@ body#body-signin {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7); /* Fundo preto esmaecido */
-  z-index: -1; /* Colocado atrás do spinner */
+  background-color: rgba(0, 0, 0, 0.7);
+  /* Fundo preto esmaecido */
+  z-index: -1;
+  /* Colocado atrás do spinner */
 }
 
 .spinner-container {
-  z-index: 1; /* Colocado sobre o fundo escurecido */
+  z-index: 1;
+  /* Colocado sobre o fundo escurecido */
 }
+
 .spinner-border {
-  border-right: 0.25em solid #00a9e7!important;
+  border-right: 0.25em solid #00a9e7 !important;
 }
-.danger{
+
+.danger {
   cursor: pointer;
 }
 
@@ -182,6 +210,13 @@ tr.view-user {
   cursor: pointer;
 }
 
+.page-item.active .page-link {
+  background-color: #ef4e23!important;
+  border-color: #ef4e23!important;
+  color: #fff;
+  z-index: 3;
+}
+
 @media screen and (max-width: 600px) {
   table {
     border: 0;
@@ -252,6 +287,17 @@ tr.view-user {
   border: rgb(209, 209, 209) !important;
 }
 
+.btn-3 {
+  background-color: #ef4e23!important;
+  color: white!important;
+}
+
+.btn-3:hover {
+  background-color: #ef4e23!important;
+  color: white!important;
+  opacity: 0.8;
+}
+
 .btn {
   border-radius: 5px !important;
 }
@@ -274,6 +320,7 @@ tr.view-user {
   -webkit-box-shadow: 0 0 0 0.25rem hsl(196.1deg 100% 45.29% / 18%) !important;
   box-shadow: 0 0 0 0.25rem #00a9e72e !important;
 }
+
 .btn-outline-secondary:focus {
   background: transparent !important;
   border: var(--secondary) 1px solid !important;
@@ -283,9 +330,10 @@ tr.view-user {
   box-shadow: 0 0 0 0.25rem #00a9e72e !important;
 }
 
-.btn-lg{
-  font-size:15px!important;
+.btn-lg {
+  font-size: 15px !important;
 }
+
 @media screen and (max-width: 900px) {
   td.status {
     position: absolute;
@@ -342,13 +390,14 @@ nav.navbar {
   height: 100px;
 }
 
-i.fas.fa-bell {
+i.fa-bell {
   font-size: 24px;
-  color: var(--grey)
+  color: white;
 }
 
 .navbar-light .navbar-toggler-icon {
-  background-image: url(https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/08/bars_01.svg) !important;
+  background-image: url(https://cdn.institutodeneurociencia.com.br/image/bars.svg) !important;
+  filter: brightness(5);
 }
 
 .navbar-toggler {
@@ -384,6 +433,27 @@ i.fas.fa-bell {
     padding-right: 0.5rem;
   }
 
+  .nav-link {
+    color: var(--grey) !important;
+    font-size: 14px;
+  }
+
+  header#header-home {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 99;
+  }
+
+  #main-custom {
+    margin-top: 7rem!important;
+    z-index: -99 !important;
+  }
+
+}
+
+#main-custom {
+  margin-top: 2rem;
 }
 
 #closeOffcanvas {
@@ -395,6 +465,27 @@ i.fas.fa-bell {
   padding-right: 26px;
   cursor: pointer;
 }
+
+a.dropdown-item {
+  color:var(--grey)!important;
+}
+a.dropdown-item:target {
+  color:var(--grey)!important;
+  background-color: #ccc;
+}
+a.dropdown-item:active {
+  color:var(--grey)!important;
+  background-color: #ccc;
+}
+
+.dropdown-menu {
+  background-clip: padding-box;
+  background-color: #fff;
+  border: none!important;
+  border-radius: 7px!important;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+}
+
 
 .card {
   border-radius: 8px !important;
@@ -416,14 +507,6 @@ i.fas.fa-bell {
 
 div#sidebar {
   display: none;
-}
-
-.nav-link:hover {
-  font-weight: 500;
-}
-
-.nav-link {
-  cursor: pointer;
 }
 
 /**MEU PERFIL**/
@@ -887,9 +970,11 @@ div.class-mytrainings-list p {
 
 video {
   background: transparent;
-  border-radius: 5px;
+  border-radius: 7px;
 }
-
+iframe{
+  border-radius:7px;
+}
 .class_training__audio {
   width: 100%;
 }
@@ -1100,16 +1185,33 @@ select#installments {
 }
 
 .bg-signin-photo {
-  background-image: url(https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/10/bg_signin_02.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   height: 100vh;
 }
 
+.box-signin-text {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  bottom: 80px;
+  margin-left: 100px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 17px;
+  -webkit-box-shadow: 0px 3px 28px 3px rgba(0, 0, 0, 0.44);
+  -moz-box-shadow: 0px 3px 28px 3px rgba(0, 0, 0, 0.44);
+  box-shadow: 0px 3px 28px 3px rgba(0, 0, 0, 0.44);
+  /* Note: currently only Safari supports backdrop-filter */
+  backdrop-filter: blur(3px);
+  --webkit-backdrop-filter: blur(3px);
+  background-color: rgba(255, 255, 255, 0.5);
+  /* (plus shape's fill blended on top as a separate layer with 32% opacity) */
+}
+
 .navbar-brand-signin img {
   width: 200px;
-  position: fixed;
 }
 
 .form_order {
@@ -1123,8 +1225,15 @@ select#installments {
 } */
 
 @media screen and (max-width: 900px) {
+
   .bg-signin-photo {
-    display: none;
+    height: 20vh;
+    background-image: url() !important;
+    background-color: var(--secondary) !important;
+  }
+
+  .box-signin-text {
+    display: none !important;
   }
 
   .form_order {
@@ -1134,18 +1243,33 @@ select#installments {
   .navbar-brand-signin img {
     width: 60%;
     position: absolute;
-    top: 28px;
+    top: 46px;
     left: 0;
     right: 0;
     margin: 0 auto;
   }
 
   .spacing_signin {
-    margin-bottom: 120px;
+    margin-bottom: 20px;
   }
 
   .form_order {
     padding: 0 !important;
+  }
+
+  .mobile_text__footer {
+    margin-top: 40px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  i.check__mobile {
+    margin-top: -11px;
+    margin-left: 21px;
+  }
+
+  .navbar-brand-signin img {
+    content: url('https://cdn.institutodeneurociencia.com.br/image/logo-vertical-branco.svg');
   }
 }
 
@@ -1221,6 +1345,7 @@ select#installments {
   .mobile-order-3 {
     order: 3 !important;
   }
+
   .scroll-mobile {
     overflow-y: scroll;
     height: 400px;
@@ -1229,8 +1354,13 @@ select#installments {
 
 .rotate {
   transform: rotate(180deg);
-  /* Gire a seta 180 graus */
   transition: transform 0.3s ease;
-  /* Adicione uma transição suave */
 }
 
+.btn-group-lg>.btn {
+  padding: 0.7rem 1rem !important;
+}
+
+.form-check-label {
+  font-size: 14px !important;
+}

@@ -28,12 +28,13 @@ class DashboardController
         }
 
         $userExpired = $this->userExpired();
-        
-        if(!$userExpired[0]["status"]){
-            wp_redirect(site_url('/meu-perfil', 'https'));
-            exit;
+        if($this->roleRegistered()){
+            if(!$userExpired[0]["status"]){
+                wp_redirect(site_url('/meu-perfil', 'https'));
+                exit;
+            }
         }
-
+        
         $list_progress_unify = $this->dashboardService->getListProgress();
         // $list_progress_total = $this->dashboardService->getTotalProgress();
         $patients = $this->dashboardService->getListRelated();
@@ -49,5 +50,14 @@ class DashboardController
     public function userExpired()
     {
         return $this->userService->userExpiredData();
+    }
+
+    public function roleRegistered(){
+        $current_user = wp_get_current_user();
+        $allowed_roles_2 = ['training', 'coachingRelation'];
+        if (array_intersect($allowed_roles_2, $current_user->roles)) {
+            return true;
+        }
+        return false;
     }
 }

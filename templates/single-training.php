@@ -6,7 +6,6 @@
 include_once plugin_dir_path(__FILE__) . 'header-custom.php';
 
 ?>
-<div class="breadcrumbs-text mb-3" id="breadcrumb"></div>
 <div class="card mb-3">
     <div class="container padding_container__card">
         <div class="card-body">
@@ -21,24 +20,15 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"></iframe>
                     </div>
                     <div class="class_training__text mb-5">
-                        <b>Como isso vai me ajudar no dia-a-dia?</b>
-                        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                            invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-                            et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est
-                            Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                            diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-                            voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd
-                            gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-                            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-                            invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam
-                            et justo duo dolores et ea rebum. Stet</p>
+                        <h5 class="fw-bold mb-3">Como isso vai me ajudar no dia-a-dia?</h5>
+                        <p id="textTraining"></p>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <!--2-->
                     <div class="timeline__trainings mb-5">
                         <div class="lines__trainings">
-                            <div class="dot__trainings "><img src="https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/09/icon-neuralResonance.svg
+                            <div class="dot__trainings "><img src="https://cdn.institutodeneurociencia.com.br/image/icon-neuralResonance.svg
 " alt="Video Treinamento" width="40" height="40"></div>
                             <div class="line-trainings"></div>
                         </div>
@@ -54,7 +44,7 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                     <!--3-->
                     <div class="timeline__trainings mb-5">
                         <div class="lines__trainings">
-                            <div class="dot__trainings"><img src="https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/09/icon-cognitiveStimulation.svg
+                            <div class="dot__trainings"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-cognitiveStimulation.svg
 " alt="Video Treinamento" width="40" height="40"></div>
                             <div class="line-trainings"></div>
                         </div>
@@ -67,7 +57,7 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                     <!--4-->
                     <div class="timeline__trainings mb-5">
                         <div class="lines__trainings">
-                            <div class="dot__trainings"><img src="https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/09/icon-neuralBreathing.svg
+                            <div class="dot__trainings"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-neuralBreathing.svg
 " alt="Video Treinamento" width="40" height="40"></div>
                             <div class="line-trainings"></div>
                         </div>
@@ -90,7 +80,7 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                             id="updateProgress" name="updateProgress">
                         <input type="hidden" value="<?php echo get_current_user_id(); ?>" id="user_id" name="user_id">
                         <input type="hidden" value="<?php echo the_ID(); ?>" id="post_id" name="post_id">
-                        <button type="submit" class="btn btn-lg btn-primary btn__save col-6 float-end"
+                        <button type="submit" class="btn btn-lg btn-secondary btn__save col-6 float-end"
                             id="saveTraining">Salvar
                             Progresso</button>
                     </form>

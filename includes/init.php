@@ -73,6 +73,19 @@ add_action('rest_api_init', function () use ($userController) {
     ));
 });
 
+// add_action('rest_api_init', function () use ($userController) {
+//     register_rest_route('adn-plugin/v1', '/users/new-order/update', array(
+//         'methods' => 'POST',
+//         'callback' => function (WP_REST_Request $request) use ($userController) {
+//             if ($request->get_method() !== 'POST') {
+//                 return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
+//             }
+//             return $userController->updateNewOrder($request);
+//         },
+//         'permission_callback' => '__return_true',
+//     ));
+// });
+
 add_action('rest_api_init', function () use ($userController) {
     register_rest_route('adn-plugin/v1', '/users/view/(?P<id>\d+)', array(
         'methods' => 'GET',
@@ -80,6 +93,19 @@ add_action('rest_api_init', function () use ($userController) {
             $id = $request->get_param('id');
             $user = $userController->getUserId($id);
             return new WP_REST_Response($user, 200);
+        },
+        'permission_callback' => '__return_true',
+    ));
+});
+
+add_action('rest_api_init', function () use ($userController) {
+    register_rest_route('adn-plugin/v1', '/userNewOrder/update', array(
+        'methods' => 'POST',
+        'callback' => function (WP_REST_Request $request) use ($userController) {
+            if ($request->get_method() !== 'POST') {
+                return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
+            }
+            return $userController->update($request);
         },
         'permission_callback' => '__return_true',
     ));
@@ -203,9 +229,10 @@ add_shortcode('auth-email', array($authController, 'emailShow'));
 add_shortcode('auth-forgot-password', array($authController, 'forgotPasswordShow'));
 add_shortcode('auth-login', array($authController, 'show'));
 add_shortcode('user-perfil', array($userController, 'show'));
-add_shortcode('register-user', array($userController, 'signinUser'));
-add_shortcode('register-user-related', array($userRelatedController, 'show'));
+add_shortcode('user-create', array($userController, 'signinUserShow'));
+add_shortcode('user-new-order', array($userController, 'newOrderUserShow'));
+add_shortcode('user-create-related', array($userRelatedController, 'show'));
 add_shortcode('user-training', array($trainingController, 'show'));
-add_shortcode('user-training-choice', array($trainingController, 'showChoice'));
+add_shortcode('user-training-choice', array($trainingController, 'choiceShow'));
 add_shortcode('user-myTraining', array($myTrainingController, 'show'));
 add_shortcode('dashboard', array($dashboardController, 'show'));

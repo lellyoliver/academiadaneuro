@@ -7,9 +7,7 @@ class MetaCustomTraining
     public function __construct()
     {
         $this->fields = [
-            "Título Geral" => "titleTraining",
-            "Fale mais sobre o treinamento" => "textTraining",
-            "URL Video" => "videoTraining",
+            "Fale um pouco mais sobre esse treinamento" => "textTraining",
             "URL Ressonância Neural" => "neuralResonance",
             "URL Respiração Neural" => "neuralBreathing",
             "URL Estímulo cognitivo" => "cognitiveStimulation",

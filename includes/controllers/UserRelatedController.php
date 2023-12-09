@@ -142,12 +142,6 @@ class UserRelatedController
             exit;
         }
 
-        $userExpired = $this->userExpired();
-
-        if(!$userExpired[0]["status"]){
-            wp_redirect(site_url('/meu-perfil', 'https'));
-            exit;
-        }
         $expired = $this->userExpiredData();
         $listUser = $this->getListRelated();
         $getUser = $this->getListedUserRelated();
@@ -208,8 +202,4 @@ class UserRelatedController
         return $this->userRelatedService->userExpiredData();
     }
 
-    public function userExpired()
-    {
-        return $this->userService->userExpiredData();
-    }
 }

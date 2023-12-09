@@ -64,7 +64,7 @@ class UserModel
         $email = sanitize_text_field($user_data['email']);
 
         // Construa o link de confirmação com o token
-        $confirmation_link = 'https://lellyoliver.com.br/academiadaneurociencia/email-confirmation?token=' . $confirmation_token . '&key=' . $user_id;
+        $confirmation_link = site_url('', 'https') . 'academiadaneurociencia/email-confirmation?token=' . $confirmation_token . '&key=' . $user_id;
 
         // Construa o conteúdo do e-mail
         $subject = 'Confirmação de E-mail';
@@ -102,7 +102,7 @@ class UserModel
     {
 
         $token = sanitize_text_field($password);
-        
+
         wp_set_password($token, $user_id);
         wp_set_auth_cookie($user_id);
 
@@ -118,6 +118,44 @@ class UserModel
 
         return $user_updated;
     }
+
+    // public function updateUserNewOrder($name, $billing_data, $email, $password, $user_id)
+    // {
+    //     global $wpdb;
+    //     $user_name = $this->textProcessor->sanitizeText($billing_data);
+    //     $token = sanitize_text_field($password);
+
+    //     wp_set_password($token, $user_id);
+    //     wp_set_auth_cookie($user_id);
+
+    //     $userdata = array(
+    //         'ID' => $user_id,
+    //         'user_email' => sanitize_email($email),
+    //         'display_name' => sanitize_text_field($name),
+    //         'nickname' => sanitize_text_field($name),
+    //         'first_name' => sanitize_text_field($name),
+    //     );
+
+    //     $user_updated = wp_update_user($userdata);
+
+    //     $wpdb->update(
+    //         $wpdb->users,
+    //         array('user_login' => $new_user_login),
+    //         array('ID' => $user_id),
+    //         array('%s'),
+    //         array('%d')
+    //     );
+
+    //     if (!is_wp_error($user_updated)) {
+    //         $meta_key = $wpdb->prefix . 'capabilities';
+    //         $existing_meta = get_user_meta($user_id, $meta_key, true);
+    //         $new_meta = str_replace('coachingRelation', 'training', $existing_meta);
+
+    //         update_user_meta($user_id, $meta_key, $new_meta);
+    //     }
+
+    //     return $user_updated;
+    // }
 
     /**
      * Update user meta fields in WordPress database.
@@ -160,7 +198,6 @@ class UserModel
             'billing_state' => $user->billing_state,
             'billing_city' => $user->billing_city,
             'billing_avatar' => wp_get_attachment_image_url($user->billing_avatar, ''),
-            'user_pass' => $user->user_pass,
         );
 
         return $user_data;
@@ -313,4 +350,20 @@ class UserModel
             }
         }
     }
+
+    // public function deleteUserMetaEntries($user_id)
+    // {
+    //     global $wpdb;
+
+    //     // Excluir a meta 'connected_user'
+    //     $connected_user_meta_key = 'connected_user';
+    //     $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->usermeta WHERE user_id = %d AND meta_key = %s", $user_id, $connected_user_meta_key));
+
+    //     // Excluir a meta '_user_expired'
+
+    //     $user_expired_meta_key = $wpdb->get_var($wpdb->prepare("SELECT meta_key FROM $wpdb->usermeta WHERE user_id = %d AND meta_key LIKE %s", $user_id, $wpdb->esc_like("$user_id_user_expired")));
+
+    //     return $user_expired_meta_key;
+
+    // }
 }

@@ -1,17 +1,19 @@
 <?php
 class CreatePages
 {
-    private function createPages()
+    public function createPages()
     {
         $pages = array(
             'dashboard' => 'Dashboard',
             'meus-treinamentos' => 'Meus Treinamentos',
             'meus-pacientes' => 'Meus Pacientes',
             'meu-perfil' => 'Meu Perfil',
+            'novo-treinamento' => 'Novo Treinamento',
+            'new-order' => 'Solicitação de Novo Plano',
+            'forgot-password' => 'Esqueci Minha Senha',
             'register' => 'Register',
             'email-confirmation' => 'Email Confirmation',
             'login' => 'Login',
-            'novo-treinamento' => 'Novo Treinamento',
         );
 
         foreach ($pages as $slug => $title) {

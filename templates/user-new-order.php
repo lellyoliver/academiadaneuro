@@ -4,4 +4,4 @@
  */
 include_once plugin_dir_path(__FILE__) . 'header-signin.php';
 
-echo do_shortcode("[user-create]");
+echo do_shortcode("[user-new-order]");

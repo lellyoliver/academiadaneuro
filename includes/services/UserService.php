@@ -37,6 +37,11 @@ class UserService
         return $this->userModel->updateUser($name, $email, $password, $user_id);
     }
 
+    // public function updateUserNewOrder($name, $billing_data, $email, $password, $user_id)
+    // {
+    //     return $this->userModel->updateUserNewOrder($name, $billing_data, $email, $password, $user_id);
+    // }
+
     /**
      * Update user meta fields in WordPress database.
      *
@@ -74,7 +79,12 @@ class UserService
     {
         return $this->userModel->userExpiredData();
     }
-    public function getUserExpired(){
+    public function getUserExpired()
+    {
         return $this->userModel->getUserExpired();
     }
+    // public function deleteUserMetaEntries($user_id)
+    // {
+    //     return $this->userModel->deleteUserMetaEntries($user_id);
+    // }
 }

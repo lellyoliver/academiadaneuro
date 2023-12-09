@@ -150,6 +150,7 @@ function viewTraining() {
     const audioPlayer = document.getElementById('audioPlayer');
     const videoPlayer__2 = document.getElementById('videoPlayer');
     const gameplay = document.getElementById('gameplay');
+    const textTraining = document.getElementById('textTraining');
 
     fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/myTraining/view/${postID}`)
         .then(response => response.json())
@@ -159,7 +160,7 @@ function viewTraining() {
                 audioPlayer.src = data.neuralResonance;
                 videoPlayer__2.src = data.neuralBreathing;
                 gameplay.href = data.cognitiveStimulation;
-
+                textTraining.textContent = data.textTraining;
             } else {
                 console.error('Áudio não encontrado');
             }

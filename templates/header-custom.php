@@ -4,6 +4,7 @@
 <head>
     <meta charset="<?php bloginfo('charset');?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#00a9e7" />
     <?php wp_head();?>
 </head>
 
@@ -26,14 +27,14 @@ $allowed_roles_2 = ['coach', 'health-pro', 'administrator'];
 
     <div id="wrapper">
         <header id="header-home">
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light bg-header">
                 <div class="container">
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <a class="navbar-brand mx-auto" href="#">
-                        <img src="https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/08/logo-ADC_01.svg"
+                        <img src="https://cdn.institutodeneurociencia.com.br/image/logo-vertical-branco.svg"
                             alt="Logo">
                     </a>
                     <div class="collapse navbar-collapse" id="navbarNav">
@@ -41,7 +42,7 @@ $allowed_roles_2 = ['coach', 'health-pro', 'administrator'];
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item display-mobile mb-5">
                                 <a class="nav-link">
-                                    <img src="https://lellyoliver.com.br/academiadaneurociencia/wp-content/uploads/2023/08/logo-ADC_01.svg"
+                                    <img src="https://cdn.institutodeneurociencia.com.br/image/logo-vertical.svg"
                                         alt="Logo" width="150">
                                 </a>
                             </li>
@@ -99,8 +100,7 @@ $allowed_roles_2 = ['coach', 'health-pro', 'administrator'];
             </nav>
         </header>
 
-        <main id="main" class="container"
-            <?php if (isset($navbar_position) && 'fixed_top' === $navbar_position): echo ' style="padding-top: 0px;"';elseif (isset($navbar_position) && 'fixed_bottom' === $navbar_position): echo ' style="padding-bottom: 0px;"';endif;?>>
+        <main id="main-custom" class="container">
             <?php
 // If Single or Archive (Category, Tag, Author or a Date based page).
 if (is_single()):

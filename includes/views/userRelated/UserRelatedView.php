@@ -5,7 +5,7 @@
                 <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0">
                     <?php echo esc_html('Meus Pacientes'); ?>
                 </h6>
-                <a role="button" class="btn btn-secondary btn-sm display-desktop" data-bs-toggle="offcanvas"
+                <a role="button" class="btn btn-3 btn-sm display-desktop" data-bs-toggle="offcanvas"
                     data-bs-target="#viewCreateRelated" id="btn_user"><i class="fa-solid fa-user-plus"></i>
                 </a>
             </div>
@@ -38,9 +38,9 @@
                                 foreach ($expired as $expireds) {
                                     if($expireds['user_related'] == $getUsers['ID']){
                                         if($expireds['status']){
-                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="em dia" class="fa-solid fa-circle-check color-success" style="font-size:16px;"></i>';
+                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="em dia" class="fa-solid fa-circle-check check__mobile color-success" style="font-size:16px;"></i>';
                                         }else{
-                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="em atraso" class="fa-solid fa-triangle-exclamation color-danger" style="font-size:16px;"></i>';
+                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="em atraso" class="fa-solid fa-triangle-exclamation check__mobile color-danger" style="font-size:16px;"></i>';
                                         }
                                     }
                                 }
@@ -52,7 +52,7 @@
                 </tbody>
             </table>
             <div class="row m-0 m-auto mt-3 display-mobile">
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="offcanvas"
+                <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="offcanvas"
                     data-bs-target="#viewCreateRelated" id="btn_user"><i class="fa-solid fa-user-plus me-5"></i> Novo
                     Paciente
                 </button>
@@ -114,7 +114,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn" data-bs-dismiss="modal" id="cancel-create">Cancelar</button>
-                <button type="submit" class="btn btn-primary"><?php echo esc_html('Criar Usuário'); ?></button>
+                <button type="submit" class="btn btn-secondary"><?php echo esc_html('Criar Usuário'); ?></button>
             </div>
         </form>
     </div>
@@ -168,7 +168,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" id="deleteUser"><i class="fa-solid fa-trash"></i></button>
-                <button type="submit" class="btn btn-primary"
+                <button type="submit" class="btn btn-secondary"
                     id="updateUser"><?php echo esc_html('Atualizar'); ?></button>
             </div>
         </form>

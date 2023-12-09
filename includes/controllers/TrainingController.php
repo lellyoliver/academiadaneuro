@@ -4,20 +4,17 @@ require_once plugin_dir_path(__FILE__) . '../services/TrainingService.php';
 require_once plugin_dir_path(__FILE__) . '../services/UserRelatedService.php';
 require_once plugin_dir_path(__FILE__) . '../services/UserService.php';
 
-
 class TrainingController
 {
     private $trainingService;
     private $userRelatedService;
     private $userService;
 
-
     public function __construct()
     {
         $this->trainingService = new TrainingService();
         $this->userRelatedService = new UserRelatedService();
         $this->userService = new UserService();
-
 
     }
 
@@ -95,7 +92,7 @@ class TrainingController
         $fields = [
             'post_id' => $post_ids,
         ];
-        if(!empty($user_id) && !empty($post_ids) ){
+        if (!empty($user_id) && !empty($post_ids)) {
             $result = $this->trainingService->insertTrainingReplies($user_id, $fields);
         }
 
@@ -128,7 +125,7 @@ class TrainingController
         }
         $userExpired = $this->userExpired();
 
-        if(!$userExpired[0]["status"]){
+        if (!$userExpired[0]["status"]) {
             wp_redirect(site_url('/meu-perfil', 'https'));
             exit;
         }
@@ -141,7 +138,7 @@ class TrainingController
         return $output;
     }
 
-    public function showChoice()
+    public function choiceShow()
     {
 
         if (!is_user_logged_in()) {
@@ -150,10 +147,12 @@ class TrainingController
         }
 
         $userExpired = $this->userExpired();
-
-        if(!$userExpired[0]["status"]){
-            wp_redirect(site_url('/meu-perfil', 'https'));
-            exit;
+        
+        if ($this->roleRegistered()) {
+            if (!$userExpired[0]["status"]) {
+                wp_redirect(site_url('/meu-perfil', 'https'));
+                exit;
+            }
         }
 
         ob_start();
@@ -192,10 +191,20 @@ class TrainingController
         $trainings = $this->trainingService->getTrainings($categories);
         return $trainings;
     }
-    
+
     public function userExpired()
     {
         return $this->userService->userExpiredData();
+    }
+
+    public function roleRegistered()
+    {
+        $current_user = wp_get_current_user();
+        $allowed_roles_2 = ['training', 'coachingRelation'];
+        if (array_intersect($allowed_roles_2, $current_user->roles)) {
+            return true;
+        }
+        return false;
     }
 
 }

@@ -5,4 +5,4 @@
 
 include_once plugin_dir_path(__FILE__) . 'header-custom.php';
 
-echo do_shortcode("[register-user-related]");
+echo do_shortcode("[user-create-related]");

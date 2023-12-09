@@ -74,8 +74,8 @@ function updateUser() {
                     title: 'Deseja Atualizar?',
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#00a9e7',
+                    cancelButtonColor: '#dc3545',
                     confirmButtonText: 'Sim, Atualizar!',
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {

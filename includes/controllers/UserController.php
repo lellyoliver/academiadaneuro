@@ -79,7 +79,6 @@ class UserController
         $avatar_file = $request->get_file_params('avatar_file');
         $post_id = $request->get_param('post_id');
         $role = $request->get_param('role');
-        $role = $request->get_param('role');
 
         if (!empty($avatar_file)) {
             $avatar_id = $this->userService->handleAvatarUpload($avatar_file, $post_id);
@@ -120,6 +119,52 @@ class UserController
         return new WP_REST_Response($response, 500);
     }
 
+    /**
+     * Update user data based on the provided data.
+     *
+     * @param WP_REST_Request $request The REST request containing updated user data.
+     * @return WP_REST_Response The REST response with the result of the operation.
+     */
+    // public function updateNewOrder($request)
+    // {
+    //     $name = $request->get_param('name');
+    //     $phone = $request->get_param('phone');
+    //     $city = $request->get_param('city');
+    //     $email = $request->get_param('email');
+    //     $password = $request->get_param('user_pass');
+    //     $billing_data = $request->get_param('billing_data');
+    //     $user_id = $request->get_param('user_id');
+        
+    //     $meta_fields = [
+    //         'billing_first_name' => $name,
+    //         'billing_phone' => $phone,
+    //         'billing_city' => $city,
+    //     ];
+
+    //     $meta_delete = $this->userService->deleteUserMetaEntries($user_id);
+
+    //     $updated = $this->userService->updateUserNewOrder($name, $billing_data, $email, $password, $user_id);
+
+    //     $meta = $this->userService->updateMetaUser($meta_fields, $user_id);
+
+    //     if ($updated && $meta) {
+    //         $response = array(
+    //             'status' => 'sucesso',
+    //             'mensagem' => 'Usuário atualizado com sucesso',
+    //             'metas' => $meta,
+    //             'updated' => $updated,
+    //         );
+    //         return new WP_REST_Response($response, 200);
+    //     }
+
+    //     $response = array(
+    //         'status' => 'erro',
+    //         'mensagem' => 'Não foi possível atualizar o usuário',
+    //     );
+    //     return new WP_REST_Response($response, 500);
+    // }
+
+
     public function show()
     {
         $user_id = get_current_user_id();
@@ -139,7 +184,7 @@ class UserController
         return $output;
     }
 
-    public function signinUser()
+    public function signinUserShow()
     {
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/user/UserCreateView.php';
@@ -149,6 +194,15 @@ class UserController
 
     }
 
+    public function newOrderUserShow()
+    {
+        ob_start();
+        require_once plugin_dir_path(__FILE__) . '../views/user/UserNewOrderView.php';
+        $output = ob_get_contents();
+        ob_end_clean();
+        return $output;
+
+    }
     /**
      * Get user details by ID.
      *
@@ -173,5 +227,4 @@ class UserController
     public function getUserExpired(){
         return $this->userService->getUserExpired();
     }
-
 }

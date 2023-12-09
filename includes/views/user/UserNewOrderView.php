@@ -23,7 +23,7 @@
                         saúde
                     </h3>
                     <div class="mb-5"></div>
-                    <form id="form-create" method="post">
+                    <form id="form-update-new-order" method="post">
                         <div class="mb-3">
                             <span class="label-float">
                                 <input type="text" id="name" name="name" />
@@ -57,24 +57,6 @@
                                     <label for="phone"><?php echo esc_html__('Telefone'); ?></label>
                                 </span>
                             </div>
-                            <div class="mb-3 col-md-6">
-                                <span class="label-float label-select">
-                                    <select class="form-select" name="role" id="role">
-                                        <option selected><?php echo esc_html__('Selecione'); ?>
-                                        </option>
-                                        <option value="health-pro">
-                                            <?php echo esc_html__('Profissional da Saúde'); ?>
-                                        </option>
-                                        <option value="coach">
-                                            <?php echo esc_html__('Profissional da Educação'); ?>
-                                        </option>
-                                        <option value="training">
-                                            <?php echo esc_html__('Uso Pessoal'); ?></option>
-                                    </select>
-                                    <label for="role"
-                                        class="form-label"><?php echo esc_html__('Área de Atuação'); ?></label>
-                                </span>
-                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -86,20 +68,11 @@
                                 </p>
                             </span>
                         </div>
-                        <div class="mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="1" id="termsAndServices"
-                                    name="termsAndServices" />
-                                <label class="form-check-label" for="termsAndServices">
-                                    Eu aceito os <a href="#">termos</a> e <a href="#">serviços</a>
-                                </label>
-                            </div>
-                        </div>
                         <button type="submit"
-                            class="btn btn-lg btn-secondary col-12"><?php echo esc_html__('Começar Agora'); ?>
+                            class="btn btn-lg btn-secondary col-12"><?php echo esc_html__('Atualizar Cadastro'); ?>
                         </button>
                         <div class="mb-3"></div>
-                        <p class="mobile_text__footer">Já tem uma conta? <a href="<?php echo site_url('/login', 'https');?>">Faça o login!</a></p>
+                        <input type="hidden" name="user_id" id="userId" value="<?php echo get_current_user_id(); ?>">
                     </form>
                 </div>
                 <div class="mb-4"></div>

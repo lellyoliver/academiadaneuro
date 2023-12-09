@@ -88,3 +88,53 @@ function formatPhone(value) {
     }
     return value;
 }
+
+
+function authAnimate() {
+    const box = document.querySelector('.box-signin-text');
+    const box_2 = document.querySelector('.box-signin-text-2');
+
+    if (box && box_2) {
+        box.addEventListener('mousemove', function (e) {
+            let xPos = (e.clientX / window.innerWidth - 0.5) * 90;
+            let yPos = (e.clientY / window.innerHeight - 0.5) * 90;
+
+            this.style.transition = 'transform 0.2s ease-out';
+            this.style.transform = 'translate(' + xPos + 'px, ' + yPos + 'px)';
+        });
+
+        box.addEventListener('mouseleave', function () {
+            this.style.transition = 'transform 0.2s ease-in-out';
+            this.style.transform = 'translate(0, 0)';
+        });
+
+        box_2.addEventListener('mousemove', function (e) {
+            let xPos = (e.clientX / window.innerWidth - 0.5) * 90;
+            let yPos = (e.clientY / window.innerHeight - 0.5) * 90;
+
+            this.style.transition = 'transform 0.2s ease-out';
+            this.style.transform = 'translate(' + xPos + 'px, ' + yPos + 'px)';
+        });
+
+        box_2.addEventListener('mouseleave', function () {
+            this.style.transition = 'transform 0.2s ease-in-out';
+            this.style.transform = 'translate(0, 0)';
+        });
+    }
+
+}
+
+authAnimate();
+
+function activeLink() {
+    const currentURL = window.location.href;
+    const linkURL = document.querySelectorAll(".nav-link");
+    if (linkURL) {
+        linkURL.forEach(links => {
+            if (currentURL == links.href) {
+                links.classList.add("active-link");
+            }
+        });
+    }
+}
+activeLink();

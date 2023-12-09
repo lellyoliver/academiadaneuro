@@ -37,20 +37,16 @@ require_once plugin_dir_path(__FILE__) . 'includes/db.php';
 
 require_once plugin_dir_path(__FILE__) . 'includes/CreatePages.php';
 
-
-
 function adn_activate()
 {
     $dbCustom = new DBCustom();
     $createPages = new CreatePages();
-
     $createPages->createPages();
     $dbCustom->createTableTrainingReplies();
     $dbCustom->createTableTrainingProgress();
 }
 
 register_activation_hook(__FILE__, 'adn_activate');
-
 
 function adn_scripts()
 {
@@ -60,9 +56,16 @@ function adn_scripts()
     //Bootstrap
     wp_enqueue_script('bootstrapbundlejs', plugins_url('assets/lib/bootstrap/bootstrap.bundle.js', __FILE__), '5.0.2', true);
     wp_enqueue_script('popperjs', plugins_url('assets/lib/bootstrap/popper.min.js', __FILE__), '2.9.2', true);
-    
+
     if (is_page('register')) {
         wp_enqueue_script('usercreatejs', plugins_url('assets/js/users/user-create.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
+        wp_enqueue_script('userUtilsjs', plugins_url('assets/js/users/user-utils.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
+        wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
+        wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
+    }
+
+    if (is_page('new-order')) {
+        wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
         wp_enqueue_script('userUtilsjs', plugins_url('assets/js/users/user-utils.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
@@ -93,7 +96,7 @@ function adn_scripts()
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
     }
-    
+
     if (is_page('meu-perfil')) {
         wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
@@ -108,11 +111,21 @@ function adn_scripts()
 }
 add_action('wp_enqueue_scripts', 'adn_scripts');
 
+function roleRegistered()
+{
+    $current_user = wp_get_current_user();
+    $allowed_roles_2 = ['training', 'coachingRelation'];
+    if (array_intersect($allowed_roles_2, $current_user->roles)) {
+        return true;
+    }
+    return false;
+}
+
 /**
  * Templates
  */
 
-function adn_page_register_user_related($template)
+function adn_page_create_user_related($template)
 {
     if (is_page('meus-pacientes')) {
         $template_user_create_related = plugin_dir_path(__FILE__) . 'templates/user-create-related.php';
@@ -122,9 +135,9 @@ function adn_page_register_user_related($template)
     }
     return $template;
 }
-add_filter('page_template', 'adn_page_register_user_related');
+add_filter('page_template', 'adn_page_create_user_related');
 
-function adn_page_register_user($template)
+function adn_page_create_user($template)
 {
     if (is_page('register')) {
         $template_user_create = plugin_dir_path(__FILE__) . 'templates/user-create.php';
@@ -134,7 +147,19 @@ function adn_page_register_user($template)
     }
     return $template;
 }
-add_filter('page_template', 'adn_page_register_user');
+add_filter('page_template', 'adn_page_create_user');
+
+function adn_page_new_order_user($template)
+{
+    if (is_page('new-order')) {
+        $template_new_order_user = plugin_dir_path(__FILE__) . 'templates/user-new-order.php';
+        if (file_exists($template_new_order_user)) {
+            return $template_new_order_user;
+        }
+    }
+    return $template;
+}
+add_filter('page_template', 'adn_page_new_order_user');
 
 /**
  * Override template for user perfil.
@@ -276,22 +301,30 @@ function adn_training_single_blocked()
         }
     }
     if (is_user_logged_in()) {
-        if (!$userExpired[0]["status"]) {
-            if (is_singular('training')) {
-                wp_redirect(site_url('/login', 'https'));
+        if (roleRegistered()) {
+            if (!$userExpired[0]["status"]) {
+                if (is_singular('training')) {
+                    wp_redirect(site_url('/login', 'https'));
+                    exit;
+                }
+            } elseif (is_page('shop') || is_page('carrinho') || is_page('my-account')) {
+                wp_redirect(site_url('/meu-perfil', 'https'));
                 exit;
             }
-        } elseif (is_page('shop') || is_page('carrinho') || is_page('my-account')) {
-            wp_redirect(site_url('/login', 'https'));
+        }
+        if (is_home()) {
+            wp_redirect(site_url('/meu-perfil', 'https'));
             exit;
         }
+    } elseif (is_home()) {
+        wp_redirect(site_url('/login', 'https'));
+        exit;
     }
 
 }
 add_action('template_redirect', 'adn_training_single_blocked');
 
-
-function custom_login_redirect($redirect_to, $request, $user)
+function adn_custom_login_redirect($redirect_to, $request, $user)
 {
     if (is_a($user, 'WP_User')) {
         $user_roles = $user->roles;
@@ -304,7 +337,7 @@ function custom_login_redirect($redirect_to, $request, $user)
 
     return $redirect_to;
 }
-add_filter('login_redirect', 'custom_login_redirect', 10, 3);
+add_filter('login_redirect', 'adn_custom_login_redirect', 10, 3);
 
 function restrict_admin_access()
 {
@@ -319,8 +352,8 @@ function restrict_admin_access()
 }
 add_action('admin_init', 'restrict_admin_access');
 
-
-function adn_password_reset_notification($message, $user_login, $user_data) {
+function adn_password_reset_notification($message, $user_login, $user_data)
+{
     $message = '<div width="100%" style="font-family: Arial; padding:20px;">
         <div style="margin-top:10px;margin-bottom:10px;">
             <img src="" alt="logo-academia.png" title="Academia da neurociência"/>
@@ -354,7 +387,6 @@ add_filter('wp_password_change_notification_email', 'adn_password_reset_notifica
 /**
  * Woocomerce
  */
-
 
 function adn_custom__checkout($template, $template_name, $template_path)
 {
@@ -404,18 +436,18 @@ function adn_custom_checkout_user_fullfil($fields)
 }
 add_filter('woocommerce_checkout_fields', 'adn_custom_checkout_user_fullfil');
 
-// function alterar_status_pedido_cheque($order_id)
-// {
-//     if (!$order_id) {
-//         return;
-//     }
-//     $order = wc_get_order($order_id);
-//     if ($order->get_payment_method() === 'cheque') {
+function alterar_status_pedido_cheque($order_id)
+{
+    if (!$order_id) {
+        return;
+    }
+    $order = wc_get_order($order_id);
+    if ($order->get_payment_method() === 'cheque') {
 
-//         $order->update_status('completed');
-//     }
-// }
-// add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
+        $order->update_status('completed');
+    }
+}
+add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
 
 function adn_add_product_checkout()
 {
@@ -501,4 +533,3 @@ function check_and_enable_registration($order_id)
     }
 }
 add_action('woocommerce_order_status_completed', 'check_and_enable_registration');
-

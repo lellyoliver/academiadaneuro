@@ -83,8 +83,6 @@ function avatar() {
 
 avatar();
 
-
-
 function viewUser() {
   window.addEventListener('load', function () {
     const nameInput = document.getElementById('name');
@@ -97,14 +95,16 @@ function viewUser() {
     const CPF = document.getElementById('user_name');
     const userID = document.getElementById('userId');
     const avatar = document.getElementById('avatar-preview');
-    const passwordInput = document.getElementById('user_pass');
 
     fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users/view/${userID.value}`)
       .then(response => response.json())
       .then(data => {
-        CPF.innerHTML = data.user_login;
-        passwordInput.value = data.user_pass;
+        if (CPF) {
+          CPF.innerHTML = data.user_login;
+        }
+        if (avatar) {
         avatar.src = data.billing_avatar;
+        }
         nameInput.value = data.billing_first_name;
         emailInput.value = data.user_email;
         phoneInput.value = data.billing_phone;
@@ -119,6 +119,54 @@ function viewUser() {
       .catch(error => console.error('Erro ao buscar detalhes do usuário:', error));
   });
 }
+
+// function updateNewOrderUser() {
+//   const formUpdate = document.getElementById('form-update-new-order');
+//   const loading = document.getElementById('loading');
+//   if (formUpdate) {
+//     formUpdate.addEventListener('submit', (event) => {
+//       event.preventDefault();
+//       loading.style.display = '';
+//       Swal.fire({
+//         text: 'Deseja atualizar seu perfil?',
+//         icon: 'question',
+//         showCancelButton: true,
+//         confirmButtonColor: '#3085d6',
+//         cancelButtonColor: '#d33',
+//         confirmButtonText: 'Sim',
+//         cancelButtonText: 'Cancelar',
+//       }).then((result) => {
+//         if (result.isConfirmed) {
+//           const formData = new FormData(formUpdate);
+//           fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users/new-order/update', {
+//             method: 'POST',
+//             body: formData,
+//           })
+//             .then((response) => response.json())
+//             .then((data) => {
+//               if (data.status === 'sucesso') {
+//                 loading.style.display = 'none';
+//                 Swal.fire('Sucesso!', 'Perfil criado com sucesso.', 'success').then(() => {
+//                   // location.reload();
+//                 });
+//               } else {
+//                 loading.style.display = 'none';
+//                 Swal.fire('Erro!', 'Erro ao criar um usuário: ' + data.mensagem, 'error');
+//               }
+//             })
+//             .catch((error) => {
+//               // Ocultar o loading em caso de erro
+//               loading.style.display = 'none';
+
+//               console.error('Erro ao criar usuário:', error);
+//             });
+//         }
+//       });
+//     });
+//   }
+// }
+
+// updateNewOrderUser();
 
 
 // function deleteUser() {

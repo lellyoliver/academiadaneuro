@@ -89,6 +89,7 @@ function adn_scripts()
     }
 
     if (is_page('meus-pacientes')) {
+        wp_enqueue_script('jquery');
         wp_enqueue_style('bootstraptablemincss', plugins_url('assets/lib/bootstrap-table/bootstrap-table.min.css', __FILE__), array(), '1.22.1', false);
         wp_enqueue_script('bootstraptableminjs', plugins_url('assets/lib/bootstrap-table/bootstrap-table.min.js', __FILE__), '1.22.1', true);
         wp_enqueue_script('userrelatedutilsjs', plugins_url('assets/js/users-related/user-related-utils.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);

@@ -17,7 +17,7 @@
                         <th data-field="display_name">Nome do Paciente</th>
                         <th data-field="user_email">E-mail</th>
                         <th data-field="description">Quadro Clinico</th>
-                        <th></th>
+                        <th data-field="status"></th>
                     </tr>
                 </thead>
                 <tbody>

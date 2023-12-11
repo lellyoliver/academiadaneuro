@@ -21,7 +21,7 @@ function updateUser() {
           const formData = new FormData(formUpdate);
           formData.append('avatar_file', inputFile.files[0]);
 
-          fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users/update', {
+          fetch('/wp-json/adn-plugin/v1/users/update', {
             method: 'POST',
             body: formData,
           })
@@ -96,7 +96,7 @@ function viewUser() {
     const userID = document.getElementById('userId');
     const avatar = document.getElementById('avatar-preview');
 
-    fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users/view/${userID.value}`)
+    fetch(`/wp-json/adn-plugin/v1/users/view/${userID.value}`)
       .then(response => response.json())
       .then(data => {
         if (CPF) {
@@ -138,7 +138,7 @@ function viewUser() {
 //       }).then((result) => {
 //         if (result.isConfirmed) {
 //           const formData = new FormData(formUpdate);
-//           fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users/new-order/update', {
+//           fetch('/wp-json/adn-plugin/v1/users/new-order/update', {
 //             method: 'POST',
 //             body: formData,
 //           })
@@ -198,7 +198,7 @@ function viewUser() {
 //         confirmDelete.addEventListener("click", (event) => {
 //           event.preventDefault();
 //           const userIdInput = document.getElementById('userId')
-//           fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users-related/delete/userDelete=${userIdInput.value}`)
+//           fetch(`/wp-json/adn-plugin/v1/users-related/delete/userDelete=${userIdInput.value}`)
 //             .then(response => response.json())
 //             .then(data => {
 //               location.reload()

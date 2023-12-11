@@ -47,7 +47,7 @@ function createUser() {
           return;
         }
   
-        fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users', {
+        fetch('/wp-json/adn-plugin/v1/users', {
           method: 'POST',
           body: formData,
         })

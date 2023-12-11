@@ -34,7 +34,7 @@ function createTraining() {
                     const concentration = formData.getAll('concentration');
                     const userID = formData.get('user_id');
 
-                    fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/training', {
+                    fetch('/wp-json/adn-plugin/v1/training', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -101,7 +101,7 @@ function createTrainingChoice() {
                     const postIDs = formData.getAll('post_id[]'); // Use 'post_id[]' para pegar todos os valores em um array
                     const userID = formData.get('user_id');
 
-                    fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/trainingChoice', {
+                    fetch('/wp-json/adn-plugin/v1/trainingChoice', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

@@ -26,7 +26,7 @@ function createUser() {
                         const connectedUser = formData.get('connected_user');
                         const description = formData.get('description');
 
-                        fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users-related', {
+                        fetch('/wp-json/adn-plugin/v1/users-related', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ function updateUser() {
                         const phoneUpdate = formData.get('phoneUpdate');
                         const descriptionUpdate = formData.get('descriptionUpdate');
 
-                        fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users-related/update', {
+                        fetch('/wp-json/adn-plugin/v1/users-related/update', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -139,7 +139,7 @@ function viewUser() {
             btn.addEventListener('click', (event) => {
                 event.preventDefault();
                 const dataTarget = btn.getAttribute("data-userid");
-                fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users-related/view/${dataTarget}`, {
+                fetch(`/wp-json/adn-plugin/v1/users-related/view/${dataTarget}`, {
                     'Content-type': 'application/json',
                 })
                     .then(response => response.json())
@@ -176,7 +176,7 @@ function deleteUser() {
                 }).then((result) => {
                     if (result.isConfirmed) {
                         const userIdInput = document.getElementById('userId');
-                        fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users-related/delete/userDelete=${userIdInput.value}`)
+                        fetch(`/wp-json/adn-plugin/v1/users-related/delete/userDelete=${userIdInput.value}`)
                             .then(response => response.json())
                             .then(data => {
                                 location.reload();

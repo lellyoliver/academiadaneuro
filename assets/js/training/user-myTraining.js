@@ -22,7 +22,7 @@ function saveTraining() {
     const updateProgress = document.getElementById('updateProgress');
 
 
-    fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/myTrainingProgress', {
+    fetch('/wp-json/adn-plugin/v1/myTrainingProgress', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ function viewTraining() {
     const gameplay = document.getElementById('gameplay');
     const textTraining = document.getElementById('textTraining');
 
-    fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/myTraining/view/${postID}`)
+    fetch(`/wp-json/adn-plugin/v1/myTraining/view/${postID}`)
         .then(response => response.json())
         .then(data => {
             if (data) {

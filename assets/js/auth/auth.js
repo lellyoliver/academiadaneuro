@@ -7,7 +7,7 @@ function authLogin() {
       const cpf = formData.get('cpf');
       const password = formData.get('password');
 
-      fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/auth/login', {
+      fetch('/wp-json/adn-plugin/v1/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -43,7 +43,7 @@ function confirmEmail() {
       const tokenAuth = formData.get('token');
       const userIDAuth = formData.get('user_id');
 
-      fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/auth/email-confirmation', {
+      fetch('/wp-json/adn-plugin/v1/auth/email-confirmation', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ function forgotPassword() {
       const tokenAuth = formData.get('data_register');
       const div = document.getElementById("forgot-password");
 
-      fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/auth/forgot-password', {
+      fetch('/wp-json/adn-plugin/v1/auth/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

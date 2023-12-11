@@ -1364,3 +1364,7 @@ select#installments {
 .form-check-label {
   font-size: 14px !important;
 }
+
+.bg-signin-photo-2{
+height:100%;
+}

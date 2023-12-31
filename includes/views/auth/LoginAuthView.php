@@ -27,6 +27,7 @@
                             <span class="label-float">
                                 <input type="password" id="user-password" name="user_password" />
                                 <label for="password"><?php echo esc_html__('Senha'); ?></label>
+                                <i class="fa-solid fa-eye-slash" id="show-password"></i>
                             </span>
                         </div>
                         <button type="submit" name="submit"

@@ -16,7 +16,6 @@
  *
  * @var WC_Order $order
  */
-include_once plugin_dir_path(__FILE__) . '../header-custom.php';
 defined( 'ABSPATH' ) || exit;
 ?>
 

@@ -1,14 +1,13 @@
 <?php
-class PostType
+class TrainingPostType
 {
     public function __construct()
     {
-        add_action('init', array($this, 'TrainingPostType'));
-        add_action('init', array($this, 'BrainGroupTaxonomy'));
-
+        add_action('init', array($this, 'trainingPostType'));
+        add_action('init', array($this, 'brainGroupTaxonomy'));
     }
 
-    public function TrainingPostType()
+    public function trainingPostType()
     {
         $labels = array(
             'name' => _x('Treinamentos', 'post type general name', 'adn-plugin'),
@@ -22,9 +21,9 @@ class PostType
             'view_item' => __('Ver Treinamento', 'adn-plugin'),
             'all_items' => __('Todos Treinamentos', 'adn-plugin'),
             'search_items' => __('Procurar Treinamento', 'adn-plugin'),
-            'parent_item_colon' => __('Parent Training Questions:', 'adn-plugin'),
-            'not_found' => __('No training questions found.', 'adn-plugin'),
-            'not_found_in_trash' => __('No training questions found in Trash.', 'adn-plugin'),
+            'parent_item_colon' => __('Questões sobre treinamento:', 'adn-plugin'),
+            'not_found' => __('Nenhum Treinamento encontrada.', 'adn-plugin'),
+            'not_found_in_trash' => __('Nenhuma pergunta de treinamento encontrada na Lixeira.', 'adn-plugin'),
         );
 
         $args = array(
@@ -47,7 +46,7 @@ class PostType
         register_post_type('training', $args);
     }
 
-    public function BrainGroupTaxonomy()
+    public function brainGroupTaxonomy()
     {
         $labels = array(
             'name' => _x('Categorias Cerebral', 'taxonomy general name', 'adn-plugin'),
@@ -81,4 +80,4 @@ class PostType
     }
 
 }
-new PostType();
+new TrainingPostType();

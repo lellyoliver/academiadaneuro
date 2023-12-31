@@ -1,17 +1,5 @@
-function showSaveConfirmationDialog() {
-    Swal.fire({
-        icon: 'warning',
-        title: 'Progresso',
-        text: 'Deseja salvar seu progresso?',
-        confirmButtonText: '<i class="fa fa-thumbs-up"></i> Salvar',
-    }).then((result) => {
-        if (result.isConfirmed) {
-            saveTraining();
-        }
-    });
-}
-
 function saveTraining() {
+
     const dhEnter = document.getElementById('DH_enter');
     const dhExit = document.getElementById('DH_exit');
     const userID = document.getElementById('user_id');
@@ -21,6 +9,17 @@ function saveTraining() {
     const neuralBreathing = document.getElementById('neuralBreathing');
     const updateProgress = document.getElementById('updateProgress');
 
+    const gameplayStatusText = document.getElementById('gameplay').innerText.trim();
+
+    if (gameplayStatusText.toLowerCase() === 'pausar') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Não é possível salvar o treinamento enquanto o jogo estiver pausado.',
+            confirmButtonColor: '#d33',
+        });
+        return;
+    }
 
     fetch('/wp-json/adn-plugin/v1/myTrainingProgress', {
         method: 'POST',
@@ -40,10 +39,23 @@ function saveTraining() {
     })
         .then((response) => response.json())
         .then((data) => {
+            loading.style.display = 'none';
             if (data.status === 'sucesso') {
-                location.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso',
+                    text: 'Treinamento salvo com sucesso.',
+                    confirmButtonColor: '#28a745',
+                }).then(() => {
+                });
             } else {
-                alert('Erro ao salvar o treinamento: ' + data.mensagem);
+                loading.style.display = 'none';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro',
+                    text: 'Erro ao salvar o treinamento: ' + data.mensagem,
+                    confirmButtonColor: '#d33',
+                });
             }
         })
         .catch((error) => {
@@ -55,9 +67,11 @@ const btnSave = document.getElementById('saveTraining');
 if (btnSave) {
     btnSave.addEventListener('click', (event) => {
         event.preventDefault();
-        showSaveConfirmationDialog();
+        loading.style.display = '';
+        saveTraining();
     });
 }
+
 
 document.addEventListener('DOMContentLoaded', function () {
     cronometroExit('DH_exit');
@@ -156,13 +170,12 @@ function viewTraining() {
         .then(response => response.json())
         .then(data => {
             if (data) {
-
+                textTraining.innerHTML = data.textTraining;
                 audioPlayer.src = data.neuralResonance;
                 videoPlayer__2.src = data.neuralBreathing;
                 gameplay.href = data.cognitiveStimulation;
-                textTraining.textContent = data.textTraining;
             } else {
-                console.error('Áudio não encontrado');
+                console.error('Nenhuma informação encontrada');
             }
         })
         .catch(error => console.error('Erro ao recuperar dados', error));

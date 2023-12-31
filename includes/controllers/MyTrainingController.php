@@ -3,12 +3,10 @@
 require_once plugin_dir_path(__FILE__) . '../services/MyTrainingService.php';
 require_once plugin_dir_path(__FILE__) . '../services/UserService.php';
 
-
 class MyTrainingController
 {
     private $myTrainingService;
     private $userService;
-
 
     public function __construct()
     {
@@ -24,13 +22,13 @@ class MyTrainingController
         }
         $userExpired = $this->userExpired();
 
-        if($this->roleRegistered()){
-            if(!$userExpired[0]["status"]){
+        if ($this->roleRegistered()) {
+            if (!$userExpired[0]["status"]) {
                 wp_redirect(site_url('/meu-perfil', 'https'));
                 exit;
             }
         }
-        
+
         $trainings = $this->getMyTrainings();
         if (empty($trainings)) {
             wp_redirect(site_url('/novo-treinamento', 'https'));
@@ -145,13 +143,14 @@ class MyTrainingController
     {
         return $this->myTrainingService->getMetaTrainings($id);
     }
-    
+
     public function userExpired()
     {
         return $this->userService->userExpiredData();
     }
 
-    public function roleRegistered(){
+    public function roleRegistered()
+    {
         $current_user = wp_get_current_user();
         $allowed_roles_2 = ['training', 'coachingRelation'];
         if (array_intersect($allowed_roles_2, $current_user->roles)) {

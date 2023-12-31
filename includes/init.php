@@ -5,6 +5,9 @@ require_once plugin_dir_path(__FILE__) . 'controllers/MyTrainingController.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/TrainingController.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/UserController.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/UserRelatedController.php';
+require_once plugin_dir_path(__FILE__) . 'controllers/CustomerSupportController.php';
+
+
 
 /**
  * Controllers
@@ -16,6 +19,7 @@ $myTrainingController = new MyTrainingController();
 $trainingController = new TrainingController();
 $userController = new UserController();
 $userRelatedController = new UserRelatedController();
+$customerSupportController = new CustomerSupportController();
 
 /**
  * Routes API
@@ -73,19 +77,6 @@ add_action('rest_api_init', function () use ($userController) {
     ));
 });
 
-// add_action('rest_api_init', function () use ($userController) {
-//     register_rest_route('adn-plugin/v1', '/users/new-order/update', array(
-//         'methods' => 'POST',
-//         'callback' => function (WP_REST_Request $request) use ($userController) {
-//             if ($request->get_method() !== 'POST') {
-//                 return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
-//             }
-//             return $userController->updateNewOrder($request);
-//         },
-//         'permission_callback' => '__return_true',
-//     ));
-// });
-
 add_action('rest_api_init', function () use ($userController) {
     register_rest_route('adn-plugin/v1', '/users/view/(?P<id>\d+)', array(
         'methods' => 'GET',
@@ -97,6 +88,20 @@ add_action('rest_api_init', function () use ($userController) {
         'permission_callback' => '__return_true',
     ));
 });
+
+add_action('rest_api_init', function () use ($userController) {
+    register_rest_route('adn-plugin/v1', '/users/refunded', array(
+        'methods' => 'POST',
+        'callback' => function (WP_REST_Request $request) use ($userController) {
+            if ($request->get_method() !== 'POST') {
+                return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
+            }
+            return $userController->orderRefunded($request);
+        },
+        'permission_callback' => '__return_true',
+    ));
+});
+
 
 add_action('rest_api_init', function () use ($userController) {
     register_rest_route('adn-plugin/v1', '/userNewOrder/update', array(
@@ -225,6 +230,7 @@ add_action('rest_api_init', function () use ($myTrainingController) {
     ));
 });
 
+
 add_shortcode('auth-email', array($authController, 'emailShow'));
 add_shortcode('auth-forgot-password', array($authController, 'forgotPasswordShow'));
 add_shortcode('auth-login', array($authController, 'show'));
@@ -236,3 +242,4 @@ add_shortcode('user-training', array($trainingController, 'show'));
 add_shortcode('user-training-choice', array($trainingController, 'choiceShow'));
 add_shortcode('user-myTraining', array($myTrainingController, 'show'));
 add_shortcode('dashboard', array($dashboardController, 'show'));
+add_shortcode('customer-support', array($customerSupportController, 'show'));

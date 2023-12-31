@@ -2,14 +2,17 @@
     <div class="container padding_container__card">
         <div class="card-body">
             <div class="d-flex align-items-center align-self-center">
-                    <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0">
-                        <?php echo esc_html('Pacientes em Progresso'); ?>
-                    </h6>
-                    <a class="btn btn-sm btn-3"
-                        href="<?php echo site_url('/novo-treinamento', 'https')?>"> <i class="fa-solid fa-clipboard-list"></i></a>
+                <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0">
+                    <?php echo esc_html('Pacientes em Progresso'); ?>
+                </h6>
+                <a class="btn btn-sm btn-3" href="<?php echo site_url('/novo-treinamento', 'https')?>"> <i
+                        class="fa-solid fa-clipboard-list"></i></a>
             </div>
             <br>
             <div class="accordion" id="accordionUser">
+                <?php if (empty($patients)): ?>
+                <p class="fw-normal">Sem pacientes em progresso</p>
+                <?php else: ?>
                 <?php foreach ($patients as $patient): ?>
                 <?php if (isset($progress[$patient->ID])): ?>
                 <div class="accordion-item">
@@ -48,11 +51,11 @@
                                         aria-valuemin="0"
                                         aria-valuemax="100"><?php echo $progress[$patient->ID]['neuralResonance']; ?>%</span>
                                 </span>
-                                <span class="accordion-icon"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-cognitiveStimulation.svg
-			                                    " alt="icon ressonancia" srcset="https://cdn.institutodeneurociencia.com.br/image/icon-cognitiveStimulation.svg
+                                <span class="accordion-icon"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-cognitiveStimulation_2.svg
+			                                    " alt="icon ressonancia" srcset="https://cdn.institutodeneurociencia.com.br/image/icon-cognitiveStimulation_2.svg
 			                                    " width="25"></span>
                                 <span class="progress" style="width: 100%;">
-                                    <span class="progress-bar progress-bar-yellow" role="progressbar"
+                                    <span class="progress-bar progress-bar-green" role="progressbar"
                                         style="width: <?php echo $progress[$patient->ID]['cognitiveStimulation']; ?>%;"
                                         aria-valuenow="<?php echo $progress[$patient->ID]['cognitiveStimulation']; ?>"
                                         aria-valuemin="0"
@@ -62,7 +65,7 @@
 			                                " alt="icon ressonancia" srcset="https://cdn.institutodeneurociencia.com.br/image/icon-neuralBreathing.svg
 			                                " width="25"></span>
                                 <span class="progress" style="width: 100%;">
-                                    <span class="progress-bar progress-bar-green" role="progressbar"
+                                    <span class="progress-bar progress-bar-blue" role="progressbar"
                                         style="width: <?php echo $progress[$patient->ID]['neuralBreathing']; ?>%;"
                                         aria-valuenow="<?php echo $progress[$patient->ID]['neuralBreathing']; ?>"
                                         aria-valuemin="0"
@@ -72,8 +75,12 @@
                         </div>
                     </div>
                 </div>
+                <?php else: ?>
+                    <p>Sem progressos para exibir</p>
                 <?php endif;?>
+                
                 <?php endforeach;?>
+                <?php endif; ?>
             </div>
         </div>
     </div>

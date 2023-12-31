@@ -18,7 +18,7 @@ function createUser() {
         const termsAndServices = formData.get('termsAndServices');
   
         // Verifique se algum campo está vazio
-        if (!name || !email || !billing_data || !city || !phone || !password || !role || !termsAndServices === "1") {
+        if (!name || !email || !billing_data || !city || !phone || !password || !role) {
           const missingFields = [];
           if (!name) missingFields.push('Nome Completo');
           if (!billing_data) missingFields.push('CNPJ ou CPF');
@@ -27,7 +27,10 @@ function createUser() {
           if (!phone) missingFields.push('Telefone');
           if (!role) missingFields.push('Área de Atuação');
           if (!password) missingFields.push('Senha');
-          if (!termsAndServices) missingFields.push('Termos e Serviços');
+
+          if (termsAndServices !== "1") {
+            missingFields.push('Termos e Serviços');
+          }
   
           Swal.fire({
             icon: 'error',

@@ -120,51 +120,10 @@ class UserController
     }
 
     /**
-     * Update user data based on the provided data.
+     * Display user details and related information.
      *
-     * @param WP_REST_Request $request The REST request containing updated user data.
-     * @return WP_REST_Response The REST response with the result of the operation.
+     * @return string HTML output for displaying user details.
      */
-    // public function updateNewOrder($request)
-    // {
-    //     $name = $request->get_param('name');
-    //     $phone = $request->get_param('phone');
-    //     $city = $request->get_param('city');
-    //     $email = $request->get_param('email');
-    //     $password = $request->get_param('user_pass');
-    //     $billing_data = $request->get_param('billing_data');
-    //     $user_id = $request->get_param('user_id');
-        
-    //     $meta_fields = [
-    //         'billing_first_name' => $name,
-    //         'billing_phone' => $phone,
-    //         'billing_city' => $city,
-    //     ];
-
-    //     $meta_delete = $this->userService->deleteUserMetaEntries($user_id);
-
-    //     $updated = $this->userService->updateUserNewOrder($name, $billing_data, $email, $password, $user_id);
-
-    //     $meta = $this->userService->updateMetaUser($meta_fields, $user_id);
-
-    //     if ($updated && $meta) {
-    //         $response = array(
-    //             'status' => 'sucesso',
-    //             'mensagem' => 'Usuário atualizado com sucesso',
-    //             'metas' => $meta,
-    //             'updated' => $updated,
-    //         );
-    //         return new WP_REST_Response($response, 200);
-    //     }
-
-    //     $response = array(
-    //         'status' => 'erro',
-    //         'mensagem' => 'Não foi possível atualizar o usuário',
-    //     );
-    //     return new WP_REST_Response($response, 500);
-    // }
-
-
     public function show()
     {
         $user_id = get_current_user_id();
@@ -184,6 +143,11 @@ class UserController
         return $output;
     }
 
+    /**
+     * Display the user sign-in form.
+     *
+     * @return string HTML output for the user sign-in form.
+     */
     public function signinUserShow()
     {
         ob_start();
@@ -194,15 +158,6 @@ class UserController
 
     }
 
-    public function newOrderUserShow()
-    {
-        ob_start();
-        require_once plugin_dir_path(__FILE__) . '../views/user/UserNewOrderView.php';
-        $output = ob_get_contents();
-        ob_end_clean();
-        return $output;
-
-    }
     /**
      * Get user details by ID.
      *
@@ -214,17 +169,59 @@ class UserController
         return $user = $this->userService->getUserById($id);
     }
 
+    /**
+     * Get the latest orders for a user.
+     *
+     * @param int $id The ID of the user.
+     * @return mixed The latest orders for the user.
+     */
     public function getOrderId($id)
     {
         return $user = $this->userService->getLatestOrders($id);
     }
 
+    /**
+     * Retrieve expired user data.
+     *
+     * @return mixed Expired user data.
+     */
     public function userExpiredData()
     {
         return $this->userService->userExpiredData();
     }
 
-    public function getUserExpired(){
+    /**
+     * Get users with expired data.
+     *
+     * @return mixed Users with expired data.
+     */
+    public function getUserExpired()
+    {
         return $this->userService->getUserExpired();
     }
+
+
+    public function orderRefunded($request){
+
+        $order_id = $request->get_param('order_id');
+
+        $result = $this->userService->orderRefunded($order_id);
+
+
+        if ($result) {
+            $response = array(
+                'status' => 'sucesso',
+                'mensagem' => 'Pedido de reembolso foi enviado.',
+            );
+
+            return new WP_REST_Response($response, 200);
+        }
+
+        $response = array(
+            'status' => 'erro',
+            'mensagem' => 'Não foi possível fazer o reembolso.',
+        );
+        return new WP_REST_Response($response, 500);
+    }
+
 }

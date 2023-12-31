@@ -1,4 +1,18 @@
 window.addEventListener("DOMContentLoaded", function () {
+
+    function activeLink() {
+        const currentURL = window.location.href;
+        const linkURL = document.querySelectorAll(".nav-link");
+        if (linkURL) {
+            linkURL.forEach(links => {
+                if (currentURL == links.href) {
+                    links.classList.add("active-link");
+                }
+            });
+        }
+    }
+    activeLink();
+    
     function offcanvasNav() {
         const offcanvasContent = document.getElementById('navbarNav');
 
@@ -125,16 +139,3 @@ function authAnimate() {
 }
 
 authAnimate();
-
-function activeLink() {
-    const currentURL = window.location.href;
-    const linkURL = document.querySelectorAll(".nav-link");
-    if (linkURL) {
-        linkURL.forEach(links => {
-            if (currentURL == links.href) {
-                links.classList.add("active-link");
-            }
-        });
-    }
-}
-activeLink();

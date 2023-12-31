@@ -43,13 +43,17 @@ body {
 
 /**Dropdown**/
 .dropdown-menu[data-bs-popper] {
-  left: -112px !important;
+  left: -280px !important;
+}
+
+.dropdown-menu[data-bs-popper] {
+  width: 324px;
 }
 
 p,
 span {
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /**offcanvas**/
@@ -211,8 +215,8 @@ tr.view-user {
 }
 
 .page-item.active .page-link {
-  background-color: #ef4e23!important;
-  border-color: #ef4e23!important;
+  background-color: #ef4e23 !important;
+  border-color: #ef4e23 !important;
   color: #fff;
   z-index: 3;
 }
@@ -288,13 +292,13 @@ tr.view-user {
 }
 
 .btn-3 {
-  background-color: #ef4e23!important;
-  color: white!important;
+  background-color: #ef4e23 !important;
+  color: white !important;
 }
 
 .btn-3:hover {
-  background-color: #ef4e23!important;
-  color: white!important;
+  background-color: #ef4e23 !important;
+  color: white !important;
   opacity: 0.8;
 }
 
@@ -332,6 +336,12 @@ tr.view-user {
 
 .btn-lg {
   font-size: 15px !important;
+}
+
+.btn:focus {
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  outline: 0;
 }
 
 @media screen and (max-width: 900px) {
@@ -446,7 +456,7 @@ i.fa-bell {
   }
 
   #main-custom {
-    margin-top: 7rem!important;
+    margin-top: 7rem !important;
     z-index: -99 !important;
   }
 
@@ -467,22 +477,24 @@ i.fa-bell {
 }
 
 a.dropdown-item {
-  color:var(--grey)!important;
+  color: var(--grey) !important;
 }
+
 a.dropdown-item:target {
-  color:var(--grey)!important;
+  color: var(--grey) !important;
   background-color: #ccc;
 }
+
 a.dropdown-item:active {
-  color:var(--grey)!important;
+  color: var(--grey) !important;
   background-color: #ccc;
 }
 
 .dropdown-menu {
   background-clip: padding-box;
   background-color: #fff;
-  border: none!important;
-  border-radius: 7px!important;
+  border: none !important;
+  border-radius: 7px !important;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
 }
 
@@ -559,7 +571,7 @@ span.edit-pen-perfil i {
   -webkit-transition: all .1s linear;
   -moz-transition: all .1s linear;
   background-color: #ffffff;
-  padding: 5px;
+  padding: 3px;
   box-sizing: border-box;
   color: var(--grey-light);
 }
@@ -777,12 +789,16 @@ li.nav-item {
     border-radius: 7px;
   }
 
-  .dot-bg-pending {
+  .processing {
     background: var(--yellow);
   }
 
-  .dot-bg-completed {
+  .completed {
     background: var(--secondary);
+  }
+
+  .refunded {
+    background: var(--red);
   }
 
   .line {
@@ -802,6 +818,7 @@ li.nav-item {
 .timeline p {
   font-size: 13px;
   margin-bottom: 0;
+  line-height: 24px;
 }
 
 .timeline h5 {
@@ -902,7 +919,6 @@ div.class-mytrainings-list {
 
 div.class-mytrainings-list p {
   font-weight: 700;
-  text-transform: uppercase;
   color: #555555;
   margin: 0;
   font-size: 14px;
@@ -972,9 +988,11 @@ video {
   background: transparent;
   border-radius: 7px;
 }
-iframe{
-  border-radius:7px;
+
+iframe {
+  border-radius: 7px;
 }
+
 .class_training__audio {
   width: 100%;
 }
@@ -1006,14 +1024,17 @@ iframe{
 }
 
 span.progress-bar {
-  border-radius: 0;
   height: 18px;
   font-size: 12px;
   background-color: #00A9E7;
 }
 
-.progress {
-  border-radius: 0 !important;
+.progress-container span {
+  border-radius: 50px !important;
+}
+
+span.progress {
+  border-radius: 50px;
 }
 
 /**DASHBOARD**/
@@ -1062,12 +1083,12 @@ span.progress-bar-orange {
   background-color: #ef4e23 !important;
 }
 
-span.progress-bar-yellow {
-  background-color: #efb923 !important;
+span.progress-bar-green {
+  background-color: #0CE8AA !important;
 }
 
-span.progress-bar-green {
-  background-color: #00a9e7 !important;
+span.progress-bar-blue {
+  background-color: var(--secondary);
 }
 
 /**Cart checkout**/
@@ -1095,14 +1116,15 @@ h3#order_review_heading {
   margin-top: 0 !important;
 }
 
-.col-1,
-.col-2 {
+.col2-set.col-1,
+.col2-set.col-2 {
   background-color: white;
   padding: 41px;
   border-radius: 5px;
   -webkit-box-shadow: -5px 0px 26px -9px rgb(0 0 0 / 25%);
   -moz-box-shadow: -5px 0px 26px -9px rgba(0, 0, 0, 0.25);
   box-shadow: -5px 0px 26px -9px rgb(0 0 0 / 25%);
+  border: 1px solid #eee;
 }
 
 .col-1 h3,
@@ -1137,6 +1159,8 @@ h3#order_review_heading {
 
 select#installments {
   border: 1px solid #ced4da !important;
+  padding: 12px !important;
+  border-radius: 5px !important;
 }
 
 @media screen and (max-width: 900px) {
@@ -1365,6 +1389,58 @@ select#installments {
   font-size: 14px !important;
 }
 
-.bg-signin-photo-2{
-height:100%;
+.bg-signin-photo-2 {
+  height: 100%;
+}
+
+#show-password {
+  position: absolute;
+  right: 10px;
+  top: 81%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  opacity: 0.5;
+  padding: 10px;
+}
+
+fieldset#rede-credit-payment-form input {
+  border: 1px solid #ced4da !important;
+  border-radius: 4px !important;
+}
+
+span.select2-selection.select2-selection--single {
+  height: 34px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: 32px !important;
+}
+
+.select2-container--default .select2-selection--single {
+  border: 1px solid #ced4da !important;
+}
+
+.entry-title {
+  margin-bottom: 40px;
+}
+
+
+/**NOTIFY**/
+span.circle-notify {
+  position: absolute;
+  background: var(--red);
+  border-radius: 50%;
+  width: 5px;
+  height: 5px;
+  padding: 5px;
+  left: 32px;
+}
+
+li.notify_list__item {
+  padding: 10px 10px !important;
+  border-bottom: 1px solid #c1c1c1;
+}
+
+.div:where(.swal2-icon) {
+  border-color: transparent !important;
 }

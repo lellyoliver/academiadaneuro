@@ -16,7 +16,7 @@
                     <tr>
                         <th data-field="display_name">Nome do Paciente</th>
                         <th data-field="user_email">E-mail</th>
-                        <th data-field="description">Quadro Clinico</th>
+                        <th data-field="description">Quadro Clínico</th>
                         <th data-field="status"></th>
                     </tr>
                 </thead>
@@ -26,7 +26,7 @@
                         data-userid="<?php echo $getUsers['ID']; ?>" id="list-<?php echo $getUsers['ID']; ?>">
                         <td data-label="Nome do Paciente"><?php echo $getUsers['billing_first_name']; ?></td>
                         <td data-label="E-mail"><?php echo $getUsers['user_email']; ?></td>
-                        <td data-label="Quadro Clinico"><?php echo $getUsers['description']; ?></td>
+                        <td data-label="Quadro Clínico"><?php echo $getUsers['description']; ?></td>
                         <td class="status">
                             <button type="submit" class="btn btn-sm btn-secondary me-2 mb-1 view-cart"
                                 id="cart-user-<?php echo $getUsers['ID']; ?>" data-bs-target="#cartUserRelated"
@@ -36,11 +36,11 @@
                             <?php
                             if(!empty($expired)){
                                 foreach ($expired as $expireds) {
-                                    if($expireds['user_related'] == $getUsers['ID']){
+                                    if($expireds['user_id'] == $getUsers['ID']){
                                         if($expireds['status']){
-                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="em dia" class="fa-solid fa-circle-check check__mobile color-success" style="font-size:16px;"></i>';
+                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="fa-solid fa-circle-check check__mobile color-success" style="font-size:16px;"></i>';
                                         }else{
-                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="em atraso" class="fa-solid fa-triangle-exclamation check__mobile color-danger" style="font-size:16px;"></i>';
+                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="fa-solid fa-triangle-exclamation check__mobile color-danger" style="font-size:16px;"></i>';
                                         }
                                     }
                                 }
@@ -80,7 +80,8 @@
                     </div>
                     <div class="col-md-12 mb-3">
                         <span class="label-float">
-                            <input type="text" id="billing_data" name="billing_data">
+                            <input type="text" id="billing_data" name="billing_data"
+                                onchange="this.value = formatCPFOrCNPJ(this.value)">
                             <label for="billing_data" class="mb-2"><?php echo esc_html('CPF / CNPJ'); ?></label>
                         </span>
                     </div>
@@ -191,9 +192,10 @@
                         <div class="card-body">
                             <span class="badge bg-primary mb-2">Plano Bronze</span>
                             <h5 class="card-title fw-bold">Assinatura Mensal</h5>
-                            <p class="card-text">Seu paciente terá acesso durante um mês à mentoria e aos exercícios de
-                                estimulação cerebral.</p>
-                            <input type="hidden" name="product_id" value="26">
+                            <h6><?php echo wc_price(get_post_meta(66, '_price', true));  ?></h6>
+                            <p><?php echo $description = wc_get_product(66) ? wc_get_product( 66 )->get_description() : 'Descrição não encontrada';?>
+                            </p>
+                            <input type="hidden" name="product_id" value="66">
                             <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
@@ -204,10 +206,11 @@
                     <div class="card card-plans" onclick="this.closest('form').submit()">
                         <div class="card-body">
                             <span class="badge bg-primary mb-2">Plano Prata</span>
-                            <h5 class="card-title fw-bold">Assinatura Semestral</h5>
-                            <p class="card-text">Acesso semestral à mentoria e aos exercícios de estimulação cerebral
-                                para um compromisso mais prolongado.</p>
-                            <input type="hidden" name="product_id" value="109">
+                            <h5 class="card-title fw-bold">Assinatura Trimestral</h5>
+                            <h6><?php echo wc_price(get_post_meta(67, '_price', true));  ?></h6>
+                            <p><?php echo $description = wc_get_product(67) ? wc_get_product( 67 )->get_description() : 'Descrição não encontrada';?>
+                            </p>
+                            <input type="hidden" name="product_id" value="67">
                             <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
@@ -218,10 +221,11 @@
                     <div class="card card-plans" onclick="this.closest('form').submit()">
                         <div class="card-body">
                             <span class="badge bg-primary mb-2">Plano Premium</span>
-                            <h5 class="card-title fw-bold">Assinatura Anual</h5>
-                            <p class="card-text">Acesso anual à mentoria e aos exercícios de estimulação cerebral para
-                                um compromisso de longo prazo.</p>
-                            <input type="hidden" name="product_id" value="110">
+                            <h5 class="card-title fw-bold">Assinatura Semestral</h5>
+                            <h6><?php echo wc_price(get_post_meta(68, '_price', true));  ?></h6>
+                            <p><?php echo $description = wc_get_product(68) ? wc_get_product( 68 )->get_description() : 'Descrição não encontrada';?>
+                            </p>
+                            <input type="hidden" name="product_id" value="68">
                             <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
@@ -230,3 +234,9 @@
         </div>
     </div>
 </div>
+<script>
+let tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+</script>

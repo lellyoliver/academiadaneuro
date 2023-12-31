@@ -1,38 +1,3 @@
-function authLogin() {
-  const formLogin = document.getElementById('form-login');
-  if (formLogin) {
-    formLogin.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const formData = new FormData(formLogin);
-      const cpf = formData.get('cpf');
-      const password = formData.get('password');
-
-      fetch('/wp-json/adn-plugin/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          cpf: cpf,
-          password: password,
-        })
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.status === 'sucesso') {
-            console.log(data.message);
-          } else {
-            console.log(data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao entrar:', error);
-        });
-    });
-  }
-}
-
-
 function confirmEmail() {
   const form = document.querySelector('#form-auth-email');
   if (form) {
@@ -116,3 +81,24 @@ function forgotPassword() {
 }
 
 forgotPassword();
+
+function showPassword() {
+  const showPasswordIcon = document.getElementById('show-password');
+  const passwordField = document.getElementById('user-password');
+
+  showPasswordIcon.addEventListener('click', function () {
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      showPasswordIcon.classList.remove('fa-eye');
+      showPasswordIcon.classList.add('fa-eye-slash');
+    } else {
+      passwordField.type = 'password';
+      showPasswordIcon.classList.remove('fa-eye-slash');
+      showPasswordIcon.classList.add('fa-eye');
+    }
+  });
+}
+
+showPassword();
+
+

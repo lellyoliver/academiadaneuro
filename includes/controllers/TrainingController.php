@@ -124,12 +124,12 @@ class TrainingController
             exit;
         }
         $userExpired = $this->userExpired();
-
-        if (!$userExpired[0]["status"]) {
-            wp_redirect(site_url('/meu-perfil', 'https'));
-            exit;
+        if ($this->roleRegistered()) {
+            if (!$userExpired[0]["status"]) {
+                wp_redirect(site_url('/meu-perfil', 'https'));
+                exit;
+            }
         }
-
         ob_start();
         $users = $this->getListRelated();
         require_once plugin_dir_path(__FILE__) . '../views/training/TrainingView.php';
@@ -147,7 +147,7 @@ class TrainingController
         }
 
         $userExpired = $this->userExpired();
-        
+
         if ($this->roleRegistered()) {
             if (!$userExpired[0]["status"]) {
                 wp_redirect(site_url('/meu-perfil', 'https'));

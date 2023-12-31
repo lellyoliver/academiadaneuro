@@ -52,6 +52,7 @@ class TrainingModel
         foreach ($categories as $category) {
             $args = array(
                 'post_type' => 'training',
+                'posts_per_page' => -1,
                 'tax_query' => array(
                     array(
                         'taxonomy' => 'brainGroup',

@@ -54,9 +54,11 @@ class DashboardModel
         $status = array();
 
         foreach ($results as $userProgress) {
-            $user_id = $userProgress[0]->user_id; // Assume que o user_id é o mesmo para todas as entradas do usuário
-            $updateProgress = $userProgress[0]->updateProgress;
+            // Default value for user_id
+            $user_id = isset($userProgress[0]->user_id) ? $userProgress[0]->user_id : '';
+            $updateProgress = isset($userProgress[0]->updateProgress) ? $userProgress[0]->updateProgress : '';
             $user_status = array();
+
             foreach ($userProgress as $result) {
                 $result_seconds = array();
                 foreach (get_object_vars($result) as $category => $time) {
@@ -73,15 +75,14 @@ class DashboardModel
                     }
                 }
 
+                // Set user_id and updateProgress in the category_status
                 $category_status['user_id'] = $user_id;
                 $category_status['updateProgress'] = $updateProgress;
-
 
                 $user_status[] = $category_status;
             }
 
             $status[$user_id] = $user_status;
-
         }
 
         return $status;
@@ -94,7 +95,7 @@ class DashboardModel
         $categorySums = [];
 
         foreach ($progressArray as $userId => $userProgress) {
-            $updateProgress = $userProgress[0]['updateProgress'];
+            $updateProgress = isset($userProgress[0]['updateProgress']) ? $userProgress[0]['updateProgress'] : '';
             $categoryCounts = [
                 'neuralResonance' => 0,
                 'cognitiveStimulation' => 0,
@@ -122,8 +123,7 @@ class DashboardModel
 
             $categorySums[$userId]['user_id'] = $userId;
             $categorySums[$userId]['updateProgress'] = $updateProgress;
-
-
+            error_reporting(error_reporting() & ~E_NOTICE);
             $total = array_sum($categorySums[$userId]) - $categorySums[$userId]['user_id'] - $categorySums[$userId]['updateProgress'];
             $categorySums[$userId]['totalProgress'] = round($total / (count($categorySums[$userId]) - 2), 0); // Subtrai 1 para não contar o 'user_id'
         }

@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-md-6 mobile-order-1">
                     <form id="create-choice-form" method="post">
-                        <div class="selected-questions" id="selected-questions" required>
+                        <div class="selected-questions" id="selected-question-id" required>
                             <select name="user_id" class="form-select mb-4" id="user_id">
                                 <option value="">Selecione um paciente</option>
                                 <?php foreach ($users as $user): ?>

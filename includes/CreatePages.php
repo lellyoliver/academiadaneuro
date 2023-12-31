@@ -14,6 +14,7 @@ class CreatePages
             'register' => 'Register',
             'email-confirmation' => 'Email Confirmation',
             'login' => 'Login',
+            'customer-support' => 'Suporte ao Usuário',
         );
 
         foreach ($pages as $slug => $title) {

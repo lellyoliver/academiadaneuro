@@ -163,7 +163,7 @@ class UserRelatedModel
             }
 
             $result[] = array(
-                'user_related' => $meta_value->user_related,
+                'user_id' => $meta_value->user_id,
                 'status' => $status,
             );
         }

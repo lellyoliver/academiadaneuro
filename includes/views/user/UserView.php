@@ -7,6 +7,9 @@ $allowed_roles_3 = ['training', 'administrator', 'coach'];
 $data = get_user_meta( $current_user_id, 'connected_user', true );
 $billing_phone = get_user_meta($data, 'billing_phone', true);
 $profissional = get_userdata($data);
+$_plan_mensal_training = get_option('_plan_mensal_training');
+$_plan_trimestral_training = get_option('_plan_trimestral_training');
+$_plan_semestral_training = get_option('_plan_semestral_training');
 ?>
 <div class="loading" style="display:none" id="loading">
     <div class="overlay"></div>
@@ -253,10 +256,10 @@ $profissional = get_userdata($data);
                             <div class="card-body">
                                 <span class="badge bg-primary mb-2">Plano I</span>
                                 <h5 class="card-title fw-bold">Assinatura Mensal</h5>
-                                <h6><?php echo wc_price(get_post_meta(63, '_price', true));  ?></h6>
-                                <p><?php echo $description = wc_get_product(63) ? wc_get_product( 63 )->get_description() : 'Descrição não encontrada';?>
+                                <h6><?php echo wc_price(get_post_meta($_plan_mensal_training, '_price', true));  ?></h6>
+                                <p><?php echo $description = wc_get_product($_plan_mensal_training) ? wc_get_product( $_plan_mensal_training )->get_description() : 'Descrição não encontrada';?>
                                 </p>
-                                <input type="hidden" name="product_id" value="63">
+                                <input type="hidden" name="product_id" value="<?php echo $_plan_mensal_training; ?>">
                                 <input type="hidden" name="user_related_id" value="<?php echo $current_user_id ?>">
                             </div>
                         </div>
@@ -268,10 +271,10 @@ $profissional = get_userdata($data);
                             <div class="card-body">
                                 <span class="badge bg-primary mb-2">Plano II</span>
                                 <h5 class="card-title fw-bold">Assinatura Trimestral</h5>
-                                <h6><?php echo wc_price(get_post_meta(64, '_price', true));  ?></h6>
-                                <p><?php echo $description = wc_get_product(64) ? wc_get_product( 64 )->get_description() : 'Descrição não encontrada';?>
+                                <h6><?php echo wc_price(get_post_meta($_plan_trimestral_training, '_price', true));  ?></h6>
+                                <p><?php echo $description = wc_get_product($_plan_trimestral_training) ? wc_get_product( $_plan_trimestral_training )->get_description() : 'Descrição não encontrada';?>
                                 </p>
-                                <input type="hidden" name="product_id" value="64">
+                                <input type="hidden" name="product_id" value="<?php echo $_plan_trimestral_training; ?>">
                                 <input type="hidden" name="user_related_id" value="<?php echo $current_user_id ?>">
                             </div>
                         </div>
@@ -283,10 +286,10 @@ $profissional = get_userdata($data);
                             <div class="card-body">
                                 <span class="badge bg-primary mb-2">Plano III</span>
                                 <h5 class="card-title fw-bold">Assinatura Semestral</h5>
-                                <h6><?php echo wc_price(get_post_meta(65, '_price', true));  ?></h6>
-                                <p><?php echo $description = wc_get_product(65) ? wc_get_product( 65 )->get_description() : 'Descrição não encontrada';?>
+                                <h6><?php echo wc_price(get_post_meta($_plan_semestral_training, '_price', true));  ?></h6>
+                                <p><?php echo $description = wc_get_product($_plan_semestral_training) ? wc_get_product( $_plan_semestral_training )->get_description() : 'Descrição não encontrada';?>
                                 </p>
-                                <input type="hidden" name="product_id" value="65">
+                                <input type="hidden" name="product_id" value="<?php echo $_plan_semestral_training;?>">
                                 <input type="hidden" name="user_related_id" value="<?php echo $current_user_id ?>">
                             </div>
                         </div>
@@ -306,3 +309,4 @@ $profissional = get_userdata($data);
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
     </script>
+

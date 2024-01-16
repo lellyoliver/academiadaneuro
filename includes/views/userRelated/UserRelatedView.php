@@ -1,3 +1,16 @@
+<?php
+$_plan_mensal_coachingRelation = get_option('_plan_mensal_coachingRelation');
+$_plan_trimestral_coachingRelation = get_option('_plan_trimestral_coachingRelation');
+$_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation');
+?>
+<div class="loading" style="display:none" id="loading">
+    <div class="overlay"></div>
+    <div class="spinner-container">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>
 <div class="card mb-3">
     <div class="container padding_container__card">
         <div class="card-body">
@@ -52,7 +65,7 @@
                 </tbody>
             </table>
             <div class="row m-0 m-auto mt-3 display-mobile">
-                <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="offcanvas"
+                <button type="button" class="btn btn-lg btn-secondary btn-fixed-custom" data-bs-toggle="offcanvas"
                     data-bs-target="#viewCreateRelated" id="btn_user"><i class="fa-solid fa-user-plus me-5"></i> Novo
                     Paciente
                 </button>
@@ -72,17 +85,16 @@
         <form id="form-create" method="post">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12 mb-3">
+                    <div class="col-md-6 mb-3">
                         <span class="label-float">
                             <input type="text" id="name" name="name">
                             <label for="name" class="mb-2"><?php echo esc_html('Nome / Razão Social'); ?></label>
                         </span>
                     </div>
-                    <div class="col-md-12 mb-3">
+                    <div class="col-md-6 mb-3">
                         <span class="label-float">
-                            <input type="text" id="billing_data" name="billing_data"
-                                onchange="this.value = formatCPFOrCNPJ(this.value)">
-                            <label for="billing_data" class="mb-2"><?php echo esc_html('CPF / CNPJ'); ?></label>
+                            <input type="date" id="date_birth" name="date_birth">
+                            <label for="date_birth" class="mb-2"><?php echo esc_html('Data de Nascimento'); ?></label>
                         </span>
                     </div>
                     <div class="col-md-12 mb-3">
@@ -133,10 +145,16 @@
         <form id="form-update" method="post">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-12 mb-3">
+                    <div class="col-md-6 mb-3">
                         <span class="label-float">
                             <input type="text" id="nameUpdate" name="nameUpdate">
                             <label for="nameUpdate" class="mb-2"><?php echo esc_html('Nome / Razão Social'); ?></label>
+                        </span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <span class="label-float">
+                            <input type="date" id="date_birthUpdate" name="date_birthUpdate">
+                            <label for="date_birthUpdate" class="mb-2"><?php echo esc_html('Data de Nascimento'); ?></label>
                         </span>
                     </div>
                     <div class="col-md-12 mb-3">
@@ -153,10 +171,11 @@
                         </span>
                     </div>
                     <div class="col-md-12 mb-3">
-                        <span class="label-float mb-3">
-                            <input type="text" id="phoneUpdate" name="phoneUpdate">
-                            <label for="phoneUpdate" class="mb-2"><?php echo esc_html('Telefone'); ?></label>
-                        </span>
+                            <span class="label-float mb-3">
+                                <input type="text" id="phoneUpdate" name="phoneUpdate">
+                                <label for="phoneUpdate" class="mb-2"><?php echo esc_html('Telefone'); ?></label>
+                                <a href="" target="_blank" class="btn whatsapp_button" id="phone_wpp"><i class="fa-brands fa-whatsapp"></i></a>
+                            </span>    
                     </div>
                     <div class="col-md-12 mb-3">
                         <span class="label-float mb-3">
@@ -192,10 +211,10 @@
                         <div class="card-body">
                             <span class="badge bg-primary mb-2">Plano Bronze</span>
                             <h5 class="card-title fw-bold">Assinatura Mensal</h5>
-                            <h6><?php echo wc_price(get_post_meta(66, '_price', true));  ?></h6>
-                            <p><?php echo $description = wc_get_product(66) ? wc_get_product( 66 )->get_description() : 'Descrição não encontrada';?>
+                            <h6><?php echo wc_price(get_post_meta($_plan_mensal_coachingRelation, '_price', true));  ?></h6>
+                            <p><?php echo $description = wc_get_product($_plan_mensal_coachingRelation) ? wc_get_product( $_plan_mensal_coachingRelation )->get_description() : 'Descrição não encontrada';?>
                             </p>
-                            <input type="hidden" name="product_id" value="66">
+                            <input type="hidden" name="product_id" value="<?php echo $_plan_mensal_coachingRelation; ?>">
                             <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
@@ -207,10 +226,10 @@
                         <div class="card-body">
                             <span class="badge bg-primary mb-2">Plano Prata</span>
                             <h5 class="card-title fw-bold">Assinatura Trimestral</h5>
-                            <h6><?php echo wc_price(get_post_meta(67, '_price', true));  ?></h6>
-                            <p><?php echo $description = wc_get_product(67) ? wc_get_product( 67 )->get_description() : 'Descrição não encontrada';?>
+                            <h6><?php echo wc_price(get_post_meta($_plan_trimestral_coachingRelation, '_price', true));  ?></h6>
+                            <p><?php echo $description = wc_get_product($_plan_trimestral_coachingRelation) ? wc_get_product( $_plan_trimestral_coachingRelation )->get_description() : 'Descrição não encontrada';?>
                             </p>
-                            <input type="hidden" name="product_id" value="67">
+                            <input type="hidden" name="product_id" value="<?php echo $_plan_trimestral_coachingRelation; ?>">
                             <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
@@ -222,10 +241,10 @@
                         <div class="card-body">
                             <span class="badge bg-primary mb-2">Plano Premium</span>
                             <h5 class="card-title fw-bold">Assinatura Semestral</h5>
-                            <h6><?php echo wc_price(get_post_meta(68, '_price', true));  ?></h6>
-                            <p><?php echo $description = wc_get_product(68) ? wc_get_product( 68 )->get_description() : 'Descrição não encontrada';?>
+                            <h6><?php echo wc_price(get_post_meta($_plan_semestral_coachingRelation, '_price', true));  ?></h6>
+                            <p><?php echo $description = wc_get_product($_plan_semestral_coachingRelation) ? wc_get_product( $_plan_semestral_coachingRelation )->get_description() : 'Descrição não encontrada';?>
                             </p>
-                            <input type="hidden" name="product_id" value="68">
+                            <input type="hidden" name="product_id" value="<?php echo $_plan_semestral_coachingRelation; ?>">
                             <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>

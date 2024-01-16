@@ -7,7 +7,7 @@
             <p class="display-desktop">Arraste o treinamento para <b>caixa traçada azul</b> e <b>selecione um
                     paciente</b>, que nossa IA realizará um treinamento personalizado para abordar diretamente as
                 necessidades do seu paciente.</p>
-            <p class="display-mobile">Click no treinamento para <b>caixa traçada azul</b> e <b>selecione um paciente</b>
+            <p class="display-mobile">Aperte no treinamento <b>caixa traçada azul</b> e <b>selecione um paciente</b>
                 abaixo, que nossa IA realizará um treinamento personalizado para abordar diretamente as necessidades do
                 seu paciente.</p>
 
@@ -44,7 +44,7 @@
                             <p class="fw-bold">Perguntas Selecionadas:</p>
                         </div>
                         <button class="btn btn-secondary col-12 fw-bolder mb-3" type="submit">Gerar
-                            Estímulo</button>
+                            TEC</button>
                     </form>
                 </div>
             </div>

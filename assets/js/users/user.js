@@ -12,8 +12,8 @@ function updateUser() {
         text: 'Deseja atualizar seu perfil?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        confirmButtonColor: '#00a9e7',
+        cancelButtonColor: '#dc3545',
         confirmButtonText: 'Sim',
         cancelButtonText: 'Cancelar',
       }).then((result) => {
@@ -149,7 +149,7 @@ function refundOrder() {
           text: 'Se você fizer o pedido de reembolso você não terá a assinatura de volta. Deseja mesmo?',
           iconHtml: '<i class="fas fa-rotate-left"></i>',
           showCancelButton: true,
-          confirmButtonColor: '#0A3876',
+          confirmButtonColor: '#00a9e7',
           cancelButtonColor: '#dc3545',
           confirmButtonText: 'Sim',
           cancelButtonText: 'Cancelar'

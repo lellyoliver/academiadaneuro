@@ -4,13 +4,16 @@ require_once plugin_dir_path(__FILE__) . '../services/UserRelatedService.php';
 class DashboardModel
 {
 
-    private $table_name;
+    private $table_name_progress;
+    private $table_name_replies;
+
     private $userRelatedService;
 
     public function __construct()
     {
         global $wpdb;
-        $this->table_name = $wpdb->prefix . 'training_progress';
+        $this->table_name_progress = $wpdb->prefix . 'training_progress';
+        $this->table_name_replies = $wpdb->prefix . 'training_replies';
         $this->userRelatedService = new UserRelatedService();
     }
 
@@ -26,7 +29,7 @@ class DashboardModel
         global $wpdb;
 
         $query = $wpdb->prepare(
-            "SELECT neuralResonance, cognitiveStimulation, neuralBreathing, updateProgress, user_id FROM $this->table_name WHERE user_id = %d",
+            "SELECT neuralResonance, cognitiveStimulation, neuralBreathing, updateProgress, user_id FROM $this->table_name_progress WHERE user_id = %d",
             $user_id
         );
 
@@ -129,6 +132,35 @@ class DashboardModel
         }
 
         return $categorySums;
+    }
+
+    public function getReplies($user_id)
+    {
+        global $wpdb;
+
+        $query = $wpdb->prepare(
+            "SELECT replies FROM $this->table_name_replies WHERE user_id = %d",
+            $user_id
+        );
+
+        $results = $wpdb->get_results($query);
+        $postTitles = array();
+
+        foreach ($results as $result) {
+            $replies = json_decode($result->replies);
+
+            if ($replies && isset($replies->post_id)) {
+                foreach ($replies->post_id as $post_id) {
+                    $post = get_post($post_id);
+
+                    if ($post) {
+                        $postTitles[] = $post->post_title;
+                    }
+                }
+            }
+        }
+
+        return $postTitles;
     }
 
 }

@@ -48,12 +48,20 @@ class UserModel
 
         $confirmation_email_sent = $this->sendEmailConfirmation($user_data, $confirmation_token, $user_id);
 
-        $this->newUserExpired($user_id);
+        
+
+        if ($user_data['role'] === "training") {
+            $this->newUserExpired($user_id);
+        } else {
+            $this->freeTrial($user_id);
+        }
 
         if (!$user_id || !$confirmation_email_sent) {
 
             return false;
         }
+
+        $webhook = $this->webhookUserSend($user_data);
 
         return $user_id;
     }
@@ -415,9 +423,10 @@ class UserModel
     public function newUserExpired($user_id)
     {
         $order = wc_create_order();
+        $_plan_trial = get_option('_plan_trial');
 
-        $product_id = 127;
-        $order->add_product(get_product($product_id), 1);
+        $product_id = $_plan_trial ;
+        $order->add_product(wc_get_product($product_id), 1);
 
         $order->set_customer_id($user_id);
 
@@ -426,9 +435,10 @@ class UserModel
         $order->save();
 
         $order_id = $order->get_id();
+        
 
         $product_data = array(
-            127 => '+7 days',
+            $_plan_trial  => '+7 days',
         );
 
         $order = wc_get_order($order_id);
@@ -461,23 +471,13 @@ class UserModel
         }
     }
 
+    public function freeTrial($user_id)
+    {
+        return update_user_meta($user_id, 'free_trial', true);
+    }
+
     public function orderRefunded($order_id)
     {
-
-        // $order = wc_get_order($order_id);
-
-        // $comment_content = 'Pedido de reembolso';
-        // $order->add_order_note($comment_content);
-        // $comment_success = $order->save();
-
-        // if ($comment_success) {
-        //     return $comment_success;
-        // }
-
-        // return false;
-
-        // Obtém o objeto WC_Order pelo ID do pedido
-
         $order = wc_get_order($order_id);
 
         if ($order && $order->get_status() === 'completed') {
@@ -493,7 +493,7 @@ class UserModel
                     'reason' => $refund_note,
                     'order_id' => $order_id,
                     'line_items' => $order->get_items(),
-                    'refund_payment' => true, // Defina como true se quiser reembolsar também o pagamento
+                    'refund_payment' => true,
                 )
             );
 
@@ -502,13 +502,38 @@ class UserModel
             $order->add_order_note('Cliente notificado sobre o reembolso.');
 
             $comment_success = $order->save();
-            
+
             if ($comment_success) {
                 return $comment_success;
             }
 
         }
+    }
 
+    public function webhookUserSend($user_data)
+    {
+        $webhook_url = 'https://hook.us1.make.com/zk74k3x1up62fj5do42q4d2s9ncu3gcu';
+        
+        $webhook_data = array(
+            'full_name' => $user_data['name'],
+            'phone' => $user_data['phone'],
+            'mail' => $user_data['email'],
+        );
+
+        $response = wp_remote_post(
+            $webhook_url,
+            array(
+                'body' => json_encode($webhook_data),
+                'headers' => array('Content-Type' => 'application/json'),
+            )
+        );
+
+        if (is_wp_error($response)) {
+            error_log('Erro ao enviar webhook: ' . $response->get_error_message());
+        } else {
+            $body = wp_remote_retrieve_body($response);
+            $decoded_response = json_decode($body, true);
+        }
     }
 
 }

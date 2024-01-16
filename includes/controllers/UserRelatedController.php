@@ -25,13 +25,13 @@ class UserRelatedController
 
     public function create($request)
     {
-
         $name = $request->get_param('name');
         $email = $request->get_param('email');
         $password = $request->get_param('password');
         $phone = $request->get_param('phone');
         $connected_user = $request->get_param('connected_user');
         $description = $request->get_param('description');
+        $date_birth = $request->get_param('date_birth');
 
         $user_data = array(
             'name' => $name,
@@ -39,22 +39,25 @@ class UserRelatedController
             'phone' => $phone,
             'password' => $password,
             'description' => $description,
+            'date_birth' => $date_birth,
+            'current_id' => $connected_user,
         );
 
         $user_id = $this->userRelatedService->createUser($user_data);
 
         if ($user_id) {
             $user_related = $this->userRelatedService->createRelatedUser($user_id, $connected_user); // Passa o ID do usuário atual);
+            $free_trial = $this->userRelatedService->newUserExpired( $connected_user, $user_id );
             $response = array(
                 'status' => 'sucesso',
-                'mensagem' => 'Usuário criado com sucesso',
+                'mensagem' => 'Paciente criado com sucesso!',
             );
             return new WP_REST_Response($response, 200);
         }
 
         $response = array(
             'status' => 'erro',
-            'mensagem' => 'Não foi possível criar o usuário',
+            'mensagem' => 'Não foi possível criar o paciente',
         );
         return new WP_REST_Response($response, 500);
     }
@@ -74,8 +77,10 @@ class UserRelatedController
         $phone = $request->get_param('phoneUpdate');
         $description = $request->get_param('descriptionUpdate');
         $email = $request->get_param('emailUpdate');
+        $date_birth = $request->get_param('date_birthUpdate');
 
         $meta_fields = [
+            'date_birth' => $date_birth,
             'billing_first_name' => $name,
             'user_pass' => $password,
             'billing_phone' => $phone,
@@ -90,16 +95,15 @@ class UserRelatedController
 
             $response = array(
                 'status' => 'sucesso',
-                'mensagem' => 'Usuário atualizado com sucesso',
-                'user_id' => $user_id,
-                'fields' => $meta_fields,
+                'mensagem' => 'Paciente atualizado com sucesso!',
+                'fields' => $meta,
             );
             return new WP_REST_Response($response, 200);
         }
 
         $response = array(
             'status' => 'erro',
-            'mensagem' => 'Não foi possível atualizar o usuário',
+            'mensagem' => 'Não foi possível atualizar o paciente.',
         );
         return new WP_REST_Response($response, 500);
     }
@@ -118,14 +122,14 @@ class UserRelatedController
 
             $response = array(
                 'status' => 'sucesso',
-                'mensagem' => 'Usuário excluído com sucesso',
+                'mensagem' => 'Paciente excluído com sucesso!',
             );
             return new WP_REST_Response($response, 200);
         }
 
         $response = array(
             'status' => 'erro',
-            'mensagem' => 'Não foi possível excluir o usuário',
+            'mensagem' => 'Não foi possível excluir o paciente',
         );
         return new WP_REST_Response($response, 500);
     }
@@ -176,13 +180,6 @@ class UserRelatedController
     {
         return $user = $this->userRelatedService->getUserById($id);
     }
-
-    // public function can_register_new_user()
-    // {
-    //     $user_can_register = get_user_meta(get_current_user_id(), 'can_register_users', true);
-
-    //     return $user_can_register;
-    // }
 
     public function getListedUserRelated()
     {

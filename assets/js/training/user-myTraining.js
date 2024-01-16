@@ -16,7 +16,8 @@ function saveTraining() {
             icon: 'error',
             title: 'Erro',
             text: 'Não é possível salvar o treinamento enquanto o jogo estiver pausado.',
-            confirmButtonColor: '#d33',
+            confirmButtonColor: '#00a9e7',
+            cancelButtonColor: '#dc3545',
         });
         return;
     }
@@ -45,7 +46,8 @@ function saveTraining() {
                     icon: 'success',
                     title: 'Sucesso',
                     text: 'Treinamento salvo com sucesso.',
-                    confirmButtonColor: '#28a745',
+                    confirmButtonColor: '#00a9e7',
+                    cancelButtonColor: '#dc3545',
                 }).then(() => {
                 });
             } else {
@@ -54,7 +56,8 @@ function saveTraining() {
                     icon: 'error',
                     title: 'Erro',
                     text: 'Erro ao salvar o treinamento: ' + data.mensagem,
-                    confirmButtonColor: '#d33',
+                    confirmButtonColor: '#00a9e7',
+                    cancelButtonColor: '#dc3545',
                 });
             }
         })
@@ -165,12 +168,16 @@ function viewTraining() {
     const videoPlayer__2 = document.getElementById('videoPlayer');
     const gameplay = document.getElementById('gameplay');
     const textTraining = document.getElementById('textTraining');
+    const usageTips = document.getElementById('usageTips');
+    const recommendations = document.getElementById('recommendations');
 
     fetch(`/wp-json/adn-plugin/v1/myTraining/view/${postID}`)
         .then(response => response.json())
         .then(data => {
             if (data) {
                 textTraining.innerHTML = data.textTraining;
+                usageTips.innerHTML = data.usageTips;
+                recommendations.innerHTML = data.recommendations;
                 audioPlayer.src = data.neuralResonance;
                 videoPlayer__2.src = data.neuralBreathing;
                 gameplay.href = data.cognitiveStimulation;

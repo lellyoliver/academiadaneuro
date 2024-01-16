@@ -41,13 +41,14 @@ require_once plugin_dir_path(__FILE__) . 'includes/NotificationUser.php';
 
 require_once plugin_dir_path(__FILE__) . 'includes/RefundedManager.php';
 
+require_once plugin_dir_path(__FILE__) . 'includes/SettingsAcademia.php';
 
 
 function adn_activate()
 {
     $dbCustom = new DBCustom();
     $createPages = new CreatePages();
-    $createPages->createPages();
+    $createPages->create_pages();
     $dbCustom->createTableTrainingReplies();
     $dbCustom->createTableTrainingProgress();
 }
@@ -56,7 +57,7 @@ register_activation_hook(__FILE__, 'adn_activate');
 
 function adn_scripts()
 {
-    
+
     wp_enqueue_style('stylecss', plugins_url('assets/css/style.css', __FILE__), array(), ACADEMIA_DA_NEURO_VERSION, false);
     wp_enqueue_script('utilsjs', plugins_url('assets/js/utils.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
 
@@ -109,6 +110,16 @@ function adn_scripts()
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
         wp_enqueue_script('compressorminjs', plugins_url('assets/lib/compressor/compressor.min.js', __FILE__), '1.0.7', false);
+    }
+
+    if (is_page('suporte-cliente')) {
+        wp_enqueue_script('customerSupportjs', plugins_url('assets/js/customer-support/customer-support.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
+        wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
+        wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
+    }
+
+    if(is_page('dashboard')){
+        wp_enqueue_script('customerSupportjs', plugins_url('assets/js/dashboard/dashboard.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
     }
 
     if (is_checkout()) {
@@ -256,7 +267,7 @@ add_filter('page_template', 'adn_page_authLogin');
 
 function adn_page_customerSupport($template)
 {
-    if (is_page('customer-support')) {
+    if (is_page('suporte-cliente')) {
         $template_customerSupport = plugin_dir_path(__FILE__) . 'templates/customer-support.php';
         if (file_exists($template_customerSupport)) {
             return $template_customerSupport;
@@ -280,10 +291,16 @@ function adn_single_training($template)
 }
 add_filter('template_include', 'adn_single_training');
 
-function adn_page_block() {
+function adn_page_block()
+{
     $current_user = wp_get_current_user();
 
-    if (!is_user_logged_in() && !is_page(array('login', 'register', 'email-confirmation', 'forgot-password')) && !is_admin() && !is_front_page()) {
+    if (is_user_logged_in() && is_page(array('login', 'register', 'email-confirmation', 'forgot-password'))) {
+        wp_redirect(site_url('/meu-perfil'));
+        exit;
+    }
+    
+    if (!is_user_logged_in() && !is_page(array('login', 'register', 'email-confirmation', 'forgot-password')) && !is_admin() && !is_front_page() && !is_product()) {
         wp_redirect(site_url('/login'));
         exit;
     }
@@ -291,14 +308,14 @@ function adn_page_block() {
     if (is_user_logged_in() && array_intersect(array('training', 'coachingRelation'), $current_user->roles)) {
         $allowed_pages = array('contato', 'shop', 'dashboard', 'meus-pacientes', 'my-account', 'cart');
 
-        if (is_page($allowed_pages) || is_home() || is_front_page()) {
+        if (is_page($allowed_pages) || is_home() || is_front_page() || is_product()) {
             wp_redirect(site_url('/meus-treinamentos'));
             exit;
         }
     }
 
-    if (is_user_logged_in() && array_intersect(array('coach', 'health-pro', 'administrator'), $current_user->roles)) {
-        if (is_page(array('meus-treinamentos', 'training', 'my-account', 'cart')) || is_home() || is_front_page()) {
+    if (is_user_logged_in() && array_intersect(array('coach', 'health-pro'), $current_user->roles)) {
+        if (is_page(array('meus-treinamentos', 'training', 'my-account', 'cart')) || is_home() || is_front_page() || is_product()) {
             wp_redirect(site_url('/meu-perfil'));
             exit;
         }
@@ -323,7 +340,6 @@ function adn_custom_login_redirect($redirect_to, $request, $user)
 }
 add_filter('login_redirect', 'adn_custom_login_redirect', 10, 3);
 
-
 function restrict_admin_access()
 {
     if (is_user_logged_in()) {
@@ -346,7 +362,6 @@ function restrict_admin_access()
     }
 }
 add_action('admin_init', 'restrict_admin_access');
-
 
 function adn_password_reset_notification($message, $user_login, $user_data)
 {
@@ -401,7 +416,6 @@ add_filter('woocommerce_locate_template', 'adn_custom__checkout', 20, 3);
 
 function adn_custom_woocommerce_input_class($args, $key, $value)
 {
-
     if ($key === 'billing_states') {
         $args['input_class'] = array('form-select');
     } elseif (in_array($key, array('billing_first_name', 'billing_last_name', 'billing_city', 'billing_postcode', 'billing_phone', 'billing_email', 'billing_address_1'))) {
@@ -434,23 +448,41 @@ function adn_custom_checkout_user_fullfil($fields)
 }
 add_filter('woocommerce_checkout_fields', 'adn_custom_checkout_user_fullfil');
 
-function alterar_status_pedido_cheque($order_id)
-{
-    if (!$order_id) {
-        return;
-    }
-    $order = wc_get_order($order_id);
-    if ($order->get_payment_method() === 'cheque') {
+// function alterar_status_pedido_cheque($order_id)
+// {
+//     if (!$order_id) {
+//         return;
+//     }
+//     $order = wc_get_order($order_id);
+//     if ($order->get_payment_method() === 'cheque') {
 
-        $order->update_status('completed');
-    }
-}
-add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
+//         $order->update_status('completed');
+//     }
+// }
+// add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
 
 function adn_add_product_checkout()
 {
+    //uso pessoal
+    $_plan_mensal_training = get_option('_plan_mensal_training');
+    $_plan_trimestral_training = get_option('_plan_trimestral_training');
+    $_plan_semestral_training = get_option('_plan_semestral_training');
+
+    //usuário relacionado
+    $_plan_mensal_coachingRelation = get_option('_plan_mensal_coachingRelation');
+    $_plan_trimestral_coachingRelation = get_option('_plan_trimestral_coachingRelation');
+    $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation');
+
+    $product_adicional = array(
+        $_plan_semestral_coachingRelation => '6',
+        $_plan_trimestral_coachingRelation => '3',
+        $_plan_mensal_coachingRelation => '1',
+        $_plan_semestral_training => '6',
+        $_plan_trimestral_training => '3',
+        $_plan_mensal_training => '1',
+    );
+    
     if (isset($_POST['product_id'], $_POST['user_related_id'])) {
-        // Validação de entrada
         $product_id = filter_var($_POST['product_id'], FILTER_VALIDATE_INT);
         $user_related_id = filter_var($_POST['user_related_id'], FILTER_VALIDATE_INT);
 
@@ -459,11 +491,19 @@ function adn_add_product_checkout()
                 global $woocommerce;
 
                 $woocommerce->cart->empty_cart();
+
                 $woocommerce->cart->add_to_cart($product_id);
-                $user_id = get_current_user_id();
+
+                $quantidade_adicional = isset($product_adicional[$product_id]) ? $product_adicional[$product_id] : '1';
+
+                foreach ($woocommerce->cart->get_cart() as $cart_item_key => $cart_item) {
+                    if ($cart_item['product_id'] == $product_id) {
+                        $woocommerce->cart->set_quantity($cart_item_key, $quantidade_adicional);
+                        break;
+                    }
+                }
 
                 $checkout_url = wc_get_checkout_url() . '?user_related=' . $user_related_id;
-
                 wp_redirect($checkout_url);
                 exit;
             }
@@ -488,14 +528,23 @@ add_filter('woocommerce_checkout_fields', 'add_custom_billing_field');
 
 function check_and_enable_registration($order_id)
 {
+    //uso pessoal
+    $_plan_mensal_training = get_option('_plan_mensal_training');
+    $_plan_trimestral_training = get_option('_plan_trimestral_training');
+    $_plan_semestral_training = get_option('_plan_semestral_training');
+
+    //usuário relacionado
+    $_plan_mensal_coachingRelation = get_option('_plan_mensal_coachingRelation');
+    $_plan_trimestral_coachingRelation = get_option('_plan_trimestral_coachingRelation');
+    $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation');
 
     $product_data = array(
-        68 => '+6 months',
-        67 => '+3 months',
-        66 => '+1 month',
-        65 => '+6 months',
-        64 => '+3 months',
-        63 => '+1 month',
+        $_plan_semestral_coachingRelation => '+6 months',
+        $_plan_trimestral_coachingRelation => '+3 months',
+        $_plan_mensal_coachingRelation => '+1 month',
+        $_plan_semestral_training => '+6 months',
+        $_plan_trimestral_training => '+3 months',
+        $_plan_mensal_training => '+1 month',
     );
 
     $order = wc_get_order($order_id);
@@ -532,16 +581,40 @@ function check_and_enable_registration($order_id)
 }
 add_action('woocommerce_order_status_completed', 'check_and_enable_registration');
 
-function adn_connect_remember($expiration, $user_id, $remember)
+function adn_verify_completed($order_id)
 {
+    $pedido = wc_get_order($order_id);
 
-    return $remember ? $expiration + (60 * 60 * 24 * 365 * 10) : $expiration;
+    $order_notes = wc_get_order_notes(array(
+        'order_id' => $order_id,
+    ));
 
+    $success_note_found = false;
+    foreach ($order_notes as $note) {
+        if ($note->content === "Rede[00]: Success.") {
+            $success_note_found = true;
+            break;
+        }
+    }
+
+    if ($success_note_found) {
+        $pedido->update_status('completed');
+    }
 }
-add_filter('auth_cookie_expiration', 'adn_connect_remember', 99, 3);
+add_action('woocommerce_thankyou', 'adn_verify_completed', 10, 1);
 
 
-function remover_metabox_postcustom() {
+// function adn_connect_remember($expiration, $user_id, $remember)
+// {
+
+//     return $remember ? $expiration + (60 * 60 * 24 * 365 * 10) : $expiration;
+
+// }
+// add_filter('auth_cookie_expiration', 'adn_connect_remember', 99, 3);
+
+
+function remover_metabox_postcustom()
+{
     remove_meta_box('postcustom', 'customer-support', 'normal');
 }
 

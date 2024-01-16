@@ -1,7 +1,7 @@
 <?php
 class CreatePages
 {
-    public function createPages()
+    public function create_pages()
     {
         $pages = array(
             'dashboard' => 'Dashboard',
@@ -12,9 +12,9 @@ class CreatePages
             'new-order' => 'Solicitação de Novo Plano',
             'forgot-password' => 'Esqueci Minha Senha',
             'register' => 'Register',
-            'email-confirmation' => 'Email Confirmation',
+            'email-confirmation' => 'Confirmação de E-mail',
             'login' => 'Login',
-            'customer-support' => 'Suporte ao Usuário',
+            'suporte-cliente' => 'Suporte ao Cliente',
         );
 
         foreach ($pages as $slug => $title) {

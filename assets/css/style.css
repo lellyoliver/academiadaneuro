@@ -501,7 +501,6 @@ a.dropdown-item:active {
 
 .card {
   border-radius: 8px !important;
-  border: 0 !important;
   box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
   padding-top: 15px;
   padding-bottom: 15px;
@@ -533,7 +532,7 @@ img.img-perfil {
 .perfil .edit-pen-perfil {
   position: absolute;
   left: 209px;
-  top: 62px;
+  top: 96px;
   width: 0;
 }
 
@@ -841,6 +840,7 @@ li.nav-item {
   justify-content: flex-start;
 }
 
+
 @media screen and (max-width: 900px) {
   .container.padding_container__card {
     padding: 0;
@@ -849,6 +849,16 @@ li.nav-item {
   .modal-dialog {
     margin: 0 !important;
   }
+
+  .btn-fixed-custom {
+    position: fixed;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    width: 80%;
+    text-align: center;
+    margin: 0 auto;
+}
 
 }
 
@@ -952,6 +962,7 @@ div.class-mytrainings-list p {
   display: flex;
   flex-wrap: nowrap;
   width: 100%;
+  margin-bottom:50px;
 }
 
 .timeline__trainings p {
@@ -1433,7 +1444,7 @@ span.circle-notify {
   width: 5px;
   height: 5px;
   padding: 5px;
-  left: 32px;
+  left: 28px;
 }
 
 li.notify_list__item {
@@ -1443,4 +1454,104 @@ li.notify_list__item {
 
 .div:where(.swal2-icon) {
   border-color: transparent !important;
+}
+/** CAROUSEL ICON **/
+
+.carousel-card {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+}
+
+/* Largura da barra de rolagem */
+.carousel-card::-webkit-scrollbar {
+  width: 0px;
+}
+
+.carousel-item-card {
+  flex: 0 0 auto;
+  width: 40%;
+}
+
+button.next {
+  background: transparent;
+  border: 0;
+  background: #00a9e7;
+  opacity: 1;
+  color: white;
+  padding: 10px 15px;
+}
+
+
+button.prev {
+  background: transparent;
+  border: 0;
+  background: #00a9e7;
+  opacity: 1;
+  color: white;
+  padding: 10px 15px;
+}
+
+.carousel-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: 15px;
+}
+
+.card-support {
+  background: #e9ecef;
+  margin: 10px;
+}
+
+div.chat {
+  background: white;
+  padding: 20px;
+  height: 100%;
+}
+
+span.reply {
+  color: #6c757d;
+}
+
+.datetime-chat>p {
+  background: #ceffa3;
+  border-radius: 50px;
+  padding: 2px 9px;
+  font-family: monospace;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto;
+}
+#toggleButton{
+  cursor:pointer;
+}
+
+@media screen and (max-width: 900px) {
+  .carousel-item-card {
+      flex: 0 0 auto;
+      width: 100%;
+  }
+}
+
+.comment_user{
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-training {
+  border-bottom: 1px solid #d6d6d6;
+}
+
+.whatsapp_button {
+  padding: 2px 7px;
+  background: green;
+  color: white;
+}
+a#phone_wpp {
+  position: absolute;
+  right: 12px;
+  top: 24px;
 }

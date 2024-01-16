@@ -30,4 +30,8 @@ class DashboardService
         return $this->dashboardModel->getTotalProgress();
     }
 
+    public function getReplies($user_id){
+        return $this->dashboardModel->getReplies($user_id);
+    }
+
 }

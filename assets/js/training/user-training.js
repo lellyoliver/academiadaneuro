@@ -76,8 +76,8 @@ function createTrainingChoice() {
                 text: 'Você tem certeza que deseja criar este treinamento?',
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
+                confirmButtonColor: '#00a9e7',
+                cancelButtonColor: '#dc3545',
                 confirmButtonText: 'Sim, Criar!',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
@@ -101,7 +101,7 @@ function createTrainingChoice() {
                         .then(data => {
                             if (data.status === 'sucesso') {
                                 Swal.fire('Sucesso!', 'Treinamento criado com sucesso.', 'success').then(() => {
-                                    window.location.href = "meus-treinamentos";
+                                    window.location.href = "dashboard";
                                 });
                             } else {
                                 Swal.fire('Erro!', 'Erro: ' + data.mensagem, 'error');
@@ -231,8 +231,9 @@ function scrollTrainingForm() {
 scrollTrainingForm();
 
 function questionTraining() {
-    const questionDivs = document.querySelectorAll('.select-questions');
-    if (questionDivs) {
+    const valid = document.getElementById('form-create');
+    if(valid) {
+        const questionDivs = document.querySelectorAll('.select-questions');
         const totalQuestions = questionDivs.length;
         let currentIndex = 0;
 

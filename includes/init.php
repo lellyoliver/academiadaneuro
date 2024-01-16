@@ -179,6 +179,20 @@ add_action('rest_api_init', function () use ($dashboardController) {
     ));
 });
 
+add_action('rest_api_init', function () use ($dashboardController) {
+    register_rest_route('adn-plugin/v1', '/dashboard/replies/(?P<id>\d+)', array(
+        'methods' => 'GET',
+        'callback' => function (WP_REST_Request $request) use ($dashboardController) {
+            $id = $request->get_param('id');
+            $replies = $dashboardController->getReplies($id);
+            return new WP_REST_Response($replies, 200);
+        },
+        'permission_callback' => '__return_true',
+    ));
+});
+
+
+
 add_action('rest_api_init', function () use ($trainingController) {
     register_rest_route('adn-plugin/v1', '/training', array(
         'methods' => 'POST',
@@ -230,6 +244,18 @@ add_action('rest_api_init', function () use ($myTrainingController) {
     ));
 });
 
+add_action('rest_api_init', function () use ($customerSupportController) {
+    register_rest_route('adn-plugin/v1', '/customerSupport', array(
+        'methods' => 'POST',
+        'callback' => function (WP_REST_Request $request) use ($customerSupportController) {
+            if ($request->get_method() !== 'POST') {
+                return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
+            }
+            return $customerSupportController->create($request);
+        },
+        'permission_callback' => '__return_true',
+    ));
+});
 
 add_shortcode('auth-email', array($authController, 'emailShow'));
 add_shortcode('auth-forgot-password', array($authController, 'forgotPasswordShow'));

@@ -32,15 +32,15 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                         <div class="accordion" id="accordionHelp">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
                                         1. Alguns dos benefícios dessa Estimulação Cerebral:
                                     </button>
                                 </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show"
+                                <div id="collapseOne" class="accordion-collapse collapse"
                                     data-bs-parent="#accordionHelp">
                                     <div class="accordion-body">
-                                        <p id="textTraining" class="mb-4 mt-4"></p>
+                                        <p id="textTraining" class="m-3"></p>
                                     </div>
                                 </div>
                             </div>
@@ -54,21 +54,7 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                                 <div id="collapseTwo" class="accordion-collapse collapse"
                                     data-bs-parent="#accordionHelp">
                                     <div class="accordion-body">
-                                        <p class="mb-4 mt-4">
-                                            <ul>
-                                                <li>Use fones de ouvido (obrigatório): os fones de ouvido ajudam a bloquear
-                                                    os ruídos
-                                                    externos e a garantir que você ouça as frequências com clareza. </li>
-                                                <li>Escolha um ambiente tranquilo: o ambiente tranquilo ajuda você a se
-                                                    concentrar nas
-                                                    frequências e na respiração e a obter o máximo benefício delas. </li>
-                                                <li>Comece com um tempo curto: se você for novo no uso da estimulação
-                                                    cerebral, comece
-                                                    com um tempo curto, de 10 a 15 minutos. À medida que você se acostumar,
-                                                    pode
-                                                    aumentar o tempo gradualmente até fazer por completo. </li>
-                                            </ul>
-                                        </p>
+                                        <p id="usageTips" class="m-3"></p>
                                     </div>
                                 </div>
                             </div>
@@ -83,39 +69,7 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                                 <div id="collapseThree" class="accordion-collapse collapse"
                                     data-bs-parent="#accordionHelp">
                                     <div class="accordion-body">
-                                        <p class="mb-4 mt-4">
-                                            <ul>
-                                                <li>Não use a estimulação cerebral durante a gravidez ou amamentação. </li>
-                                                <li>Não use estimulação cerebral se você tiver epilepsia ou outro distúrbio
-                                                    neurológico.
-                                                </li>
-                                                <li>Se você sentir qualquer desconforto ao usar estimulação cerebral, pare
-                                                    imediatamente
-                                                    e entre em contato. </li>
-                                                <li>Coloque os fones de ouvido (obrigatório): coloque os fones de ouvido
-                                                    sempre
-                                                    respeitando o lado direito e esquerdo. </li>
-                                                <li>Faça a respiração: inspire pelo nariz e expire pelo nariz. Acompanhe o
-                                                    som e o
-                                                    gráfico do treinamento. </li>
-                                                <li>Mantenha os olhos fechados durante a ressonância neural. </li>
-                                                <li>Pratique regularmente: para obter os melhores resultados, pratique a
-                                                    Estimulação
-                                                    cerebral regularmente, pelo menos 3 a 5 vezes por semana. </li>
-                                                <li>Seja paciente: os resultados da estimulação cerebral não são imediatos.
-                                                    É preciso
-                                                    praticar regularmente para obter os benefícios esperados. </li>
-                                                <li>Se você tiver qualquer problema de saúde, como epilepsia ou problemas
-                                                    neurológicos
-                                                    graves consulte seu médico antes de realizar a sessão. </li>
-                                                <li>Se estiver grávida ou amamentando consultar seu médico. </li>
-                                                <li>O Treinamento de Estimulação Cerebral não é um substituto para o
-                                                    tratamento ou
-                                                    diagnóstico médico ou qualquer tipo de tratamento e não substitui
-                                                    qualquer tipo de
-                                                    remédio. </li>
-                                            </ul>
-                                        </p>
+                                        <p id="recommendations" class="m-3"></p>
                                     </div>
                                 </div>
                             </div>
@@ -142,21 +96,7 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                     <!--3-->
                     <div class="timeline__trainings mb-5">
                         <div class="lines__trainings">
-                            <div class="dot__trainings"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-cognitiveStimulation_2.svg
-" alt="Estimulação Cognitiva" width="40" height="40"></div>
-                            <div class="line-trainings"></div>
-                        </div>
-                        <div class="class__trainings">
-                            <h5 class="fw-bold text-uppercase mb-3">Estimulação Cognitiva</h5>
-                            <a role="button" class="btn btn-lg col-3 btn-secondary class_trainings__gameplay"
-                                target="_blank" href="" id="gameplay">Iniciar</a>
-                        </div>
-                    </div>
-                    <!--4-->
-                    <div class="timeline__trainings mb-5">
-                        <div class="lines__trainings">
-                            <div class="dot__trainings"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-neuralBreathing.svg
-" alt="Respiração Neural" width="40" height="40"></div>
+                            <div class="dot__trainings"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-neuralBreathing.svg" alt="Respiração Neural" width="40" height="40"></div>
                             <div class="line-trainings"></div>
                         </div>
                         <div class="class__trainings">
@@ -165,6 +105,18 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                                 <source src="" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
+                        </div>
+                    </div>
+                    <!--4-->
+                    <div class="timeline__trainings mb-5">
+                        <div class="lines__trainings">
+                            <div class="dot__trainings"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-cognitiveStimulation_2.svg" alt="Estimulação Cognitiva" width="40" height="40"></div>
+                            <div class="line-trainings"></div>
+                        </div>
+                        <div class="class__trainings">
+                            <h5 class="fw-bold text-uppercase mb-3">Estimulação Cognitiva</h5>
+                            <a role="button" class="btn btn-lg col-3 btn-secondary class_trainings__gameplay"
+                                target="_blank" href="" id="gameplay">Iniciar</a>
                         </div>
                     </div>
                     <form id="create-progress" method="post">

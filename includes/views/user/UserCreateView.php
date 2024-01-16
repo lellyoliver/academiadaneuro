@@ -65,9 +65,6 @@
                                         <option value="health-pro">
                                             <?php echo esc_html__('Profissional da Saúde'); ?>
                                         </option>
-                                        <option value="coach">
-                                            <?php echo esc_html__('Profissional da Educação'); ?>
-                                        </option>
                                         <option value="training">
                                             <?php echo esc_html__('Uso Pessoal'); ?></option>
                                     </select>

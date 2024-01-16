@@ -1,22 +1,23 @@
 function createUser() {
     window.addEventListener('show.bs.offcanvas', function () {
+        const loading = document.getElementById('loading');
         const form = document.getElementById('form-create');
         if (form) {
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
+                loading.style.display = '';
 
-                // Exibe a Sweet Alert para confirmar a criação do usuário
                 Swal.fire({
-                    title: 'Deseja criar usuário?',
+                    title: 'Deseja criar o Paciente?',
                     icon: 'question',
                     showCancelButton: true,
-                    confirmButtonColor: '#0A3876',
+                    confirmButtonColor: '#00a9e7',
                     cancelButtonColor: '#dc3545',
                     confirmButtonText: 'Sim, Criar!',
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Se o usuário confirmar, continua com a criação
+
                         const formData = new FormData(form);
                         const name = formData.get('name');
                         const email = formData.get('email');
@@ -25,6 +26,8 @@ function createUser() {
                         const phone = formData.get('phone');
                         const connectedUser = formData.get('connected_user');
                         const description = formData.get('description');
+                        const dateBirth = formData.get('date_birth');
+
 
                         fetch('/wp-json/adn-plugin/v1/users-related', {
                             method: 'POST',
@@ -39,19 +42,23 @@ function createUser() {
                                 phone: phone,
                                 connected_user: connectedUser,
                                 description: description,
+                                date_birth: dateBirth
                             })
                         })
                             .then(response => response.json())
                             .then(data => {
                                 if (data.status === 'sucesso') {
-                                    Swal.fire('Sucesso!', 'Usuário criado com sucesso.', 'success').then(() => {
+                                    loading.style.display = 'none';
+                                    Swal.fire('Sucesso!', data.mensagem, 'success').then(() => {
                                         location.reload();
                                     });
                                 } else {
-                                    Swal.fire('Erro!', 'Erro ao criar usuário: ' + data.mensagem, 'error');
+                                    loading.style.display = 'none';
+                                    Swal.fire('Erro!', data.mensagem, 'error');
                                 }
                             })
                             .catch(error => {
+                                loading.style.display = 'none';
                                 console.error('Erro ao criar usuário:', error);
                             });
                     }
@@ -64,12 +71,13 @@ function createUser() {
 
 function updateUser() {
     window.addEventListener('show.bs.offcanvas', function () {
+        const loading = document.getElementById('loading');
         const updateForm = document.getElementById('form-update');
         if (updateForm) {
             updateForm.addEventListener('submit', function (event) {
                 event.preventDefault();
+                loading.style.display = '';
 
-                // Exibe a Sweet Alert para confirmar a atualização
                 Swal.fire({
                     title: 'Deseja Atualizar?',
                     icon: 'question',
@@ -87,6 +95,8 @@ function updateUser() {
                         const passwordUpdate = formData.get('passwordUpdate');
                         const phoneUpdate = formData.get('phoneUpdate');
                         const descriptionUpdate = formData.get('descriptionUpdate');
+                        const dateBirthUpdate = formData.get('date_birthUpdate');
+
 
                         fetch('/wp-json/adn-plugin/v1/users-related/update', {
                             method: 'POST',
@@ -100,21 +110,25 @@ function updateUser() {
                                 passwordUpdate: passwordUpdate,
                                 phoneUpdate: phoneUpdate,
                                 descriptionUpdate: descriptionUpdate,
+                                date_birthUpdate: dateBirthUpdate,
+
                             })
                         })
                             .then(response => response.json())
                             .then(data => {
                                 if (data.status === 'sucesso') {
-                                    Swal.fire('Sucesso!', 'Usuário atualizado com sucesso.', 'success').then(() => {
+                                    loading.style.display = 'none';
+                                    Swal.fire('Sucesso!', data.mensagem, 'success').then(() => {
                                         // location.reload();
                                     });
                                 } else {
-
-                                    Swal.fire('Erro!', 'Erro ao atualizar usuário: ' + data.mensagem, 'error');
+                                    loading.style.display = 'none';
+                                    Swal.fire('Erro!', data.mensagem, 'error');
                                 }
                             })
                             .catch(error => {
-                                console.error('Erro ao atualizar usuário:', error);
+                                loading.style.display = 'none';
+                                console.error('Erro ao atualizar paciente:', error);
                             });
                     }
                 });
@@ -132,6 +146,8 @@ function viewUser() {
         const phoneUpdateInput = document.getElementById('phoneUpdate');
         const emailUpdateInput = document.getElementById('emailUpdate');
         const passwordUpdateInput = document.getElementById('passwordUpdate');
+        const dateBirthInput = document.getElementById('date_birthUpdate');
+        const phone_wpp = document.getElementById('phone_wpp');
 
 
         for (let index = 0; index < btnsViewUser.length; index++) {
@@ -146,10 +162,12 @@ function viewUser() {
                     .then(data => {
                         userIdInput.value = data.ID;
                         nameUpdateInput.value = data.billing_first_name;
+                        dateBirthInput.value = data.date_birth;
                         descriptionUpdateInput.value = data.description;
                         emailUpdateInput.value = data.user_email;
                         passwordUpdateInput.value = data.user_pass;
                         phoneUpdateInput.value = data.billing_phone;
+                        phone_wpp.href = `https://wa.me/+55${data.billing_phone}`
                     })
                     .catch(error => console.error('Erro ao buscar detalhes do usuário:', error));
             });
@@ -169,8 +187,8 @@ function deleteUser() {
                     text: 'Você não será capaz de reverter isso!',
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
+                    confirmButtonColor: '#00a9e7',
+                    cancelButtonColor: '#dc3545',
                     confirmButtonText: 'Sim, Excluir!',
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
@@ -182,7 +200,7 @@ function deleteUser() {
                                 location.reload();
                             })
                             .catch(error => {
-                                console.error('Erro ao deletar o usuário:', error);
+                                console.error('Erro ao deletar o Paciente:', error);
                             });
                     }
                 });

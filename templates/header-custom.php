@@ -96,7 +96,7 @@ $messages = $user->updateNotification();
                         </button>
                         <?php if($messages):?>
                         <ul class="dropdown-menu dropdown-notify">
-                            
+
                             <li class="notify_list__item fw-bold text-uppercase">
                                 Notificações
                             </li>
@@ -148,7 +148,7 @@ $messages = $user->updateNotification();
                                 <?php echo $messages_5;?>
                             </li>
                             <?php endif;?>
-                            
+
                         </ul>
                         <?php endif;?>
 

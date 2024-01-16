@@ -571,7 +571,7 @@
                         </select>
                     </div>
                     <div class="select-questions">
-                        <p class="fw-bold">Você tem dificuldade em controlar sua raiva ou está deixando você?
+                        <p class="fw-bold">Você tem dificuldade em controlar sua raiva ou está deixando ela dominar você?
                         </p>
                         <select name="thoughtsInvasive" class="form-select mb-4">
                             <option value="0">Selecione uma resposta</option>

@@ -36,6 +36,7 @@ class DashboardController
         $list_progress_unify = $this->dashboardService->getListProgress();
         $patients = $this->dashboardService->getListRelated();
         $progress = $this->dashboardService->getTotalProgress();
+        $replies = $this->getReplies($user_id);
 
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/dashboard/DashboardView.php';
@@ -54,7 +55,7 @@ class DashboardController
     {
         return $this->userService->userExpiredData();
     }
-    
+
     /**
      * Check if the current user has specific roles.
      *
@@ -68,5 +69,16 @@ class DashboardController
             return true;
         }
         return false;
+    }
+
+    /**
+     * Get the latestpost training refer user_related.
+     *
+     * @param int $id The ID of the post Training.
+     * @return mixed The latest post for the training.
+     */
+    public function getReplies($id)
+    {
+        return $this->dashboardService->getReplies($id);
     }
 }

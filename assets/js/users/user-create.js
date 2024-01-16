@@ -19,6 +19,7 @@ function createUser() {
   
         // Verifique se algum campo está vazio
         if (!name || !email || !billing_data || !city || !phone || !password || !role) {
+          loading.style.display = 'none';
           const missingFields = [];
           if (!name) missingFields.push('Nome Completo');
           if (!billing_data) missingFields.push('CNPJ ou CPF');
@@ -42,6 +43,7 @@ function createUser() {
   
         // Verifique a validade da senha
         if (!isPasswordValid(password)) {
+          loading.style.display = 'none';
           Swal.fire({
             icon: 'error',
             title: 'Erro',

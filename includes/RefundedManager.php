@@ -62,7 +62,7 @@ class RefundedManagerTable extends WP_List_Table
         $this->_column_headers = array($this->get_columns(), array(), array());
         $this->items = array();
         foreach ($comments as $comment) {
-            $href = "https://app.institutodeneurociencia.com.br/wp-admin/admin.php?page=wc-orders&action=edit&id=" . $comment->comment_post_ID;
+            $href = site_url('/wp-admin/admin.php?page=wc-orders&action=edit&id=' . $comment->comment_post_ID);
 
             $this->items[] = array(
                 'comment_author' => $comment->comment_author,
@@ -203,18 +203,69 @@ class ClassRefundedAdminPage
     }
 
     public function adn_refunded_manager()
-    {
-        echo '<div class="wrap">';
-        echo '<h2>Gerenciar Reembolsos</h2>';
-        echo '<p>O cliente recebeu um e-mail sobre o reembolso parcial. Dentro de 72 horas, por favor, proceda com o reembolso correspondente. Confira o número do pedido abaixo e entre em contato com o usuário através da plataforma, caso seja necessário.</p>';
-        echo '<form method="post">';
-        $list_table = new RefundedManagerTable();
-        $list_table->prepare_items();
-        $list_table->display();
+    {?>
+        <style>
+        body {
+            background-color: #f0f0f1;
+        }
 
-        echo '</form>';
 
-        echo '</div>';
+        .header-plans {
+            background: #fff;
+            top: 32px;
+            padding: 10px 0px 10px 20px;
+        }
+
+        #wpcontent {
+            height: calc(100vh - 32px);
+            padding-left: 0px;
+        }
+
+        .header-title {
+            font-size: 14px;
+        }
+        .wrap {
+            padding: 0px 20px!important;
+            margin:0!important;
+        }
+        .container-plans {
+            display: flex;
+            max-width: 1032px;
+            margin: 0 auto;
+            justify-content: space-between;
+            flex-direction: column;
+        }
+
+        @media screen and (max-width: 600px) {
+            .auto-fold #wpcontent {
+                padding-left: 0px !important;
+            }
+
+            .header-plans {
+                top: 49px;
+            }
+
+        }
+        </style>
+
+        <div class="header-plans">
+        <h1 class="header-title">Reembolsos</h1>
+        </div>
+        <div class="wrap">
+        <div class="container-plans">
+            <p>O cliente recebeu um e-mail sobre o reembolso parcial. Dentro de 72 horas, por favor, proceda com o reembolso correspondente. Confira o número do pedido abaixo e entre em contato com o usuário através da plataforma, caso seja necessário.</p>
+            <form method="post">
+                <?php
+                    $list_table = new RefundedManagerTable();
+                    $list_table->prepare_items();
+                    $list_table->display();
+                ?>
+
+            </form>
+        </div>
+
+        </div>
+        <?php
     }
 
 }

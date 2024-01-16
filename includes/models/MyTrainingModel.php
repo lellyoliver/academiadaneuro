@@ -225,12 +225,17 @@ class MyTrainingModel
         $neuralBreathing = get_post_meta($post_id, 'neuralBreathing', true);
         $cognitiveStimulation = get_post_meta($post_id, 'cognitiveStimulation', true);
         $textTraining = get_post_meta( $post_id, 'textTraining', true );
+        $usageTips = get_post_meta( $post_id, 'usageTips', true );
+        $recommendations = get_post_meta( $post_id, 'recommendations', true );
+
 
         $response_data = array(
             'neuralResonance' => $neuralResonance,
             'neuralBreathing' => $neuralBreathing,
             'cognitiveStimulation' => $cognitiveStimulation,
             'textTraining' => $textTraining,
+            'usageTips' => $usageTips,
+            'recommendations' => $recommendations,
         );
 
         return $response_data;

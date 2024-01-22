@@ -89,6 +89,7 @@ add_action('rest_api_init', function () use ($userController) {
     ));
 });
 
+
 add_action('rest_api_init', function () use ($userController) {
     register_rest_route('adn-plugin/v1', '/users/refunded', array(
         'methods' => 'POST',

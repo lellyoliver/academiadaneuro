@@ -126,9 +126,10 @@ class DashboardModel
 
             $categorySums[$userId]['user_id'] = $userId;
             $categorySums[$userId]['updateProgress'] = $updateProgress;
-            error_reporting(error_reporting() & ~E_NOTICE);
-            $total = array_sum($categorySums[$userId]) - $categorySums[$userId]['user_id'] - $categorySums[$userId]['updateProgress'];
-            $categorySums[$userId]['totalProgress'] = round($total / (count($categorySums[$userId]) - 2), 0); // Subtrai 1 para não contar o 'user_id'
+            // error_reporting(error_reporting() & ~E_NOTICE);
+            $total = array_sum($categorySums[$userId]) - (int)$categorySums[$userId]['user_id'] - (int)$categorySums[$userId]['updateProgress'];
+            $categorySums[$userId]['totalProgress'] = round($total / (count($categorySums[$userId]) - 2), 0);
+
         }
 
         return $categorySums;

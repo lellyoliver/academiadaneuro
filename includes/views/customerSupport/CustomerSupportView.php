@@ -74,9 +74,9 @@
         </div>
         <?php endif;endforeach;endif;?>
     </div>
-    <div class="carousel-nav">
-        <button class="prev"><i class="fa fa-chevron-left"></i></button>
-        <button class="next"><i class="fa fa-chevron-right"></i></button>
+    <div class="carousel-nav" style="padding:0px 12px;">
+        <button class="prev btn btn-sm btn-secondary me-2"><i class="fa fa-chevron-left"></i></button>
+        <button class="next btn btn-sm btn-secondary"><i class="fa fa-chevron-right"></i></button>
     </div>
 </div>
 
@@ -90,7 +90,6 @@ document.querySelectorAll('.comment_user').forEach(function(element) {
     const originalText = element.textContent;
     const truncatedText = originalText.substring(0, 130) + '...[click]';
 
-    // Definir o texto encurtado inicialmente
     element.textContent = truncatedText;
 
     element.addEventListener('click', function() {

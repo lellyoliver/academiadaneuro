@@ -300,7 +300,7 @@ function adn_page_block()
         exit;
     }
     
-    if (!is_user_logged_in() && !is_page(array('login', 'register', 'email-confirmation', 'forgot-password')) && !is_admin() && !is_front_page() && !is_product()) {
+    if (!is_user_logged_in() && !is_page(array('login', 'register', 'email-confirmation', 'forgot-password')) && !is_admin() && !is_front_page() && !is_product() && !is_single()) {
         wp_redirect(site_url('/login'));
         exit;
     }
@@ -314,9 +314,9 @@ function adn_page_block()
         }
     }
 
-    if (is_user_logged_in() && array_intersect(array('coach', 'health-pro'), $current_user->roles)) {
+    if (is_user_logged_in() && array_intersect(array('coach', 'health-pro', 'administrator'), $current_user->roles)) {
         if (is_page(array('meus-treinamentos', 'training', 'my-account', 'cart')) || is_home() || is_front_page() || is_product()) {
-            wp_redirect(site_url('/meu-perfil'));
+            wp_redirect(site_url('/dashboard'));
             exit;
         }
     }
@@ -459,7 +459,7 @@ add_filter('woocommerce_checkout_fields', 'adn_custom_checkout_user_fullfil');
 //         $order->update_status('completed');
 //     }
 // }
-// add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
+add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
 
 function adn_add_product_checkout()
 {
@@ -602,20 +602,3 @@ function adn_verify_completed($order_id)
     }
 }
 add_action('woocommerce_thankyou', 'adn_verify_completed', 10, 1);
-
-
-// function adn_connect_remember($expiration, $user_id, $remember)
-// {
-
-//     return $remember ? $expiration + (60 * 60 * 24 * 365 * 10) : $expiration;
-
-// }
-// add_filter('auth_cookie_expiration', 'adn_connect_remember', 99, 3);
-
-
-function remover_metabox_postcustom()
-{
-    remove_meta_box('postcustom', 'customer-support', 'normal');
-}
-
-add_action('admin_menu', 'remover_metabox_postcustom');

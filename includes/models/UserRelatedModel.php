@@ -27,7 +27,7 @@ class UserRelatedModel
             'meta_input' => [
                 'billing_first_name' => sanitize_text_field($user_data['name']),
                 'billing_phone' => $phone,
-                'billing_avatar' => '143',
+                'billing_avatar' => '145',
                 'date_birth' => sanitize_text_field($user_data['date_birth']),
             ],
         );
@@ -43,15 +43,14 @@ class UserRelatedModel
 
     public function updateUser($name, $email, $user_id, $password, $description)
     {
-
-        $token = sanitize_text_field($password);
-
-        wp_set_password($token, $user_id);
+        if(!empty($password)){
+            $token = sanitize_text_field($password);
+            wp_set_password($token, $user_id);
+        }
 
         $userdata = array(
             'ID' => $user_id,
             'user_login' => sanitize_text_field($name),
-            'user_pass' => $token,
             'user_email' => sanitize_email($email),
             'display_name' => sanitize_text_field($name),
             'nickname' => sanitize_text_field($name),

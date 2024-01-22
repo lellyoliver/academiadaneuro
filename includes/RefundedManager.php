@@ -89,24 +89,26 @@ class RefundedManagerTable extends WP_List_Table
 
                 $sql = $wpdb->prepare(
                     "SELECT umeta.meta_key
-                FROM {$table_name} umeta
-                WHERE umeta.user_id = %d AND umeta.meta_value LIKE %s",
+                    FROM {$table_name} umeta
+                    WHERE umeta.user_id = %d AND umeta.meta_value LIKE %s",
                     $user_id,
-                    '%' . $refund_id . '%'
+                    '%' . $wpdb->esc_like($refund_id) . '%'
                 );
 
                 $meta_keys = $wpdb->get_col($sql);
+                if (!empty($meta_keys)) {
+                    $meta_value = json_decode(get_user_meta($user_id, $meta_keys[0], true));
+                    $timezone = new DateTimeZone('America/Sao_Paulo');
+                    $date = new DateTime('now', $timezone);
+                    $date->sub(new DateInterval('P1D'));
+                    $date_local = $date->format('Y-m-d');
+                    $meta_value->expiration_date = $date_local;
 
-                $meta_value = json_decode(get_user_meta($user_id, $meta_keys[0], true));
-                $timezone = new DateTimeZone('America/Sao_Paulo');
-                $date = new DateTime('now', $timezone);
-                $date->sub(new DateInterval('P1D'));
-                $date_local = $date->format('Y-m-d');
-                $meta_value->expiration_date = $date_local;
+                    update_user_meta($user_id, $meta_keys[0], json_encode($meta_value));
 
-                update_user_meta($user_id, $meta_keys[0], json_encode($meta_value));
+                    $wpdb->delete($wpdb->comments, array('comment_post_ID' => $refund_id), array('%d'));
+                }
 
-                $wpdb->delete($wpdb->comments, array('comment_post_ID' => $refund_id), array('%d'));
             }
 
             wp_redirect(admin_url('admin.php?page=wc-reembolsos'));
@@ -146,10 +148,6 @@ class RefundedManagerTable extends WP_List_Table
 
     public function extra_tablenav($which)
     {
-        if ($which == 'top') {
-
-        }
-
         if ($which == 'bottom') {
             echo '<div class="alignleft actions">';
             echo '<input type="hidden" name="action" value="delete" />';
@@ -170,6 +168,9 @@ class ClassRefundedAdminPage
     {
         $count_unseen_refunds = $this->get_unseen_refunds_count();
         $count = ($count_unseen_refunds > 0 ? $count_unseen_refunds : '');
+
+        $count_title = '';
+        $count_admin = '';
 
         if ($count > 0) {
             $count_admin = '<span class="awaiting-mod update-plugins count-1"><span class="processing-count">' . $count . '</span></span>';
@@ -204,69 +205,71 @@ class ClassRefundedAdminPage
 
     public function adn_refunded_manager()
     {?>
-        <style>
-        body {
-            background-color: #f0f0f1;
-        }
+<style>
+body {
+    background-color: #f0f0f1;
+}
 
 
-        .header-plans {
-            background: #fff;
-            top: 32px;
-            padding: 10px 0px 10px 20px;
-        }
+.header-plans {
+    background: #fff;
+    top: 32px;
+    padding: 10px 0px 10px 20px;
+}
 
-        #wpcontent {
-            height: calc(100vh - 32px);
-            padding-left: 0px;
-        }
+#wpcontent {
+    height: calc(100vh - 32px);
+    padding-left: 0px;
+}
 
-        .header-title {
-            font-size: 14px;
-        }
-        .wrap {
-            padding: 0px 20px!important;
-            margin:0!important;
-        }
-        .container-plans {
-            display: flex;
-            max-width: 1032px;
-            margin: 0 auto;
-            justify-content: space-between;
-            flex-direction: column;
-        }
+.header-title {
+    font-size: 14px;
+}
 
-        @media screen and (max-width: 600px) {
-            .auto-fold #wpcontent {
-                padding-left: 0px !important;
-            }
+.wrap {
+    padding: 0px 20px !important;
+    margin: 0 !important;
+}
 
-            .header-plans {
-                top: 49px;
-            }
+.container-plans {
+    display: flex;
+    max-width: 1032px;
+    margin: 0 auto;
+    justify-content: space-between;
+    flex-direction: column;
+}
 
-        }
-        </style>
-
-        <div class="header-plans">
-        <h1 class="header-title">Reembolsos</h1>
-        </div>
-        <div class="wrap">
-        <div class="container-plans">
-            <p>O cliente recebeu um e-mail sobre o reembolso parcial. Dentro de 72 horas, por favor, proceda com o reembolso correspondente. Confira o número do pedido abaixo e entre em contato com o usuário através da plataforma, caso seja necessário.</p>
-            <form method="post">
-                <?php
-                    $list_table = new RefundedManagerTable();
-                    $list_table->prepare_items();
-                    $list_table->display();
-                ?>
-
-            </form>
-        </div>
-
-        </div>
-        <?php
+@media screen and (max-width: 600px) {
+    .auto-fold #wpcontent {
+        padding-left: 0px !important;
     }
+
+    .header-plans {
+        top: 49px;
+    }
+
+}
+</style>
+
+<div class="header-plans">
+    <h1 class="header-title">Reembolsos</h1>
+</div>
+<div class="wrap">
+    <div class="container-plans">
+        <p>O cliente recebeu um e-mail sobre o reembolso parcial. Dentro de 72 horas, por favor, proceda com o reembolso
+            correspondente. Confira o número do pedido abaixo e entre em contato com o usuário através da plataforma,
+            caso seja necessário.</p>
+        <form method="post">
+            <?php
+$list_table = new RefundedManagerTable();
+        $list_table->prepare_items();
+        $list_table->display();
+        ?>
+        </form>
+    </div>
+</div>
+<?php
+}
 
 }
 

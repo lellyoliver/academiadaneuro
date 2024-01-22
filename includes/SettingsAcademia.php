@@ -12,7 +12,7 @@ class PlansActive
         add_submenu_page(
             'woocommerce',
             'Planos Ativos',
-            'Planos Ativos' . ' ' . $count_admin,
+            'Planos Ativos',
             'manage_woocommerce',
             'wc-plans',
             array($this, 'adn_plans_manager')

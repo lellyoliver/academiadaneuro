@@ -85,7 +85,7 @@
                 <?php endif;?>
             </div>
             <div class="row m-0 m-auto mt-3 display-mobile">
-                <a class="btn btn-lg btn-3 btn-fixed-custom" href="<?php echo site_url('/novo-treinamento', 'https') ?>"
+                <a class="btn btn-lg btn-3" href="<?php echo site_url('/novo-treinamento', 'https') ?>"
                     title="criar treinamento"> <i class="fa-solid fa-wand-magic-sparkles"></i>
                     <?php echo esc_html('Criar novo treinamento'); ?></a>
             </div>

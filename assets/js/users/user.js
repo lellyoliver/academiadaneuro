@@ -63,7 +63,6 @@ function avatar() {
           quality: 0.6,
           success(result) {
             const reader = new FileReader();
-
             reader.onload = function (e) {
               preview.src = e.target.result;
             };

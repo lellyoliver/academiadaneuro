@@ -5,10 +5,14 @@ require_once plugin_dir_path(__FILE__) . '../TextProcessor.php';
 class UserModel
 {
     private $textProcessor;
+    private $table_name_comments;
 
     public function __construct()
     {
+        global $wpdb;
+
         $this->textProcessor = new TextProcessor;
+        $this->table_name_comments = $wpdb->prefix . 'comments';
     }
 
     /**
@@ -40,15 +44,13 @@ class UserModel
                 'first_login' => $current_datetime,
                 'confirmation_token' => sanitize_text_field($confirmation_token),
                 'confirm_terms_services' => sanitize_text_field($user_data['termsAndServices']),
-                'billing_avatar' => '143',
+                'billing_avatar' => '145',
             ],
         );
 
         $user_id = wp_insert_user(wp_slash($data));
 
         $confirmation_email_sent = $this->sendEmailConfirmation($user_data, $confirmation_token, $user_id);
-
-        
 
         if ($user_data['role'] === "training") {
             $this->newUserExpired($user_id);
@@ -257,10 +259,12 @@ class UserModel
     public function updateUser($name, $email, $password, $user_id)
     {
 
-        $token = sanitize_text_field($password);
+        if (!empty($password)) {
+            $token = sanitize_text_field($password);
+            wp_set_password($token, $user_id);
+            wp_set_auth_cookie($user_id);
 
-        wp_set_password($token, $user_id);
-        wp_set_auth_cookie($user_id);
+        }
 
         $userdata = array(
             'ID' => $user_id,
@@ -324,18 +328,14 @@ class UserModel
     public function getLatestOrders($id)
     {
         if (class_exists('WooCommerce')) {
-            $order_args = array(
-                'numberposts' => 10,
-                'post_type' => 'shop_order',
-                'post_status' => array('wc-completed', 'wc-processing', 'wc-refunded'),
-                'meta_key' => '_customer_user',
-                'meta_value' => $id,
+            $orders = wc_get_orders(array(
+                'status' => array('wc-completed', 'wc-processing', 'wc-refunded', 'wc-pending'),
+                'limit' => -1,
                 'orderby' => 'date',
                 'order' => 'DESC',
-            );
-
-            $orders = get_posts($order_args);
-
+                'customer_id' => $id,
+            ));
+    
             return $orders;
         }
     }
@@ -425,7 +425,7 @@ class UserModel
         $order = wc_create_order();
         $_plan_trial = get_option('_plan_trial');
 
-        $product_id = $_plan_trial ;
+        $product_id = $_plan_trial;
         $order->add_product(wc_get_product($product_id), 1);
 
         $order->set_customer_id($user_id);
@@ -435,10 +435,9 @@ class UserModel
         $order->save();
 
         $order_id = $order->get_id();
-        
 
         $product_data = array(
-            $_plan_trial  => '+7 days',
+            $_plan_trial => '+7 days',
         );
 
         $order = wc_get_order($order_id);
@@ -513,7 +512,7 @@ class UserModel
     public function webhookUserSend($user_data)
     {
         $webhook_url = 'https://hook.us1.make.com/zk74k3x1up62fj5do42q4d2s9ncu3gcu';
-        
+
         $webhook_data = array(
             'full_name' => $user_data['name'],
             'phone' => $user_data['phone'],
@@ -534,6 +533,28 @@ class UserModel
             $body = wp_remote_retrieve_body($response);
             $decoded_response = json_decode($body, true);
         }
+    }
+
+    public function openPixShow()
+    {
+        global $wpdb;
+
+        $sql = $wpdb->prepare("SELECT * FROM $this->table_name_comments");
+        $comments = $wpdb->get_results($sql, OBJECT);
+
+        $comments_array = array();
+
+        foreach ($comments as $comment) {
+            $post_id = $comment->comment_post_ID;
+            $comment_content = $comment->comment_content;
+
+            $comments_array[$post_id][] = array(
+                "comment_content" => $comment_content,
+            );
+        }
+
+        return $comments_array;
+
     }
 
 }

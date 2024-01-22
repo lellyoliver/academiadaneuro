@@ -205,30 +205,30 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-function scrollTrainingForm() {
-    let choiceForm = document.getElementById('create-choice-form');
-    if (choiceForm) {
-        const initialPosition = choiceForm.offsetTop;
+// function scrollTrainingForm() {
+//     let choiceForm = document.getElementById('create-choice-form');
+//     if (choiceForm) {
+//         const initialPosition = choiceForm.offsetTop;
 
-        window.addEventListener('scroll', function () {
-            let scrollPosition = window.scrollY;
-            let screenWidth = window.innerWidth;
+//         window.addEventListener('scroll', function () {
+//             let scrollPosition = window.scrollY;
+//             let screenWidth = window.innerWidth;
 
-            // Adicione a condição para verificar a largura da tela
-            if (scrollPosition > initialPosition && screenWidth > 600) {
-                choiceForm.style.position = 'fixed';
-                choiceForm.style.width = '40%';
-                choiceForm.style.bottom = '0';
-            } else {
-                choiceForm.style.position = '';
-                choiceForm.style.width = '';
-                choiceForm.style.bottom = '';
-            }
-        });
-    }
-}
+//             // Adicione a condição para verificar a largura da tela
+//             if (scrollPosition > initialPosition && screenWidth > 600) {
+//                 choiceForm.style.position = 'fixed';
+//                 choiceForm.style.width = '38%';
+//                 choiceForm.style.bottom = '0';
+//             } else {
+//                 choiceForm.style.position = '';
+//                 choiceForm.style.width = '';
+//                 choiceForm.style.bottom = '';
+//             }
+//         });
+//     }
+// }
 
-scrollTrainingForm();
+// scrollTrainingForm();
 
 function questionTraining() {
     const valid = document.getElementById('form-create');

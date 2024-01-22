@@ -26,7 +26,7 @@ class CustomerSupportModel
 
         $post_id = wp_insert_post($post_data);
 
-        wp_set_post_terms($post_id, 24, 'customer-support-category');
+        wp_set_post_terms($post_id, 23, 'customer-support-category');
 
         update_option('protocol', $i);
 
@@ -68,7 +68,6 @@ class CustomerSupportModel
                 'taxonomies' => array(),
             );
     
-            // Adiciona os comentários ao suporte_item
             foreach ($comments as $comment) {
                 $comment_date = $comment->comment_date;
                 $formatted_comment_date = date("d/m/Y \à\s H\hi", strtotime($comment_date));
@@ -78,7 +77,6 @@ class CustomerSupportModel
                 );
             }
     
-            // Adiciona as taxonomias ao suporte_item
             foreach ($taxonomies as $taxonomy) {
                 $terms = wp_get_post_terms($id, $taxonomy);
                 foreach ($terms as $term) {
@@ -93,7 +91,6 @@ class CustomerSupportModel
                 }
             }
     
-            // Adiciona o suporte_item ao array geral
             $support_data[] = $support_item;
         }
     

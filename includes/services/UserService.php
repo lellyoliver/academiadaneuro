@@ -121,4 +121,9 @@ class UserService
         return $this->userModel->orderRefunded($order_id);
     }
 
+
+    public function openPixShow(){
+        return $this->userModel->openPixShow();
+    }
+
 }

@@ -5,6 +5,7 @@ require_once plugin_dir_path(__FILE__) . '../TextProcessor.php';
 class UserController
 {
     private $userService;
+    private $textProcessor;
 
     public function __construct()
     {
@@ -89,7 +90,7 @@ class UserController
             'billing_phone' => $phone,
         ];
 
-        if ($role == 'coach' || $role == 'health-pro' || $role == 'administrator') {
+        if ($role == 'coach' || $role == 'health-pro' || $role == 'administrator' || $role == 'training') {
             $meta_fields['billing_postcode'] = $cep;
             $meta_fields['billing_address_1'] = $address;
             $meta_fields['billing_state'] = $states;
@@ -132,7 +133,7 @@ class UserController
             wp_redirect(site_url('/login', 'https'));
             exit;
         }
-
+        $openPix = $this->openPixShow();
         $orders = $this->getOrderId($user_id);
         $expireds = $this->userExpiredData();
         $userExpireds = $this->getUserExpired();
@@ -222,6 +223,10 @@ class UserController
             'mensagem' => 'Não foi possível fazer o reembolso.',
         );
         return new WP_REST_Response($response, 500);
+    }
+    
+    public function openPixShow(){
+        return $this->userService->openPixShow();
     }
 
 }

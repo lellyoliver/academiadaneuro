@@ -1,7 +1,9 @@
 <?php
 class MyTrainingModel
 {
-    private $table_name;
+    private $table_name_replies;
+    private $table_name_progress;
+
 
     public function __construct()
     {

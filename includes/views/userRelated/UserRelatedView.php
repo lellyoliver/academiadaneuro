@@ -40,7 +40,7 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
                         <td data-label="Nome do Paciente"><?php echo $getUsers['billing_first_name']; ?></td>
                         <td data-label="E-mail"><?php echo $getUsers['user_email']; ?></td>
                         <td data-label="Quadro Clínico"><?php echo $getUsers['description']; ?></td>
-                        <td class="status">
+                        <td class="status" style="background-color:none!important;">
                             <button type="submit" class="btn btn-sm btn-secondary me-2 mb-1 view-cart"
                                 id="cart-user-<?php echo $getUsers['ID']; ?>" data-bs-target="#cartUserRelated"
                                 data-bs-toggle="offcanvas" data-userid="<?php echo $getUsers['ID']; ?>">
@@ -65,7 +65,7 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
                 </tbody>
             </table>
             <div class="row m-0 m-auto mt-3 display-mobile">
-                <button type="button" class="btn btn-lg btn-secondary btn-fixed-custom" data-bs-toggle="offcanvas"
+                <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="offcanvas"
                     data-bs-target="#viewCreateRelated" id="btn_user"><i class="fa-solid fa-user-plus me-5"></i> Novo
                     Paciente
                 </button>
@@ -180,14 +180,14 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
                     <div class="col-md-12 mb-3">
                         <span class="label-float mb-3">
                             <input type="password" id="passwordUpdate" name="passwordUpdate">
-                            <label for="passwordUpdate" class="mb-2"><?php echo esc_html('Senha'); ?></label>
+                            <label for="passwordUpdate" class="mb-2"><?php echo esc_html('Alterar Senha'); ?></label>
                         </span>
                     </div>
                 </div>
                 <input type="hidden" name="user_id" id="userId" value="">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" id="deleteUser"><i class="fa-solid fa-trash"></i></button>
+                <button type="button" class="btn btn-danger me-2" id="deleteUser"><i class="fa-solid fa-trash"></i></button>
                 <button type="submit" class="btn btn-secondary"
                     id="updateUser"><?php echo esc_html('Atualizar'); ?></button>
             </div>

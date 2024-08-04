@@ -29,20 +29,23 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
             <td data-label="Nome do Paciente"><?php echo $getUsers['billing_first_name']; ?></td>
             <td data-label="E-mail"><?php echo $getUsers['user_email']; ?></td>
             <td data-label="Quadro Clínico"><?php echo $getUsers['description']; ?></td>
-            <td class="status" style="background-color:transparent!important;">
+            <td class="status">
                 <button type="submit" class="btn btn-sm btn-secondary me-2 mb-1 view-cart"
                     id="cart-user-<?php echo $getUsers['ID']; ?>" data-bs-target="#cartUserRelated"
                     data-bs-toggle="offcanvas" data-userid="<?php echo $getUsers['ID']; ?>">
                     <i class="fa-solid fa-cart-shopping"></i>
                 </button>
                 <?php
-                if (!empty($expired)) {
-                    foreach ($expired as $expireds) {
-                        if ($expireds['user_id'] == $getUsers['ID']) {
-                            if ($expireds['status']) {
-                                echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="fa-solid fa-circle-check check__mobile color-success" style="font-size:16px;"></i>';
+                // echo '<pre>';
+                // print_r($expireds);
+                // echo '</pre>';
+                if (!empty($expireds)) {
+                    foreach ($expireds as $expired) {
+                        if ($expired['user_id'] == $getUsers['ID']) {
+                            if ($expired['status']) {
+                                echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="fa-solid fa-circle-check check__mobile color-success" style="font-size:16px;"></i> <small>'.$expired['order_date'].' - '.$expired['expiration_date'].'</small>';
                             } else {
-                                echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="fa-solid fa-triangle-exclamation check__mobile color-danger" style="font-size:16px;"></i>';
+                                echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="fa-solid fa-triangle-exclamation check__mobile color-danger" style="font-size:16px;"></i> <small>'.$expired['order_date'].' - '.$expired['expiration_date'].'</small>';
                             }
                         }
                     }

@@ -1,26 +1,27 @@
 <?php
 
-class DBCustom
+class DB
 {
-    private $table_name;
     private $charset_collate;
+    private $wpdb;
 
     public function __construct()
     {
         global $wpdb;
+        $this->wpdb = $wpdb;
         $this->charset_collate = $wpdb->get_charset_collate();
     }
 
-    public function createTableTrainingReplies()
+    public function create_table_adn_replies()
     {
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'training_replies';
+        $table_name = $this->wpdb->prefix . 'adn_replies';
 
         $sql = "CREATE TABLE $table_name (
             reply_id INT NOT NULL AUTO_INCREMENT,
-            user_id BIGINT UNSIGNED NOT NULL,
-            replies LONGTEXT NOT NULL,
+            user_id BIGINT UNSIGNED,
+            post_id BIGINT,
+            replies JSON,
+            treinamentos JSON,
             PRIMARY KEY (reply_id)
         ) $this->charset_collate;";
 
@@ -28,22 +29,21 @@ class DBCustom
         dbDelta($sql);
     }
 
-    public function createTableTrainingProgress()
+    public function create_table_adn_progress()
     {
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'training_progress';
+        $table_name = $this->wpdb->prefix . 'adn_progress';
 
         $sql = "CREATE TABLE $table_name (
         progress_id INT NOT NULL AUTO_INCREMENT,
-        user_id BIGINT UNSIGNED NOT NULL,
-        post_id BIGINT UNSIGNED NOT NULL,
-        dh_enter DATETIME NOT NULL,
-        dh_exit TIME NOT NULL,
-        neuralResonance TIME NOT NULL,
-        cognitiveStimulation TIME NOT NULL,
-        neuralBreathing TIME NOT NULL,
-        updateProgress DATE NOT NULL,
+        user_id BIGINT UNSIGNED,
+        post_id BIGINT UNSIGNED,
+        activity_started BIGINT,
+        activity_completed BIGINT,
+        activity_status BIGINT,
+        neural_breathing BIGINT,
+        neural_resonance BIGINT,
+        cognitive_stimulation BIGINT,
+        activity_updated BIGINT,
         PRIMARY KEY (progress_id)
 
     ) $this->charset_collate;";
@@ -53,5 +53,3 @@ class DBCustom
     }
 
 }
-
-new DBCustom();

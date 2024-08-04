@@ -266,6 +266,7 @@ class UserRelatedModel
 
         foreach ($func_meta as $meta_value) {
             $expiration_date = strtotime($meta_value->expiration_date);
+            $order_date = strtotime($meta_value->order_date);
             $current_date = strtotime('now'); // Obtém a data atual
 
             $status = '';
@@ -281,6 +282,8 @@ class UserRelatedModel
             $result[] = array(
                 'user_id' => $meta_value->user_id,
                 'status' => $status,
+                'order_date' => date_i18n('d/m/Y',$order_date),
+                'expiration_date' => date_i18n('d/m/Y',$expiration_date),
             );
         }
 

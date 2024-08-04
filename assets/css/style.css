@@ -1768,3 +1768,41 @@ td.woocommerce-table__product-name {
   color: white !important;
   font-weight:bold;
 } */
+
+
+a.woocommerce-MyAccount-navigation-link_a {
+  color: #212529;
+  font-weight: 600;
+}
+.woocommerce-MyAccount-navigation > ul {
+  padding: 0;
+}
+li.woocommerce-MyAccount-navigation-link {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 5px;
+}
+table.woocommerce-orders-table {
+  background: #fff;
+}
+.woocommerce table.shop_table {
+  border: 1px solid rgba(0, 0, 0, .1)!important;
+}
+
+section.woocommerce-customer-details {
+  display: none;
+}
+.woocommerce-table--order-details {
+  background: #fff;
+}
+.woocommerce table.shop_table {
+  border: none !important;
+}
+.wcmtx-my-account-links.wcmtx-grid {
+  display: none;
+}
+
+p.order-again {
+  display: none;
+}

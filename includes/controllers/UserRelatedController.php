@@ -145,7 +145,7 @@ class UserRelatedController
             exit;
         }
 
-        $expired = $this->userExpiredData();
+        $expireds = $this->userExpiredData();
         $listUser = $this->getListRelated();
         $getUser = $this->getListedUserRelated();
         $getOrder = $this->userRelatedService->getOrderId();

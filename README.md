@@ -19,7 +19,11 @@ Este documento descreve o fluxo de trabalho Git para ACADEMIA DA NEUROCIENCIA. O
 
     ```sh
     git checkout production
+    ```
+    ```sh
     git pull origin production
+    ```
+    ```sh
     git checkout -b feature/nome-da-feature
     ```
 
@@ -29,6 +33,8 @@ Este documento descreve o fluxo de trabalho Git para ACADEMIA DA NEUROCIENCIA. O
 
     ```sh
     git add .
+    ```
+    ```sh
     git commit -m "8: Implementa melhoria de performance na API"
     ```
 

@@ -1,7 +1,9 @@
 <?php
 class MyTrainingModel
 {
-    private $table_name;
+    private $table_name_replies;
+    private $table_name_progress;
+
 
     public function __construct()
     {
@@ -88,6 +90,7 @@ class MyTrainingModel
         foreach ($categories as $category) {
             $args = array(
                 'post_type' => 'training',
+                'posts_per_page' => -1,
                 'tax_query' => array(
                     array(
                         'taxonomy' => 'brainGroup',
@@ -121,6 +124,7 @@ class MyTrainingModel
 
         foreach ($postIDsArray as $postID) {
             $args = array(
+                'posts_per_page' => -1,
                 'post_type' => 'training',
                 'post__in' => array($postID),
             );
@@ -191,7 +195,7 @@ class MyTrainingModel
         );
 
         $results = $wpdb->get_results($query);
-        $dh_enter = '01:00:00';
+        $dh_enter = '05:00:00';
         $status = 0;
         $dh_enter_seconds = strtotime($dh_enter) - strtotime('00:00:00');
         foreach ($results as $result) {
@@ -207,7 +211,7 @@ class MyTrainingModel
 
         $progress_bar = sprintf(
             '<span class="progress" style="width:500px;">
-                <span class="progress-bar" role="progressbar" style="width:%s;" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100">%s%%</span>
+                <span class="progress-bar" role="progressbar" style="width:%s;" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100"></span><span class="ms-3">%s%%</span>
              </span>',
             $status,
             $status,
@@ -220,17 +224,20 @@ class MyTrainingModel
     public function getMetaTrainings($post_id)
     {
         $neuralResonance = get_post_meta($post_id, 'neuralResonance', true);
-        $videoTraining = get_post_meta($post_id, 'videoTraining', true);
         $neuralBreathing = get_post_meta($post_id, 'neuralBreathing', true);
         $cognitiveStimulation = get_post_meta($post_id, 'cognitiveStimulation', true);
-        $textTraining = get_post_meta($post_id, 'textTraining', true);
+        $textTraining = get_post_meta( $post_id, 'textTraining', true );
+        $usageTips = get_post_meta( $post_id, 'usageTips', true );
+        $recommendations = get_post_meta( $post_id, 'recommendations', true );
+
 
         $response_data = array(
             'neuralResonance' => $neuralResonance,
-            'videoTraining' => $videoTraining,
             'neuralBreathing' => $neuralBreathing,
             'cognitiveStimulation' => $cognitiveStimulation,
             'textTraining' => $textTraining,
+            'usageTips' => $usageTips,
+            'recommendations' => $recommendations,
         );
 
         return $response_data;

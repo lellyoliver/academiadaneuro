@@ -12,8 +12,8 @@ function updateUser() {
         text: 'Deseja atualizar seu perfil?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        confirmButtonColor: '#00a9e7',
+        cancelButtonColor: '#dc3545',
         confirmButtonText: 'Sim',
         cancelButtonText: 'Cancelar',
       }).then((result) => {
@@ -21,7 +21,7 @@ function updateUser() {
           const formData = new FormData(formUpdate);
           formData.append('avatar_file', inputFile.files[0]);
 
-          fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users/update', {
+          fetch('/wp-json/adn-plugin/v1/users/update', {
             method: 'POST',
             body: formData,
           })
@@ -38,7 +38,6 @@ function updateUser() {
               }
             })
             .catch((error) => {
-              // Ocultar o loading em caso de erro
               loading.style.display = 'none';
 
               console.error('Erro ao criar usuário:', error);
@@ -60,12 +59,10 @@ function avatar() {
       const file = avatarInput.files[0];
 
       if (file) {
-        // Configurações do Compressor.js
         const options = {
           quality: 0.6,
           success(result) {
             const reader = new FileReader();
-
             reader.onload = function (e) {
               preview.src = e.target.result;
             };
@@ -96,14 +93,16 @@ function viewUser() {
     const userID = document.getElementById('userId');
     const avatar = document.getElementById('avatar-preview');
 
-    fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users/view/${userID.value}`)
+    fetch(`/wp-json/adn-plugin/v1/users/view/${userID.value}`, {
+      method: 'GET',
+    })
       .then(response => response.json())
       .then(data => {
         if (CPF) {
-          CPF.innerHTML = data.user_login;
+          CPF.innerHTML = data.user_nicename;
         }
         if (avatar) {
-        avatar.src = data.billing_avatar;
+          avatar.src = data.billing_avatar;
         }
         nameInput.value = data.billing_first_name;
         emailInput.value = data.user_email;
@@ -120,99 +119,74 @@ function viewUser() {
   });
 }
 
-// function updateNewOrderUser() {
-//   const formUpdate = document.getElementById('form-update-new-order');
-//   const loading = document.getElementById('loading');
-//   if (formUpdate) {
-//     formUpdate.addEventListener('submit', (event) => {
-//       event.preventDefault();
-//       loading.style.display = '';
-//       Swal.fire({
-//         text: 'Deseja atualizar seu perfil?',
-//         icon: 'question',
-//         showCancelButton: true,
-//         confirmButtonColor: '#3085d6',
-//         cancelButtonColor: '#d33',
-//         confirmButtonText: 'Sim',
-//         cancelButtonText: 'Cancelar',
-//       }).then((result) => {
-//         if (result.isConfirmed) {
-//           const formData = new FormData(formUpdate);
-//           fetch('/academiadaneurociencia/wp-json/adn-plugin/v1/users/new-order/update', {
-//             method: 'POST',
-//             body: formData,
-//           })
-//             .then((response) => response.json())
-//             .then((data) => {
-//               if (data.status === 'sucesso') {
-//                 loading.style.display = 'none';
-//                 Swal.fire('Sucesso!', 'Perfil criado com sucesso.', 'success').then(() => {
-//                   // location.reload();
-//                 });
-//               } else {
-//                 loading.style.display = 'none';
-//                 Swal.fire('Erro!', 'Erro ao criar um usuário: ' + data.mensagem, 'error');
-//               }
-//             })
-//             .catch((error) => {
-//               // Ocultar o loading em caso de erro
-//               loading.style.display = 'none';
+function showPassword() {
+  const showPasswordIcon = document.getElementById('show-password');
+  const passwordField = document.getElementById('user_pass');
 
-//               console.error('Erro ao criar usuário:', error);
-//             });
-//         }
-//       });
-//     });
-//   }
-// }
+  showPasswordIcon.addEventListener('click', function () {
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text';
+      showPasswordIcon.classList.remove('fa-eye');
+      showPasswordIcon.classList.add('fa-eye-slash');
+    } else {
+      passwordField.type = 'password';
+      showPasswordIcon.classList.remove('fa-eye-slash');
+      showPasswordIcon.classList.add('fa-eye');
+    }
+  });
+}
 
-// updateNewOrderUser();
+function refundOrder() {
+  const forms = document.querySelectorAll('.form-refund');
+  if (forms) {
+    forms.forEach(form => {
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
 
+        Swal.fire({
+          title: 'Pedir Reembolso',
+          text: 'Se você fizer o pedido de reembolso você não terá a assinatura de volta. Deseja mesmo?',
+          iconHtml: '<i class="fas fa-rotate-left"></i>',
+          showCancelButton: true,
+          confirmButtonColor: '#00a9e7',
+          cancelButtonColor: '#dc3545',
+          confirmButtonText: 'Sim',
+          cancelButtonText: 'Cancelar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const formData = new FormData(form);
+            const order_id = formData.get('order_id');
 
-// function deleteUser() {
-//   window.addEventListener('load', function () {
-//     const deleteUser = document.getElementById("deleteUser");
-//     const messageDelete = document.getElementById("message");
-
-//     if (deleteUser) {
-//       deleteUser.addEventListener("click", () => {
-//         messageDelete.innerHTML = `
-//               <div class="popup" id="deleteConfirmationPopup">
-//                   <div class="popup-content">
-//                       <p>Tem certeza que deseja excluir o usuário?</p>
-//                       <div class="popup-buttons">
-//                           <button class="btn btn-sm btn-secondary" id="confirmCancel">Cancelar</button>
-//                           <button class="btn btn-sm btn-danger" id="confirmDelete">Sim, Excluir</button>
-//                       </div>
-//                   </div>
-//               </div>`;
-
-//         const popUp = document.getElementById("deleteConfirmationPopup");
-//         const confirmCancel = document.getElementById("confirmCancel");
-//         const confirmDelete = document.getElementById("confirmDelete");
-
-//         confirmCancel.addEventListener("click", () => {
-//           popUp.remove(); // Remover o pop-up do DOM
-//         });
-
-//         confirmDelete.addEventListener("click", (event) => {
-//           event.preventDefault();
-//           const userIdInput = document.getElementById('userId')
-//           fetch(`/academiadaneurociencia/wp-json/adn-plugin/v1/users-related/delete/userDelete=${userIdInput.value}`)
-//             .then(response => response.json())
-//             .then(data => {
-//               location.reload()
-//             })
-//             .catch(error => {
-//               console.error('Erro ao deletar o usuário:', error);
-//             });
-//           popUp.remove(); // Remover o pop-up do DOM
-//         });
-//       });
-//     }
-//   })
-// }
+            fetch('/wp-json/adn-plugin/v1/users/refunded', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                order_id: order_id,
+              })
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.status === 'sucesso') {
+                  Swal.fire('Sucesso!', data.mensagem , 'success').then(() => {
+                    location.reload();
+                  });
+                } else {
+                  Swal.fire('Erro!', data.mensagem, 'error');
+                }
+              })
+              .catch(error => {
+                console.error('Erro ao pedir reembolso:', error);
+              });
+          }
+        });
+      });
+    });
+  }
+}
+refundOrder();
 
 updateUser();
 viewUser();
-// deleteUser();
+showPassword();

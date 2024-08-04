@@ -70,8 +70,6 @@ class TrainingController
             $response = array(
                 'status' => 'sucesso',
                 'mensagem' => 'Treinamento criado com sucesso',
-                'user_id' => $user_id,
-                'replies' => $fields,
             );
             return new WP_REST_Response($response, 200);
         }
@@ -93,10 +91,11 @@ class TrainingController
             'post_id' => $post_ids,
         ];
         if (!empty($user_id) && !empty($post_ids)) {
-            $result = $this->trainingService->insertTrainingReplies($user_id, $fields);
+            $replies = $this->trainingService->insertTrainingReplies($user_id, $fields);
+            $progress = $this->trainingService->insertTrainingProgress($user_id);
         }
 
-        if ($result) {
+        if ($replies || $progress) {
             $response = array(
                 'status' => 'sucesso',
                 'mensagem' => 'Treinamento criado com sucesso',
@@ -106,7 +105,7 @@ class TrainingController
 
         $response = array(
             'status' => 'erro',
-            'mensagem' => 'Não foi possível criar um treinamento',
+            'mensagem' => 'Esse treinamento já foi criado para esse paciente!',
         );
         return new WP_REST_Response($response, 500);
     }
@@ -124,12 +123,12 @@ class TrainingController
             exit;
         }
         $userExpired = $this->userExpired();
-
-        if (!$userExpired[0]["status"]) {
-            wp_redirect(site_url('/meu-perfil', 'https'));
-            exit;
+        if ($this->roleRegistered()) {
+            if (!$userExpired[0]["status"]) {
+                wp_redirect(site_url('/meu-perfil', 'https'));
+                exit;
+            }
         }
-
         ob_start();
         $users = $this->getListRelated();
         require_once plugin_dir_path(__FILE__) . '../views/training/TrainingView.php';
@@ -147,7 +146,7 @@ class TrainingController
         }
 
         $userExpired = $this->userExpired();
-        
+
         if ($this->roleRegistered()) {
             if (!$userExpired[0]["status"]) {
                 wp_redirect(site_url('/meu-perfil', 'https'));

@@ -3,7 +3,7 @@
  * Plugin Name: Academia da Neuro
  * Description: Plataforma de Neurociência
  * Version: 1.0.0
- * Author: <a href="https://github.com/lellyoliver/academiadaneuro">Lelly Oliver</a>
+ * Author: <a href="https://github.com/lellyoliver">Lelly Oliver</a>
  * URL: https://github.com/lellyoliver/academiadaneuro
  *
  * This is the main file of the Academia da Neuro plugin. It defines plugin settings and functionality.
@@ -19,8 +19,6 @@ define('ACADEMIA_DA_NEURO_VERSION', '1.0.0');
  * Includes plugin endpoints.
  */
 
-// require_once plugin_dir_path(__FILE__) . 'includes/AcademiaPluginInstaller.php';
-
 require_once plugin_dir_path(__FILE__) . 'includes/init.php';
 
 require_once plugin_dir_path(__FILE__) . 'includes/Roles.php';
@@ -29,7 +27,9 @@ require_once plugin_dir_path(__FILE__) . 'includes/MetaCustomUser.php';
 
 require_once plugin_dir_path(__FILE__) . 'includes/MetaCustomTraining.php';
 
-require_once plugin_dir_path(__FILE__) . 'includes/PostType.php';
+require_once plugin_dir_path(__FILE__) . 'includes/TrainingPostType.php';
+
+require_once plugin_dir_path(__FILE__) . 'includes/CustomerSupportPostType.php';
 
 require_once plugin_dir_path(__FILE__) . 'includes/RewriteRules.php';
 
@@ -37,11 +37,18 @@ require_once plugin_dir_path(__FILE__) . 'includes/db.php';
 
 require_once plugin_dir_path(__FILE__) . 'includes/CreatePages.php';
 
+require_once plugin_dir_path(__FILE__) . 'includes/NotificationUser.php';
+
+require_once plugin_dir_path(__FILE__) . 'includes/RefundedManager.php';
+
+require_once plugin_dir_path(__FILE__) . 'includes/SettingsAcademia.php';
+
+
 function adn_activate()
 {
     $dbCustom = new DBCustom();
     $createPages = new CreatePages();
-    $createPages->createPages();
+    $createPages->create_pages();
     $dbCustom->createTableTrainingReplies();
     $dbCustom->createTableTrainingProgress();
 }
@@ -50,6 +57,7 @@ register_activation_hook(__FILE__, 'adn_activate');
 
 function adn_scripts()
 {
+
     wp_enqueue_style('stylecss', plugins_url('assets/css/style.css', __FILE__), array(), ACADEMIA_DA_NEURO_VERSION, false);
     wp_enqueue_script('utilsjs', plugins_url('assets/js/utils.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
 
@@ -83,12 +91,12 @@ function adn_scripts()
 
     if (is_single() && 'training' == get_post_type()) {
         wp_enqueue_script('userMyTrainingjs', plugins_url('assets/js/training/user-myTraining.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
-        //sweet-alert-2
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
     }
 
     if (is_page('meus-pacientes')) {
+        wp_enqueue_script('jquery');
         wp_enqueue_style('bootstraptablemincss', plugins_url('assets/lib/bootstrap-table/bootstrap-table.min.css', __FILE__), array(), '1.22.1', false);
         wp_enqueue_script('bootstraptableminjs', plugins_url('assets/lib/bootstrap-table/bootstrap-table.min.js', __FILE__), '1.22.1', true);
         wp_enqueue_script('userrelatedutilsjs', plugins_url('assets/js/users-related/user-related-utils.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
@@ -102,6 +110,16 @@ function adn_scripts()
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
         wp_enqueue_script('compressorminjs', plugins_url('assets/lib/compressor/compressor.min.js', __FILE__), '1.0.7', false);
+    }
+
+    if (is_page('suporte-cliente')) {
+        wp_enqueue_script('customerSupportjs', plugins_url('assets/js/customer-support/customer-support.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
+        wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
+        wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), '11.7.31', false);
+    }
+
+    if(is_page('dashboard')){
+        wp_enqueue_script('customerSupportjs', plugins_url('assets/js/dashboard/dashboard.js', __FILE__), ACADEMIA_DA_NEURO_VERSION, true);
     }
 
     if (is_checkout()) {
@@ -120,10 +138,6 @@ function roleRegistered()
     }
     return false;
 }
-
-/**
- * Templates
- */
 
 function adn_page_create_user_related($template)
 {
@@ -161,9 +175,6 @@ function adn_page_new_order_user($template)
 }
 add_filter('page_template', 'adn_page_new_order_user');
 
-/**
- * Override template for user perfil.
- */
 function adn_page_perfil_user($template)
 {
     if (is_page('meu-perfil')) {
@@ -176,9 +187,6 @@ function adn_page_perfil_user($template)
 }
 add_filter('page_template', 'adn_page_perfil_user');
 
-/**
- * Override template for dashboard page.
- */
 function adn_page_dashboard($template)
 {
     if (is_page('dashboard')) {
@@ -257,20 +265,19 @@ function adn_page_authLogin($template)
 }
 add_filter('page_template', 'adn_page_authLogin');
 
-function adn_product_woo($template)
+function adn_page_customerSupport($template)
 {
-    if (is_singular('product')) {
-        $template_wootemplate = plugin_dir_path(__FILE__) . 'templates/woo-product.php';
-
-        if (file_exists($template_wootemplate)) {
-            return $template_wootemplate;
+    if (is_page('suporte-cliente')) {
+        $template_customerSupport = plugin_dir_path(__FILE__) . 'templates/customer-support.php';
+        if (file_exists($template_customerSupport)) {
+            return $template_customerSupport;
         }
     }
     return $template;
 }
-add_filter('template_include', 'adn_product_woo');
+add_filter('page_template', 'adn_page_customerSupport');
 
-function adn_training_single($template)
+function adn_single_training($template)
 {
     if (is_singular('training')) {
 
@@ -282,57 +289,51 @@ function adn_training_single($template)
     }
     return $template;
 }
-add_filter('template_include', 'adn_training_single');
+add_filter('template_include', 'adn_single_training');
 
-function adn_training_single_blocked()
+function adn_page_block()
 {
-    require_once plugin_dir_path(__FILE__) . 'includes/models/UserModel.php';
-    $userModel = new UserModel();
-    $userExpired = $userModel->userExpiredData();
+    $current_user = wp_get_current_user();
 
-    if (!is_user_logged_in()) {
-        if (is_singular('training')) {
-            wp_redirect(site_url('/login', 'https'));
-            exit;
-
-        } elseif (is_page('shop') || is_page('carrinho') || is_checkout()) {
-            wp_redirect(site_url('/login', 'https'));
-            exit;
-        }
+    if (is_user_logged_in() && is_page(array('login', 'register', 'email-confirmation', 'forgot-password'))) {
+        wp_redirect(site_url('/meu-perfil'));
+        exit;
     }
-    if (is_user_logged_in()) {
-        if (roleRegistered()) {
-            if (!$userExpired[0]["status"]) {
-                if (is_singular('training')) {
-                    wp_redirect(site_url('/login', 'https'));
-                    exit;
-                }
-            } elseif (is_page('shop') || is_page('carrinho') || is_page('my-account')) {
-                wp_redirect(site_url('/meu-perfil', 'https'));
-                exit;
-            }
-        }
-        if (is_home()) {
-            wp_redirect(site_url('/meu-perfil', 'https'));
-            exit;
-        }
-    } elseif (is_home()) {
-        wp_redirect(site_url('/login', 'https'));
+    
+    if (!is_user_logged_in() && !is_page(array('login', 'register', 'email-confirmation', 'forgot-password')) && !is_admin() && !is_front_page() && !is_product() && !is_single()) {
+        wp_redirect(site_url('/login'));
         exit;
     }
 
+    if (is_user_logged_in() && array_intersect(array('training', 'coachingRelation'), $current_user->roles)) {
+        $allowed_pages = array('contato', 'shop', 'dashboard', 'meus-pacientes', 'my-account', 'cart');
+
+        if (is_page($allowed_pages) || is_home() || is_front_page() || is_product()) {
+            wp_redirect(site_url('/meus-treinamentos'));
+            exit;
+        }
+    }
+
+    if (is_user_logged_in() && array_intersect(array('coach', 'health-pro', 'administrator'), $current_user->roles)) {
+        if (is_page(array('meus-treinamentos', 'training', 'my-account', 'cart')) || is_home() || is_front_page() || is_product()) {
+            wp_redirect(site_url('/dashboard'));
+            exit;
+        }
+    }
 }
-add_action('template_redirect', 'adn_training_single_blocked');
+
+add_action('template_redirect', 'adn_page_block');
 
 function adn_custom_login_redirect($redirect_to, $request, $user)
 {
-    if (is_a($user, 'WP_User')) {
-        $user_roles = $user->roles;
-        $dashboard_roles = array('coach', 'health-pro', 'training', 'coachingRelation');
+    $current_user = wp_get_current_user();
+    $restricted_roles = array('coachingRelation', 'training');
+    $restricted_roles_2 = array('coach', 'health-pro');
 
-        if (array_intersect($user_roles, $dashboard_roles)) {
-            $redirect_to = site_url('/meu-perfil', 'https');
-        }
+    if (array_intersect($restricted_roles, $current_user->roles)) {
+        $redirect_to = site_url('/meus-treinamentos', 'https');
+    } elseif (array_intersect($restricted_roles_2, $current_user->roles)) {
+        $redirect_to = site_url('/dashboard', 'https');
     }
 
     return $redirect_to;
@@ -342,10 +343,20 @@ add_filter('login_redirect', 'adn_custom_login_redirect', 10, 3);
 function restrict_admin_access()
 {
     if (is_user_logged_in()) {
-        $current_user = wp_get_current_user();
-        $restricted_roles = array('coach', 'health-pro', 'training', 'coachingRelation');
-        if (array_intersect($current_user->roles, $restricted_roles)) {
-            wp_redirect(site_url('/meu-perfil', 'https'));
+        $user = wp_get_current_user();
+        $restricted_roles = array('coachingRelation', 'training');
+        $restricted_roles_2 = array('coach', 'health-pro');
+        $redirect_to = '';
+
+        if (array_intersect($restricted_roles, $user->roles)) {
+            $redirect_to = site_url('/meus-treinamentos', 'https');
+
+        } elseif (array_intersect($restricted_roles_2, $user->roles)) {
+            $redirect_to = site_url('/dashboard', 'https');
+        }
+
+        if (!empty($redirect_to)) {
+            wp_redirect($redirect_to);
             exit;
         }
     }
@@ -405,7 +416,6 @@ add_filter('woocommerce_locate_template', 'adn_custom__checkout', 20, 3);
 
 function adn_custom_woocommerce_input_class($args, $key, $value)
 {
-
     if ($key === 'billing_states') {
         $args['input_class'] = array('form-select');
     } elseif (in_array($key, array('billing_first_name', 'billing_last_name', 'billing_city', 'billing_postcode', 'billing_phone', 'billing_email', 'billing_address_1'))) {
@@ -431,28 +441,48 @@ function adn_custom_checkout_user_fullfil($fields)
     }
     unset($fields['billing']['billing_country']);
     unset($fields['shipping']['shipping_country']);
+    unset($fields['billing']['billing_company']);
+    unset($fields['billing']['billing_address_2']);
 
     return $fields;
 }
 add_filter('woocommerce_checkout_fields', 'adn_custom_checkout_user_fullfil');
 
-function alterar_status_pedido_cheque($order_id)
-{
-    if (!$order_id) {
-        return;
-    }
-    $order = wc_get_order($order_id);
-    if ($order->get_payment_method() === 'cheque') {
+// function alterar_status_pedido_cheque($order_id)
+// {
+//     if (!$order_id) {
+//         return;
+//     }
+//     $order = wc_get_order($order_id);
+//     if ($order->get_payment_method() === 'cheque') {
 
-        $order->update_status('completed');
-    }
-}
+//         $order->update_status('completed');
+//     }
+// }
 add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
 
 function adn_add_product_checkout()
 {
+    //uso pessoal
+    $_plan_mensal_training = get_option('_plan_mensal_training');
+    $_plan_trimestral_training = get_option('_plan_trimestral_training');
+    $_plan_semestral_training = get_option('_plan_semestral_training');
+
+    //usuário relacionado
+    $_plan_mensal_coachingRelation = get_option('_plan_mensal_coachingRelation');
+    $_plan_trimestral_coachingRelation = get_option('_plan_trimestral_coachingRelation');
+    $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation');
+
+    $product_adicional = array(
+        $_plan_semestral_coachingRelation => '6',
+        $_plan_trimestral_coachingRelation => '3',
+        $_plan_mensal_coachingRelation => '1',
+        $_plan_semestral_training => '6',
+        $_plan_trimestral_training => '3',
+        $_plan_mensal_training => '1',
+    );
+    
     if (isset($_POST['product_id'], $_POST['user_related_id'])) {
-        // Validação de entrada
         $product_id = filter_var($_POST['product_id'], FILTER_VALIDATE_INT);
         $user_related_id = filter_var($_POST['user_related_id'], FILTER_VALIDATE_INT);
 
@@ -461,17 +491,24 @@ function adn_add_product_checkout()
                 global $woocommerce;
 
                 $woocommerce->cart->empty_cart();
+
                 $woocommerce->cart->add_to_cart($product_id);
-                $user_id = get_current_user_id();
+
+                $quantidade_adicional = isset($product_adicional[$product_id]) ? $product_adicional[$product_id] : '1';
+
+                foreach ($woocommerce->cart->get_cart() as $cart_item_key => $cart_item) {
+                    if ($cart_item['product_id'] == $product_id) {
+                        $woocommerce->cart->set_quantity($cart_item_key, $quantidade_adicional);
+                        break;
+                    }
+                }
 
                 $checkout_url = wc_get_checkout_url() . '?user_related=' . $user_related_id;
-
                 wp_redirect($checkout_url);
                 exit;
             }
         } else {
-            // Trate a entrada inválida aqui, por exemplo, redirecione para uma página de erro.
-            wp_redirect(home_url('/error'));
+            wp_redirect(home_url('/404'));
             exit;
         }
     }
@@ -491,13 +528,23 @@ add_filter('woocommerce_checkout_fields', 'add_custom_billing_field');
 
 function check_and_enable_registration($order_id)
 {
+    //uso pessoal
+    $_plan_mensal_training = get_option('_plan_mensal_training');
+    $_plan_trimestral_training = get_option('_plan_trimestral_training');
+    $_plan_semestral_training = get_option('_plan_semestral_training');
+
+    //usuário relacionado
+    $_plan_mensal_coachingRelation = get_option('_plan_mensal_coachingRelation');
+    $_plan_trimestral_coachingRelation = get_option('_plan_trimestral_coachingRelation');
+    $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation');
 
     $product_data = array(
-        110 => '+1 year',
-        338 => '+1 year',
-        109 => '+6 months',
-        26 => '+1 month',
-        339 => '+1 month',
+        $_plan_semestral_coachingRelation => '+6 months',
+        $_plan_trimestral_coachingRelation => '+3 months',
+        $_plan_mensal_coachingRelation => '+1 month',
+        $_plan_semestral_training => '+6 months',
+        $_plan_trimestral_training => '+3 months',
+        $_plan_mensal_training => '+1 month',
     );
 
     $order = wc_get_order($order_id);
@@ -519,7 +566,7 @@ function check_and_enable_registration($order_id)
                 $response_data = array(
                     'order_id' => $order_id,
                     'order_date' => $order_date,
-                    'user_related' => $user_related,
+                    'user_id' => $user_related,
                     'expiration_date' => $expiration_date,
                 );
 
@@ -533,3 +580,25 @@ function check_and_enable_registration($order_id)
     }
 }
 add_action('woocommerce_order_status_completed', 'check_and_enable_registration');
+
+function adn_verify_completed($order_id)
+{
+    $pedido = wc_get_order($order_id);
+
+    $order_notes = wc_get_order_notes(array(
+        'order_id' => $order_id,
+    ));
+
+    $success_note_found = false;
+    foreach ($order_notes as $note) {
+        if ($note->content === "Rede[00]: Success.") {
+            $success_note_found = true;
+            break;
+        }
+    }
+
+    if ($success_note_found) {
+        $pedido->update_status('completed');
+    }
+}
+add_action('woocommerce_thankyou', 'adn_verify_completed', 10, 1);

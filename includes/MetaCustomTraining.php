@@ -7,10 +7,12 @@ class MetaCustomTraining
     public function __construct()
     {
         $this->fields = [
-            "Fale um pouco mais sobre esse treinamento" => "textTraining",
             "URL Ressonância Neural" => "neuralResonance",
-            "URL Respiração Neural" => "neuralBreathing",
             "URL Estímulo cognitivo" => "cognitiveStimulation",
+            "URL Respiração Neural" => "neuralBreathing",
+            "Alguns benefícios dessa Estimulação Cerebral" => "textTraining",
+            "Dicas de Uso" => "usageTips",
+            "Recomendações" => "recommendations",
         ];
 
         add_action('add_meta_boxes', array($this, 'add_custom_fields_metabox'));
@@ -37,23 +39,28 @@ class MetaCustomTraining
 <table>
     <tbody>
         <?php
-foreach ($this->fields as $key => $field):
+        foreach ($this->fields as $key => $field):
             $field_value = get_post_meta($post->ID, $field, true);
-            ?>
+        ?>
         <tr>
             <td>
                 <label for="<?php echo $field; ?>"><?php echo $key; ?></label>
-            <td>
-            <td>
-                <input type="text" id="<?php echo $field; ?>" name="<?php echo $field; ?>"
-                    value="<?php echo $field_value; ?>">
             </td>
-        <tr>
-            <?php endforeach;?>
+            <td>
+                <?php if ($field == 'textTraining' || $field == 'usageTips' || $field == 'recommendations') : ?>
+                    <?php wp_editor($field_value, $field, array('textarea_rows' => 5, 'textarea_name' => $field)); ?>
+                <?php else : ?>
+                    <input type="text" id="<?php echo $field; ?>" name="<?php echo $field; ?>" value="<?php echo $field_value; ?>">
+                <?php endif; ?>
+            </td>
+        </tr>
+        <?php endforeach; ?>
     </tbody>
 </table>
+
 <?php
 }
+
     public function save_custom_fields($post_id)
     {
         if (!isset($_POST['custom_fields_nonce']) || !wp_verify_nonce($_POST['custom_fields_nonce'], 'custom_fields_nonce')) {

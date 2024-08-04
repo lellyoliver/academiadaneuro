@@ -2,12 +2,10 @@
 require_once plugin_dir_path(__FILE__) . '../services/DashboardService.php';
 require_once plugin_dir_path(__FILE__) . '../services/UserService.php';
 
-
 class DashboardController
 {
     private $dashboardService;
     private $userService;
-
 
     public function __construct()
     {
@@ -28,17 +26,17 @@ class DashboardController
         }
 
         $userExpired = $this->userExpired();
-        if($this->roleRegistered()){
-            if(!$userExpired[0]["status"]){
+        if ($this->roleRegistered()) {
+            if (!$userExpired[0]["status"]) {
                 wp_redirect(site_url('/meu-perfil', 'https'));
                 exit;
             }
         }
-        
+
         $list_progress_unify = $this->dashboardService->getListProgress();
-        // $list_progress_total = $this->dashboardService->getTotalProgress();
         $patients = $this->dashboardService->getListRelated();
         $progress = $this->dashboardService->getTotalProgress();
+        $replies = $this->getReplies($user_id);
 
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/dashboard/DashboardView.php';
@@ -47,17 +45,40 @@ class DashboardController
         return $output;
     }
 
+    /**
+     * Retrieve user expiration data.
+     *
+     * @return mixed User expiration data.
+     */
+
     public function userExpired()
     {
         return $this->userService->userExpiredData();
     }
 
-    public function roleRegistered(){
+    /**
+     * Check if the current user has specific roles.
+     *
+     * @return bool True if the user has specific roles, false otherwise.
+     */
+    public function roleRegistered()
+    {
         $current_user = wp_get_current_user();
         $allowed_roles_2 = ['training', 'coachingRelation'];
         if (array_intersect($allowed_roles_2, $current_user->roles)) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Get the latestpost training refer user_related.
+     *
+     * @param int $id The ID of the post Training.
+     * @return mixed The latest post for the training.
+     */
+    public function getReplies($id)
+    {
+        return $this->dashboardService->getReplies($id);
     }
 }

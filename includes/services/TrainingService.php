@@ -15,8 +15,14 @@ class TrainingService
         return $this->trainingModel->insertTrainingReplies($user_id, $fields);
     }
 
+    public function insertTrainingProgress($user_id)
+    {
+        return $this->trainingModel->insertTrainingProgress($user_id);
+    }
+
     public function getTrainings($categories)
     {
         return $this->trainingModel->getTrainings($categories);
     }
+
 }

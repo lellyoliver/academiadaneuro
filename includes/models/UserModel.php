@@ -5,10 +5,14 @@ require_once plugin_dir_path(__FILE__) . '../TextProcessor.php';
 class UserModel
 {
     private $textProcessor;
+    private $table_name_comments;
 
     public function __construct()
     {
+        global $wpdb;
+
         $this->textProcessor = new TextProcessor;
+        $this->table_name_comments = $wpdb->prefix . 'comments';
     }
 
     /**
@@ -40,7 +44,7 @@ class UserModel
                 'first_login' => $current_datetime,
                 'confirmation_token' => sanitize_text_field($confirmation_token),
                 'confirm_terms_services' => sanitize_text_field($user_data['termsAndServices']),
-                'billing_avatar' => '143',
+                'billing_avatar' => '145',
             ],
         );
 
@@ -48,12 +52,18 @@ class UserModel
 
         $confirmation_email_sent = $this->sendEmailConfirmation($user_data, $confirmation_token, $user_id);
 
-        $this->newUserExpired($user_id);
+        if ($user_data['role'] === "training") {
+            $this->newUserExpired($user_id);
+        } else {
+            $this->freeTrial($user_id);
+        }
 
         if (!$user_id || !$confirmation_email_sent) {
 
             return false;
         }
+
+        $webhook = $this->webhookUserSend($user_data);
 
         return $user_id;
     }
@@ -64,26 +74,174 @@ class UserModel
         $email = sanitize_text_field($user_data['email']);
 
         // Construa o link de confirmação com o token
-        $confirmation_link = site_url('', 'https') . 'academiadaneurociencia/email-confirmation?token=' . $confirmation_token . '&key=' . $user_id;
+        $confirmation_link = site_url('', 'https') . '/email-confirmation?token=' . $confirmation_token . '&key=' . $user_id;
 
         // Construa o conteúdo do e-mail
         $subject = 'Confirmação de E-mail';
-        $body = '<div width="100%" style="font-family: Arial; padding:20px;">
-        <div style="margin-top:10px;margin-bottom:10px;">
-            <img src="" alt="logo-academia.png" title="Academia da neurociência"/>
-        </div>
-        <div style="margin-top:30px; margin-bottom:10px;">
-        <h2 style="color:#00A9E7; text-transform:uppercase;">Confirme sua solicitação<br>
-        de encaminhamento de e-mail</h2>
-        </div>
-        <div style="color:#1D1D1D;">
-        <p>Para começar a encaminhar e-mails, você precisa verificar <br>sua solicitação.
-        <br><br>
-        Clique no botão abaixo para concluir o processo e <br>começar a encaminhar seus e-mails.</p>
-        </div>
-        <div style="margin-top:60px;"><a href="[CONFIRMATION_LINK]" title="Verificar" style="border-radius: 16px; background: #00a9e7; padding:20px 60px;  text-decoration:none; color:#ffffff;"><b>VERIFICAR</b></a></div>
-        <div style="width: 600px;height: 100px; background: #d1d1d1; margin-top:60px;"></div>
-        </div>';
+        $body = '<table width="100%" id="outer_wrapper" style="background-color: #f7f7f7;" bgcolor="#f7f7f7">
+        <tbody>
+            <tr>
+                <td><!-- Deliberately empty to support consistent sizing and layout across multiple email clients. -->
+                </td>
+                <td width="600">
+                    <div id="wrapper" dir="ltr"
+                        style="margin: 0 auto; padding: 70px 0; width: 100%; max-width: 600px; -webkit-text-size-adjust: none;"
+                        width="100%">
+                        <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td align="center" valign="top">
+                                        <div id="template_header_image" style="margin-bottom:38px;">
+                                            <img src="https://cdn.institutodeneurociencia.com.br/image/logo-vertical.svg" alt="Logo" width="200">
+                                        </div>
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                                            id="template_container"
+                                            style="background-color: #fff; border: 1px solid #dedede; box-shadow: 0 1px 4px rgba(0,0,0,.1); border-radius: 3px;"
+                                            bgcolor="#fff">
+                                            <tbody>
+                                                <tr>
+                                                    <td align="center" valign="top">
+                                                        <!-- Header -->
+                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                                                            id="template_header"
+                                                            style="background-color: #00a9e7; color: #fff; border-bottom: 0; font-weight: bold; line-height: 100%; vertical-align: middle; font-family: Helvetica Neue,Helvetica,Roboto,Arial,sans-serif; border-radius: 3px 3px 0 0;"
+                                                            bgcolor="#00a9e7">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td id="header_wrapper"
+                                                                        style="padding: 36px 48px; display: block;">
+                                                                        <h1 style="font-family: Helvetica Neue,Helvetica,Roboto,Arial,sans-serif; font-size: 30px; font-weight: 300; line-height: 150%; margin: 0; text-align: left; text-shadow: 0 1px 0 #33baec; color: #fff; background-color: inherit;"
+                                                                            bgcolor="inherit">Obrigado por se cadastrar!
+                                                                        </h1>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <!-- End Header -->
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="center" valign="top">
+                                                        <!-- Body -->
+                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                                                            id="template_body">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td valign="top" id="body_content"
+                                                                        style="background-color: #fff;" bgcolor="#fff">
+                                                                        <!-- Content -->
+                                                                        <table border="0" cellpadding="20"
+                                                                            cellspacing="0" width="100%">
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td valign="top"
+                                                                                        style="padding: 48px 48px 32px;">
+                                                                                        <div id="body_content_inner"
+                                                                                            style="color: #636363; font-family: Helvetica Neue,Helvetica,Roboto,Arial,sans-serif; font-size: 14px; line-height: 150%; text-align: left;"
+                                                                                            align="left">
+                                                                                            <h2 style="color: #00a9e7; display: block; font-family: Helvetica Neue,Helvetica,Roboto,Arial,sans-serif; font-size: 18px; font-weight: bold; line-height: 130%; margin: 0 0 18px; text-align: left;">
+                                                                                                Confirme sua senha e mantenha sua conta segura!</h2>
+                                                                                            <p style="margin: 0 0 16px;">Estamos comprometidos em garantir a segurança de sua conta e queremos garantir que você tenha acesso fácil e seguro.</p>
+                                                                                            <p style="margin: 0 0 32px;">Para confirmar sua senha e garantir a proteção de sua conta, por favor, siga as etapas simples abaixo:</p>
+                                                                                            <a href="[CONFIRMATION_LINK]" title="Verificar" style="border-radius: 7px;background:#00a9e7;padding: 16px 60px;text-decoration:none;color:#ffffff;" target="_blank"><b>Verificar</b></a>
+                                                                                            <p style="margin: 0 0 38px;"></p>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                        <!-- End Content -->
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td valign="top" id="body_content"
+                                                                        style="background-color: #fff;" bgcolor="#fff">
+                                                                        <table border="0" cellpadding="20"
+                                                                            cellspacing="0" width="100%">
+
+                                                                            <tr style="background-color: #E7E7E7;">
+                                                                                <td valign="top"
+                                                                                    style="padding: 48px 48px 32px;">
+                                                                                    <div id="body_content_inner"
+                                                                                        style="color: #636363; font-family: Helvetica Neue,Helvetica,Roboto,Arial,sans-serif; font-size: 14px; line-height: 150%; text-align: left;"
+                                                                                        align="left">
+                                                                                        <ul style="font-size:13px;list-style: none;margin-left: -33px;">
+                                                                                            <li>Instituto de Neurociencia Comportamental</li>
+                                                                                            <li>Rua Sao Gabriel, 1555 - Sala 104 Andar 1</li>
+                                                                                            <li>Vila Belvedere - 13473-000</li>
+                                                                                            <li>Americana / São Paulo</li>
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td valign="top"
+                                                                                    style="padding: 48px 48px 32px;">
+                                                                                    <div id="body_content_inner"
+                                                                                        style="color: #636363; font-family: Helvetica Neue,Helvetica,Roboto,Arial,sans-serif; font-size: 14px; line-height: 150%; text-align: left;"
+                                                                                        align="left">
+                                                                                        <ul style="list-style: none;">
+                                                                                            <li style="display: inline;margin-right: 10px;">
+                                                                                                <a href="https://www.facebook.com/institutodeneurocienciacomportamental" title="facebook" alt="facebook"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-facebook.svg" alt="facebook" title="facebook" width="20" height="20"></a>
+                                                                                            </li>
+                                                                                            <li style="display: inline;margin-right: 10px;">
+                                                                                                <a href="#" title="facebook" alt=""><img src="https://cdn.institutodeneurociencia.com.br/image/icon-instagram.svg" alt="Instagram" title="Instagram" width="20" height="20"></a>
+                                                                                            </li>
+                                                                                            <li style="display: inline;margin-right: 10px;">
+                                                                                                <a href="https://wp.me/+551936044798" title="whatsapp" alt="Whatsapp"><img src="https://cdn.institutodeneurociencia.com.br/image/icon-whatsapp.svg" alt="Instagram" title="Instagram" width="20" height="20"></a>
+                                                                                            </li>
+
+                                                                                        </ul>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr>
+
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                        <!-- End Body -->
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" valign="top">
+                                        <!-- Footer -->
+                                        <table border="0" cellpadding="10" cellspacing="0" width="100%"
+                                            id="template_footer">
+                                            <tbody>
+                                                <tr>
+                                                    <td valign="top" style="padding: 0; border-radius: 6px;">
+                                                        <table border="0" cellpadding="10" cellspacing="0" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="2" valign="middle" id="credit"
+                                                                        style="border-radius: 6px; border: 0; color: #8a8a8a; font-family: Helvetica Neue,Helvetica,Roboto,Arial,sans-serif; font-size: 12px; line-height: 150%; text-align: center; padding: 24px 0;"
+                                                                        align="center">
+                                                                        <p style="margin: 0 0 16px;">Academia da
+                                                                            Neurociência</p>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <!-- End Footer -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+                <td><!-- Deliberately empty to support consistent sizing and layout across multiple email clients. -->
+                </td>
+            </tr>
+        </tbody>
+    </table>';
 
         $body = str_replace('[CONFIRMATION_LINK]', $confirmation_link, $body);
 
@@ -101,10 +259,12 @@ class UserModel
     public function updateUser($name, $email, $password, $user_id)
     {
 
-        $token = sanitize_text_field($password);
+        if (!empty($password)) {
+            $token = sanitize_text_field($password);
+            wp_set_password($token, $user_id);
+            wp_set_auth_cookie($user_id);
 
-        wp_set_password($token, $user_id);
-        wp_set_auth_cookie($user_id);
+        }
 
         $userdata = array(
             'ID' => $user_id,
@@ -118,44 +278,6 @@ class UserModel
 
         return $user_updated;
     }
-
-    // public function updateUserNewOrder($name, $billing_data, $email, $password, $user_id)
-    // {
-    //     global $wpdb;
-    //     $user_name = $this->textProcessor->sanitizeText($billing_data);
-    //     $token = sanitize_text_field($password);
-
-    //     wp_set_password($token, $user_id);
-    //     wp_set_auth_cookie($user_id);
-
-    //     $userdata = array(
-    //         'ID' => $user_id,
-    //         'user_email' => sanitize_email($email),
-    //         'display_name' => sanitize_text_field($name),
-    //         'nickname' => sanitize_text_field($name),
-    //         'first_name' => sanitize_text_field($name),
-    //     );
-
-    //     $user_updated = wp_update_user($userdata);
-
-    //     $wpdb->update(
-    //         $wpdb->users,
-    //         array('user_login' => $new_user_login),
-    //         array('ID' => $user_id),
-    //         array('%s'),
-    //         array('%d')
-    //     );
-
-    //     if (!is_wp_error($user_updated)) {
-    //         $meta_key = $wpdb->prefix . 'capabilities';
-    //         $existing_meta = get_user_meta($user_id, $meta_key, true);
-    //         $new_meta = str_replace('coachingRelation', 'training', $existing_meta);
-
-    //         update_user_meta($user_id, $meta_key, $new_meta);
-    //     }
-
-    //     return $user_updated;
-    // }
 
     /**
      * Update user meta fields in WordPress database.
@@ -190,7 +312,7 @@ class UserModel
         $user_data = array(
             'ID' => $user->ID,
             'user_email' => $user->user_email,
-            'user_login' => $user->user_login,
+            'user_nicename' => $user->user_nicename,
             'billing_first_name' => $user->billing_first_name,
             'billing_phone' => $user->billing_phone,
             'billing_postcode' => $user->billing_postcode,
@@ -206,18 +328,14 @@ class UserModel
     public function getLatestOrders($id)
     {
         if (class_exists('WooCommerce')) {
-            $order_args = array(
-                'numberposts' => 5,
-                'post_type' => 'shop_order',
-                'post_status' => 'wc-completed',
-                'meta_key' => '_customer_user',
-                'meta_value' => $id,
+            $orders = wc_get_orders(array(
+                'status' => array('wc-completed', 'wc-processing', 'wc-refunded', 'wc-pending'),
+                'limit' => -1,
                 'orderby' => 'date',
                 'order' => 'DESC',
-            );
-
-            $orders = get_posts($order_args);
-
+                'customer_id' => $id,
+            ));
+    
             return $orders;
         }
     }
@@ -294,7 +412,7 @@ class UserModel
             }
 
             $result[] = array(
-                'user_related' => $meta_value->user_related,
+                'user_id' => $meta_value->user_id,
                 'status' => $status,
             );
         }
@@ -304,11 +422,11 @@ class UserModel
 
     public function newUserExpired($user_id)
     {
-        // Crie um novo objeto de pedido
         $order = wc_create_order();
+        $_plan_trial = get_option('_plan_trial');
 
-        $product_id = 361;
-        $order->add_product(get_product($product_id), 1);
+        $product_id = $_plan_trial;
+        $order->add_product(wc_get_product($product_id), 1);
 
         $order->set_customer_id($user_id);
 
@@ -319,7 +437,7 @@ class UserModel
         $order_id = $order->get_id();
 
         $product_data = array(
-            361 => '+7 days',
+            $_plan_trial => '+7 days',
         );
 
         $order = wc_get_order($order_id);
@@ -336,6 +454,7 @@ class UserModel
                         'order_id' => $order_id,
                         'order_date' => $order_date,
                         'user_id' => $user_id,
+                        'product_id' => $product_id,
                         'expiration_date' => $expiration_date,
                     );
 
@@ -351,19 +470,91 @@ class UserModel
         }
     }
 
-    // public function deleteUserMetaEntries($user_id)
-    // {
-    //     global $wpdb;
+    public function freeTrial($user_id)
+    {
+        return update_user_meta($user_id, 'free_trial', true);
+    }
 
-    //     // Excluir a meta 'connected_user'
-    //     $connected_user_meta_key = 'connected_user';
-    //     $wpdb->query($wpdb->prepare("DELETE FROM $wpdb->usermeta WHERE user_id = %d AND meta_key = %s", $user_id, $connected_user_meta_key));
+    public function orderRefunded($order_id)
+    {
+        $order = wc_get_order($order_id);
 
-    //     // Excluir a meta '_user_expired'
+        if ($order && $order->get_status() === 'completed') {
 
-    //     $user_expired_meta_key = $wpdb->get_var($wpdb->prepare("SELECT meta_key FROM $wpdb->usermeta WHERE user_id = %d AND meta_key LIKE %s", $user_id, $wpdb->esc_like("$user_id_user_expired")));
+            $refund_amount = $order->get_total();
 
-    //     return $user_expired_meta_key;
+            $refund_note = 'Pedido de Reembolso';
+            $order->add_order_note($refund_note);
 
-    // }
+            $refund_id = wc_create_refund(
+                array(
+                    'amount' => $refund_amount,
+                    'reason' => $refund_note,
+                    'order_id' => $order_id,
+                    'line_items' => $order->get_items(),
+                    'refund_payment' => true,
+                )
+            );
+
+            $order->update_status('refunded');
+
+            $order->add_order_note('Cliente notificado sobre o reembolso.');
+
+            $comment_success = $order->save();
+
+            if ($comment_success) {
+                return $comment_success;
+            }
+
+        }
+    }
+
+    public function webhookUserSend($user_data)
+    {
+        $webhook_url = 'https://hook.us1.make.com/zk74k3x1up62fj5do42q4d2s9ncu3gcu';
+
+        $webhook_data = array(
+            'full_name' => $user_data['name'],
+            'phone' => $user_data['phone'],
+            'mail' => $user_data['email'],
+        );
+
+        $response = wp_remote_post(
+            $webhook_url,
+            array(
+                'body' => json_encode($webhook_data),
+                'headers' => array('Content-Type' => 'application/json'),
+            )
+        );
+
+        if (is_wp_error($response)) {
+            error_log('Erro ao enviar webhook: ' . $response->get_error_message());
+        } else {
+            $body = wp_remote_retrieve_body($response);
+            $decoded_response = json_decode($body, true);
+        }
+    }
+
+    public function openPixShow()
+    {
+        global $wpdb;
+
+        $sql = $wpdb->prepare("SELECT * FROM $this->table_name_comments");
+        $comments = $wpdb->get_results($sql, OBJECT);
+
+        $comments_array = array();
+
+        foreach ($comments as $comment) {
+            $post_id = $comment->comment_post_ID;
+            $comment_content = $comment->comment_content;
+
+            $comments_array[$post_id][] = array(
+                "comment_content" => $comment_content,
+            );
+        }
+
+        return $comments_array;
+
+    }
+
 }

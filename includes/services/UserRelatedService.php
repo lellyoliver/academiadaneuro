@@ -102,4 +102,9 @@ class UserRelatedService
         return $this->userRelatedModel->userExpiredData();
     }
 
+    public function newUserExpired($current_user_id, $user_id)
+    {
+        return $this->userRelatedModel->newUserExpired($current_user_id, $user_id);
+    }
+
 }

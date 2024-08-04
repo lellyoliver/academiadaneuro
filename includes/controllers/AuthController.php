@@ -20,7 +20,7 @@ class AuthController
             $user = $this->authenticateUser($userlogin, $password);
 
             if ($user) {
-                wp_redirect('meu-perfil');
+                wp_redirect('/');
                 exit;
             } else {
                 echo '<script>
@@ -33,6 +33,13 @@ class AuthController
         }
     }
 
+    /**
+     * Authenticate user using WordPress authentication functions.
+     *
+     * @param string $userlogin The username or email of the user.
+     * @param string $password The user's password.
+     * @return mixed The authenticated user or false on failure.
+     */
     public function authenticateUser($userlogin, $password)
     {
         $user = wp_authenticate($userlogin, $password);
@@ -46,6 +53,11 @@ class AuthController
         return false;
     }
 
+    /**
+     * Display the login view.
+     *
+     * @return string HTML output for the login view.
+     */
     public function show()
     {
         $process = $this->processLogin();
@@ -57,6 +69,12 @@ class AuthController
         return $output;
     }
 
+    /**
+     * Process email confirmation.
+     *
+     * @param WP_REST_Request $request The REST request containing user_id and token parameters.
+     * @return WP_REST_Response The REST response with the result of the operation.
+     */
     public function processEmail($request)
     {
         $user_id = $request->get_param('user_id');
@@ -79,6 +97,11 @@ class AuthController
         return new WP_REST_Response($response, 500);
     }
 
+    /**
+     * Display the email confirmation view.
+     *
+     * @return string HTML output for the email confirmation view.
+     */
     public function emailShow()
     {
         ob_start();
@@ -88,6 +111,12 @@ class AuthController
         return $output;
     }
 
+    /**
+     * Process forgot password request.
+     *
+     * @param WP_REST_Request $request The REST request containing data_register parameter.
+     * @return WP_REST_Response The REST response with the result of the operation.
+     */
     public function processForgotPassword($request)
     {
         $data_register = $request->get_param('data_register');
@@ -97,7 +126,7 @@ class AuthController
         if ($result[0]) {
             $response = array(
                 'status' => 'sucesso',
-                'message' => 'Redefinição de senha feita com sucesso.' ,
+                'message' => 'Redefinição de senha feita com sucesso.',
                 'dataMessage' => $result[1],
             );
             return new WP_REST_Response($response, 200);
@@ -110,6 +139,11 @@ class AuthController
         return new WP_REST_Response($response, 500);
     }
 
+    /**
+     * Display the forgot password view.
+     *
+     * @return string HTML output for the forgot password view.
+     */
     public function forgotPasswordShow()
     {
         ob_start();

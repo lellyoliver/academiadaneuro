@@ -12,14 +12,14 @@
                     <div class="spacing_signin"></div>
                     <h1 class="fs-3 fw-bold">Esqueci minha senha</h1>
                     <h3 class="fs-6 fw-normal">Mantenha-se atento! Você receberá um e-mail para verificação. Se não
-                        encontrar nenhum e-mail, entre em contato com nosso suporte ao cliente. </h3>
+                        encontrar nenhum e-mail, entre em contato com nosso suporte ao cliente.</h3>
                     <div class="mb-5"></div>
                     <form id="form-auth-forgot-password" method="post">
                         <div id="alert"></div>
                         <span class="label-float">
                             <input type="text" id="data_register" name="data_register"
                                 onchange="this.value = formatCPFOrCNPJ(this.value)" />
-                            <label for="data_register"><?php echo esc_html__('CPF/CNPJ'); ?></label>
+                            <label for="data_register"><?php echo esc_html__('CPF/CNPJ/Nome de Usuário*'); ?></label>
                         </span>
                         <div class="mb-3"></div>
                         <span id="forgot-password"></span>
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="col-md-7 bg-signin-photo"
-                style="background-image:url(https://cdn.institutodeneurociencia.com.br/image/bg_forgot_1.svg)">
+                style="background-image:url(https://cdn.institutodeneurociencia.com.br/image/bg_forgot_1.jpg)">
                 <div class="box-signin-text">
                     <img src="https://cdn.institutodeneurociencia.com.br/image/brain_icon_2.svg"
                         width="50" height="50" class="me-3">

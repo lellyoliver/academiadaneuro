@@ -1,12 +1,15 @@
-<?php 
+<?php
 $current_user = wp_get_current_user();
 $current_user_id = get_current_user_id();
 $allowed_roles_1 = ['coachingRelation'];
 $allowed_roles_2 = ['coach', 'health-pro', 'administrator', 'training'];
 $allowed_roles_3 = ['training', 'administrator', 'coach'];
-$data = get_user_meta( $current_user_id, 'connected_user', true );
+$data = get_user_meta($current_user_id, 'connected_user', true);
 $billing_phone = get_user_meta($data, 'billing_phone', true);
 $profissional = get_userdata($data);
+$_plan_mensal_training = get_option('_plan_mensal_training');
+$_plan_trimestral_training = get_option('_plan_trimestral_training');
+$_plan_semestral_training = get_option('_plan_semestral_training');
 
 ?>
 <div class="loading" style="display:none" id="loading">
@@ -27,13 +30,12 @@ $profissional = get_userdata($data);
                             <img id="avatar-preview" alt="user-perfil" class="img-perfil mb-3">
                             <input type="file" class="display-none" name="avatar_file" id="avatar_file"
                                 accept="image/*" />
-                            <input type="hidden" name="post_id" id="post_id" value="<?php echo get_the_ID()?>">
-                            <span class="edit-pen-perfil" id="edit-avatar">
-                                <i class="fa-solid fa-pen"></i></span>
+                            <input type="hidden" name="post_id" id="post_id" value="<?php echo get_the_ID() ?>">
+                            <button class="btn btn-secondary btn-sm edit-pen-perfil" id="edit-avatar">
+                                <i class="fa-solid fa-pen"></i></button>
                             <h6 class="card-title text-center fw-bold mb-3 title-cards text-uppercase">
                                 <?php echo esc_html('Meu Perfil'); ?>
                             </h6>
-                            <p id="user_name" class="text-center"></p>
                             <p class="text-center" style="font-size:10px;">Permitido apenas foto 1:1
                             </p>
                         </div>
@@ -87,11 +89,12 @@ $profissional = get_userdata($data);
                                     <label for="states"><?php echo esc_html('Estado'); ?></label>
                                 </span>
                             </div>
-                            <?php endif; ?>
+                            <?php endif;?>
                             <div class="col-md-12 mb-3">
                                 <span class="label-float">
                                     <input type="password" id="user_pass" name="user_pass">
-                                    <label for="states"><?php echo esc_html('Senha'); ?></label>
+                                    <label for="states"><?php echo esc_html('Alterar Senha'); ?></label>
+                                    <i class="fa-solid fa-eye" id="show-password"></i>
                                 </span>
                             </div>
 
@@ -116,22 +119,20 @@ $profissional = get_userdata($data);
                 <?php echo esc_html('Sua Assinatura'); ?>
             </h6>
             <div class="mb-3"></div>
-            <p><b>Sua assinatura é compartilhada com seu(a) profissional: <?php echo $profissional->display_name;?></b>
-                <?php 
-                        if($expireds[0]['status']){
-                            
-                            echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="color-success"><i class="fa-solid fa-circle-check"></i></span>';
-                        }else{
-                            echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="color-danger"><i class="fa-solid fa-triangle-exclamation"></i></span>';
-                        }
-                        ?>
+            <p><b>Sua assinatura é compartilhada com seu(a) profissional: <?php echo $profissional->display_name; ?></b>
+                <?php
+                if ($expireds[0]['status']) {
+                    echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="color-success"><i class="fa-solid fa-circle-check"></i></span>';
+                } else {
+                    echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="color-danger"><i class="fa-solid fa-triangle-exclamation"></i></span>';
+                }
+                ?>
             </p>
             <p>Qualquer dúvida sobre seu plano converse com seu profissional!</p>
-            <p><a href="tel:<?php echo $billing_phone;?>" class="btn btn-sm btn-outline-secondary"><i
-                        class="fa-brands fa-whatsapp"></i> <?php echo $billing_phone;?></a></p>
-            <hr>
-            <p>Quero Deixar de ter assinatura compartilhada e <a
-                    href="mailto:suporte@institutodeneurociencia.com.br">fazer uma solicitação para plano pessoal</a>!</p>
+            <p><a href="https://wa.me/+55<?php echo $billing_phone; ?>" class="btn btn-sm btn-outline-secondary"
+                    target="_blank"><i class="fa-brands fa-whatsapp"></i> <?php echo $billing_phone; ?></a></p>
+            <!-- <hr>
+            <p>Quero deixar de ter assinatura compartilhada e <a href="mailto:suporte@institutodeneurociencia.com.br">fazer uma solicitação para plano pessoal</a>!</p> -->
 
         </div>
     </div>
@@ -145,59 +146,91 @@ $profissional = get_userdata($data);
                 </h6>
                 <div class="mb-3"></div>
                 <div class="row">
-                    <div class="col-md-6 mobile-order-3  ">
+                    <div class="col-md-6 mobile-order-3">
                         <h6>Últimos Pagamentos</h6>
                         <div class="mb-3"></div>
-                        <?
-                    foreach ($orders as $order) :
-                        $order_id = $order->ID;
-                        $order_data = wc_get_order($order_id);
+                        <?php
+                        if ($orders):
+                            $total_orders = count($orders);
+                            foreach ($orders as $index => $order):
+                                $order_id = $order->ID;
+                                $order_data = wc_get_order($order_id);
 
-                        $order_number = $order_data->get_order_number();
-                        $order_date = $order_data->get_date_created();
-                        $order_end_date = $order_data->get_date_completed();
-                        $order_status = $order_data->get_status();
+                                $order_number = $order_data->get_order_number();
+                                $order_date = $order_data->get_date_created();
+                                $order_end_date = $order_data->get_date_completed();
+                                $order_status = $order_data->get_status();
 
-                        $total_price = $order_data->get_total();
+                                $total_price = $order_data->get_total();
 
-                        $items = $order_data->get_items();
-                        $product_names = array();
+                                $items = $order_data->get_items();
+                                $product_names = array();
 
-                        foreach ($items as $item) {
-                            $product = $item->get_product();
-                            $product_names[] = $product->get_name();
-                        }
+                                foreach ($items as $item) {
+                                    $product = $item->get_product();
+                                    $product_names[] = $product->get_name();
+                                }
 
-                        $product_names_string = implode(', ', $product_names);
-                        $classe_css = ($order_status == "Completed") ? "dot-bg-pending" : "dot-bg-completed";
-                    ?>
+                                $product_names_string = implode(', ', $product_names);
+                                $current_date = new DateTime();
+                                $interval = $current_date->diff($order_date);
+                                $is_within_7_days = $interval->days < 7;
+                                ?>
                         <div class="timeline">
                             <div class="lines">
-                                <div class="dot <?php echo $classe_css; ?>"></div>
+                                <div class="dot <?php echo $order_status; ?>"></div>
                                 <div class="line"></div>
                             </div>
                             <div>
-                                <p>#<?php echo $order_number;?></p>
-                                <h5><?php echo $product_names_string; ?> &minus; <?php echo wc_price($total_price); ?>
+                                <p>#<?php echo $order_number; ?> <i class="fa-solid fa-circle-info"></i></p>
+                                <h5><?php echo $product_names_string; ?> &minus;
+                                    <?php echo wc_price($total_price); ?>
                                 </h5>
-                                <p><?php echo $order_end_date->format('d/m/Y'); ?></p>
+                                <p><?php echo !empty($order_end_date) ? $order_end_date->format('d/m/Y') : ''; ?></p>
+                                <p>
+                                    <?php if($openPix[$order_id]){
+                                        $comment_count = count($openPix[$order_id]);
+                                            if ($comment_count === 1){
+                                                $comment_content = $openPix[$order_id][0]['comment_content'];
+                                                preg_match('/<a\s[^>]*href=([\'"])(https?:\/\/[^\'"]+)\1[^>]*>(.*?)<\/a>/', $comment_content, $matches);
+                                                $link = isset($matches[2]) ? $matches[2] : '';
+                                                if(!empty($link)){
+                                                    echo '<a class="btn btn-sm btn-primary mt-2" href="'.$link.'" target="_blank">Pague com PIX</a>';
+                                                } 
+                                            }
+                                        }
+                                    ?>
+
+                                </p>
+                                <?php if ($order_status == 'completed' && $is_within_7_days && $index !== $total_orders - 1): ?>
+                                <form class="form-refund" method="post" data-order-id="<?php echo $order_id; ?>">
+                                    <input type="hidden" name="order_id" id="order_id" value="<?php echo $order_id; ?>">
+                                    <button class="btn btn-sm btn-outline-secondary mt-3" type="submit">
+                                        <i class="fa-solid fa-rotate-left"></i> Pedir Reembolso
+                                    </button>
+                                </form>
+                                <?php endif;?>
+                                <div class="mb-3"></div>
                             </div>
                         </div>
-                        <?php endforeach; ?>
+                        <?php endforeach;
+                                    endif;
+                                    ?>
                     </div>
+
                     <hr class="display-mobile mobile-order-2 mb-4 mt-4">
                     <?php if (array_intersect($allowed_roles_3, $current_user->roles)): ?>
                     <div class="col-md-6 mobile-order-1">
                         <h6>Cobranças</h6>
                         <div class="mb-3"></div>
                         <span>
-                            <?php if($userExpireds[0]):
-                        setlocale(LC_TIME, 'pt_BR.utf8'); // Define o local para o português do Brasil
-                        $expiration_date = strtotime($userExpireds[0]->expiration_date);
-                        $formatted_date = strftime('%d de %B de %Y', $expiration_date);
-                        $order_data = wc_get_order($userExpireds[0]->order_id);
-                        $total_price = $order_data->get_total();
-                        ?>
+                            <?php if ($userExpireds[0]):
+                                setlocale(LC_TIME, 'pt_BR.utf8'); // Define o local para o português do Brasil
+                                $expiration_date = strtotime($userExpireds[0]->expiration_date);
+                                $formatted_date = strftime('%d de %B de %Y', $expiration_date);
+                                $order_data = wc_get_order($userExpireds[0]->order_id);
+                                $total_price = $order_data->get_total();
+                                ?>
                             <p><i class="fa-solid fa-money-check-dollar"></i>
                                 <b><?php echo wc_price($total_price); ?></b>
                                 <br>
@@ -208,13 +241,19 @@ $profissional = get_userdata($data);
                         <div class="mb-3"></div>
                         <button class="btn btn-sm btn-outline-secondary" data-bs-target="#cartUserRelated"
                             data-bs-toggle="offcanvas"><i class="fa-solid fa-credit-card"></i> Renovar Plano</button>
-                        <?php 
-                        if($expireds[0]['status']){
+                        <?php
+                        if ($expireds[0]['status']) {
                             echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="color-success"><i class="fa-solid fa-circle-check"></i></span>';
-                        }else{
+                        } else {
                             echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="color-danger"><i class="fa-solid fa-triangle-exclamation"></i></span>';
                         }
                         ?>
+                        <div class="mb-3"></div>
+                        <h6>Suporte ao Cliente</h6>
+                        <div class="mb-3"></div>
+                        <p class="m-0 mb-2">Link para nosso suporte técnico:</p>
+                        <button class="btn btn-sm btn-secondary" onclick="window.location='<?php echo site_url( '/suporte-cliente' ); ?>'">Suporte Técnico</button>
+                        <span>
                     </div>
                     <?php endif;?>
                 </div>
@@ -222,6 +261,8 @@ $profissional = get_userdata($data);
             </div>
         </div>
     </div>
+
+    <!--comprar-->
     <div class="offcanvas offcanvas-bottom" tabindex="-1" id="cartUserRelated" aria-labelledby="planos"
         style="z-index:9999!important;">
         <div class="offcanvas-header">
@@ -237,8 +278,10 @@ $profissional = get_userdata($data);
                             <div class="card-body">
                                 <span class="badge bg-primary mb-2">Plano I</span>
                                 <h5 class="card-title fw-bold">Assinatura Mensal</h5>
-                                <p class="card-text">R$39,90/mês</p>
-                                <input type="hidden" name="product_id" value="339">
+                                <h6><?php echo wc_price(get_post_meta($_plan_mensal_training, '_price', true)); ?></h6>
+                                <p><?php echo $description = wc_get_product($_plan_mensal_training) ? wc_get_product($_plan_mensal_training)->get_description() : 'Descrição não encontrada'; ?>
+                                </p>
+                                <input type="hidden" name="product_id" value="<?php echo $_plan_mensal_training; ?>">
                                 <input type="hidden" name="user_related_id" value="<?php echo $current_user_id ?>">
                             </div>
                         </div>
@@ -249,9 +292,29 @@ $profissional = get_userdata($data);
                         <div class="card card-plans" onclick="this.closest('form').submit()">
                             <div class="card-body">
                                 <span class="badge bg-primary mb-2">Plano II</span>
+                                <h5 class="card-title fw-bold">Assinatura Trimestral</h5>
+                                <h6><?php echo wc_price(get_post_meta($_plan_trimestral_training, '_price', true)); ?>
+                                </h6>
+                                <p><?php echo $description = wc_get_product($_plan_trimestral_training) ? wc_get_product($_plan_trimestral_training)->get_description() : 'Descrição não encontrada'; ?>
+                                </p>
+                                <input type="hidden" name="product_id"
+                                    value="<?php echo $_plan_trimestral_training; ?>">
+                                <input type="hidden" name="user_related_id" value="<?php echo $current_user_id ?>">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md mb-4">
+                    <form method="post">
+                        <div class="card card-plans" onclick="this.closest('form').submit()">
+                            <div class="card-body">
+                                <span class="badge bg-primary mb-2">Plano III</span>
                                 <h5 class="card-title fw-bold">Assinatura Semestral</h5>
-                                <p class="card-text">R$29,90/mês</p>
-                                <input type="hidden" name="product_id" value="338">
+                                <h6><?php echo wc_price(get_post_meta($_plan_semestral_training, '_price', true)); ?>
+                                </h6>
+                                <p><?php echo $description = wc_get_product($_plan_semestral_training) ? wc_get_product($_plan_semestral_training)->get_description() : 'Descrição não encontrada'; ?>
+                                </p>
+                                <input type="hidden" name="product_id" value="<?php echo $_plan_semestral_training; ?>">
                                 <input type="hidden" name="user_related_id" value="<?php echo $current_user_id ?>">
                             </div>
                         </div>
@@ -260,7 +323,7 @@ $profissional = get_userdata($data);
             </div>
         </div>
     </div>
-    <?php endif; ?>
+    <?php endif;?>
 
     <script>
     document.getElementById('edit-avatar').addEventListener('click', function() {

@@ -65,9 +65,6 @@
                                         <option value="health-pro">
                                             <?php echo esc_html__('Profissional da Saúde'); ?>
                                         </option>
-                                        <option value="coach">
-                                            <?php echo esc_html__('Profissional da Educação'); ?>
-                                        </option>
                                         <option value="training">
                                             <?php echo esc_html__('Uso Pessoal'); ?></option>
                                     </select>
@@ -105,7 +102,7 @@
                 <div class="mb-4"></div>
             </div>
             <div class="col-md-7 bg-signin-photo"
-                style="background-image:url(https://cdn.institutodeneurociencia.com.br/image/bg_signin_1.jpg')">
+                style="background-image:url(https://cdn.institutodeneurociencia.com.br/image/bg_signin_1.jpg)">
                 <div class="box-signin-text">
                     <img src="https://cdn.institutodeneurociencia.com.br/image/brain_icon_4.svg" width="50"
                         height="50" class="me-3">

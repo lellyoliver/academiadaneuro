@@ -1,4 +1,4 @@
-# Gitflow para aCADEMIA DA NEUROCIENCIA
+# Gitflow para ACADEMIA DA NEUROCIENCIA
 
 ## Visão Geral
 

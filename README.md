@@ -35,7 +35,7 @@ Este documento descreve o fluxo de trabalho Git para ACADEMIA DA NEUROCIENCIA. O
     git add .
     ```
     ```sh
-    git commit -m "8: Implementa melhoria de performance na API"
+    git commit -m "https://github.com/lellyoliver/academiadaneuro/issues/8"
     ```
 
 3. **Criar um Pull Request**

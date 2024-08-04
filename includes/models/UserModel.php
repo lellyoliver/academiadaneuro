@@ -54,7 +54,7 @@ class UserModel
 
         if ($user_data['role'] === "training") {
             $this->newUserExpired($user_id);
-        } else {
+        }else {
             $this->freeTrial($user_id);
         }
 
@@ -330,7 +330,7 @@ class UserModel
         if (class_exists('WooCommerce')) {
             $orders = wc_get_orders(array(
                 'status' => array('wc-completed', 'wc-processing', 'wc-refunded', 'wc-pending'),
-                'limit' => -1,
+                'limit' => 10,
                 'orderby' => 'date',
                 'order' => 'DESC',
                 'customer_id' => $id,

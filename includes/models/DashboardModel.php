@@ -1,167 +1,186 @@
 <?php
 require_once plugin_dir_path(__FILE__) . '../services/UserRelatedService.php';
+require_once plugin_dir_path(__FILE__) . '../services/TrainingService.php';
+require_once plugin_dir_path(__FILE__) . '../services/MyTrainingService.php';
 
 class DashboardModel
 {
 
-    private $table_name_progress;
-    private $table_name_replies;
-
+    private $table_progress;
+    private $table_replies;
+    private $wpdb;
     private $userRelatedService;
+    private $trainingService;
+    private $myTrainingService;
 
     public function __construct()
     {
         global $wpdb;
-        $this->table_name_progress = $wpdb->prefix . 'training_progress';
-        $this->table_name_replies = $wpdb->prefix . 'training_replies';
+        $this->wpdb = $wpdb;
+        $this->table_progress = $this->wpdb->prefix . 'adn_progress';
+        $this->table_replies = $this->wpdb->prefix . 'adn_replies';
         $this->userRelatedService = new UserRelatedService();
+        $this->trainingService = new TrainingService();
+        $this->myTrainingService = new MyTrainingService();
+
     }
 
-    public function getListRelated()
+    public function getListRelated($user_id)
     {
-        $current_user_id = get_current_user_id();
-        $list = $this->userRelatedService->listUserRelated($current_user_id);
+        $list = $this->userRelatedService->listUserRelated($user_id);
         return $list;
+    }
+
+    public function getPrepareProgress($user_id)
+    {
+        if (!$user_id) {
+            return false;
+        }
+
+        $query = $this->wpdb->prepare(
+            "SELECT activity_started, activity_updated, neural_breathing, neural_resonance, cognitive_stimulation, post_id FROM $this->table_progress WHERE user_id = %d",
+            $user_id
+        );
+
+        $results = $this->wpdb->get_results($query);
+
+        if (!empty($results)) {
+            return $results;
+        }
+
+        return false;
+    }
+
+    public function getPrepareReplies($user_id)
+    {
+        if (!$user_id) {
+            return false;
+        }
+
+        $query = $this->wpdb->prepare(
+            "SELECT treinamentos FROM $this->table_replies WHERE user_id = %d",
+            $user_id
+        );
+
+        $results = $this->wpdb->get_results($query);
+        $postTitles = array();
+
+        foreach ($results as $result) {
+            $replies = json_decode($result->treinamentos);
+
+            if ($replies && isset($replies)) {
+                foreach ($replies as $post_id) {
+                    $post = get_post($post_id);
+                    $porcentagem = $this->getProgress($user_id);
+
+                    if ($post) {
+                        $postTitles[] = [
+                            "training" => $post->post_title,
+                            "porcentagem" => isset($porcentagem[$post->ID]->porcentagem) ? $porcentagem[$post->ID]->porcentagem : "0",
+                        ];
+                    }
+                }
+            }
+        }
+
+        return (!empty($postTitles)) ? $postTitles : false;
+    }
+
+    public function getProgressUser($user_id)
+    {
+        $users = $this->getListRelated($user_id);
+        $result = [];
+
+        foreach ($users as $user) {
+            $trainings = $this->myTrainingService->getProgress($user->ID);
+            $general = $this->myTrainingService->getTotalProgress($user->ID);
+
+            $total = "";
+            $averageProgress = ""; // Inicializando a variável
+
+            if (!empty($trainings)) {
+                $count = count($trainings);
+
+                if ($count > 0) {
+                    foreach ($trainings as $training) {
+                        if (isset($training->porcentagem) && is_numeric($training->porcentagem)) {
+                            $total += $training->porcentagem;
+                        }
+                    }
+                    $averageProgress = $total / $count;
+                }
+            }
+
+            $preparesUpdateds = $this->getPrepareProgress($user->ID);
+            $activity_updated = "";
+
+            if (!empty($preparesUpdateds)) {
+                foreach ($preparesUpdateds as $preparesUpdated) {
+                    $activity_updated = date_i18n('d M', $preparesUpdated->activity_updated);
+                }
+            }
+
+            $result[] = [
+                "ID" => $user->ID,
+                "name" => $user->display_name,
+                "porcentagem" => $averageProgress,
+                "updated" => $activity_updated,
+                "neural_breathing" => $general['neural_breathing'],
+                "neural_resonance" => $general['neural_resonance'],
+                "cognitive_stimulation" => $general['cognitive_stimulation'],
+
+            ];
+        }
+
+        return $result;
     }
 
     public function getProgress($user_id)
     {
-        global $wpdb;
+        $timestampsArray = $this->getPrepareProgress($user_id);
+        $progress = [];
 
-        $query = $wpdb->prepare(
-            "SELECT neuralResonance, cognitiveStimulation, neuralBreathing, updateProgress, user_id FROM $this->table_name_progress WHERE user_id = %d",
-            $user_id
-        );
+        // Tempos mínimos semanais em segundos
+        $minTimeNeuralResonance = 8400; // 7 dias * 1200 segundos/dia
+        $minTimeNeuralBreathing = 4200; // 7 dias * 600 segundos/dia
+        $minTimeCognitiveStimulation = 4200; // 7 dias * 600 segundos/dia
 
-        $results = $wpdb->get_results($query);
+        // Pesos das categorias
+        $weights = [
+            'neural_breathing' => 17.5,
+            'neural_resonance' => 70,
+            'cognitive_stimulation' => 17.5,
+        ];
 
-        return $results;
-    }
+        if (!empty($timestampsArray)) {
+            foreach ($timestampsArray as $timestampObject) {
+                $categoryProgress = [];
 
-    public function getProgressTraining()
-    {
-        $list_related = $this->getListRelated();
-        $progressResults = [];
+                // Associando categorias com seus tempos mínimos
+                $categories = [
+                    'neural_breathing' => $minTimeNeuralBreathing,
+                    'neural_resonance' => $minTimeNeuralResonance,
+                    'cognitive_stimulation' => $minTimeCognitiveStimulation,
+                ];
 
-        foreach ($list_related as $user) {
-            $user_id = $user->ID;
-            $progressResults[] = $this->getProgress($user_id);
-        }
-        return $progressResults;
-    }
-
-    public function getListProgress()
-    {
-        $results = $this->getProgressTraining();
-        $dh_enter_seconds = strtotime('01:00:00') - strtotime('00:00:00');
-        $status = array();
-
-        foreach ($results as $userProgress) {
-            // Default value for user_id
-            $user_id = isset($userProgress[0]->user_id) ? $userProgress[0]->user_id : '';
-            $updateProgress = isset($userProgress[0]->updateProgress) ? $userProgress[0]->updateProgress : '';
-            $user_status = array();
-
-            foreach ($userProgress as $result) {
-                $result_seconds = array();
-                foreach (get_object_vars($result) as $category => $time) {
-                    $result_seconds[$category] = strtotime($time) - strtotime('00:00:00');
+                foreach ($categories as $category => $minTimeSeconds) {
+                    $start = $timestampObject->activity_started;
+                    $end = $timestampObject->{$category};
+                    $differenceSeconds = max($end - $start, 0);
+                    $percentage = min(($differenceSeconds / $minTimeSeconds) * $weights[$category], 100);
+                    $categoryProgress[$category] = $percentage;
                 }
 
-                $category_status = array();
-                foreach ($result_seconds as $category => $seconds) {
-                    if ($seconds >= $dh_enter_seconds) {
-                        $category_status[$category] = "100";
-                    } else {
-                        $percentage = $seconds > 0 ? round(($seconds / $dh_enter_seconds) * 100, 0) : "0";
-                        $category_status[$category] = $percentage;
-                    }
-                }
+                // Calculando a soma ponderada das porcentagens
+                $totalProgress = array_sum($categoryProgress);
 
-                // Set user_id and updateProgress in the category_status
-                $category_status['user_id'] = $user_id;
-                $category_status['updateProgress'] = $updateProgress;
-
-                $user_status[] = $category_status;
-            }
-
-            $status[$user_id] = $user_status;
-        }
-
-        return $status;
-    }
-
-    public function getTotalProgress()
-    {
-        $progressArray = $this->getListProgress();
-
-        $categorySums = [];
-
-        foreach ($progressArray as $userId => $userProgress) {
-            $updateProgress = isset($userProgress[0]['updateProgress']) ? $userProgress[0]['updateProgress'] : '';
-            $categoryCounts = [
-                'neuralResonance' => 0,
-                'cognitiveStimulation' => 0,
-                'neuralBreathing' => 0,
-            ];
-
-            foreach ($userProgress as $entry) {
-                foreach ($entry as $category => $value) {
-                    if ($category !== 'user_id' && $category !== 'updateProgress') {
-                        if (is_numeric($value)) {
-                            $categorySums[$userId][$category] = isset($categorySums[$userId][$category]) ?
-                            $categorySums[$userId][$category] + $value :
-                            $value;
-                            $categoryCounts[$category]++;
-                        }
-                    }
-                }
-            }
-
-            foreach ($categoryCounts as $category => $count) {
-                $categorySums[$userId][$category] = $count > 0 ?
-                round($categorySums[$userId][$category] / $count, 0) :
-                0;
-            }
-
-            $categorySums[$userId]['user_id'] = $userId;
-            $categorySums[$userId]['updateProgress'] = $updateProgress;
-            // error_reporting(error_reporting() & ~E_NOTICE);
-            $total = array_sum($categorySums[$userId]) - (int)$categorySums[$userId]['user_id'] - (int)$categorySums[$userId]['updateProgress'];
-            $categorySums[$userId]['totalProgress'] = round($total / (count($categorySums[$userId]) - 2), 0);
-
-        }
-
-        return $categorySums;
-    }
-
-    public function getReplies($user_id)
-    {
-        global $wpdb;
-
-        $query = $wpdb->prepare(
-            "SELECT replies FROM $this->table_name_replies WHERE user_id = %d",
-            $user_id
-        );
-
-        $results = $wpdb->get_results($query);
-        $postTitles = array();
-
-        foreach ($results as $result) {
-            $replies = json_decode($result->replies);
-
-            if ($replies && isset($replies->post_id)) {
-                foreach ($replies->post_id as $post_id) {
-                    $post = get_post($post_id);
-
-                    if ($post) {
-                        $postTitles[] = $post->post_title;
-                    }
-                }
+                $progress[$timestampObject->post_id] = (object) [
+                    'porcentagem' => ceil($totalProgress),
+                ];
             }
         }
 
-        return $postTitles;
+        return $progress;
     }
 
 }

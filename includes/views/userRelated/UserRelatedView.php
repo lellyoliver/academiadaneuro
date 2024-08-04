@@ -11,67 +11,53 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
         </div>
     </div>
 </div>
-<div class="card mb-3">
-    <div class="container padding_container__card">
-        <div class="card-body">
-            <div class="d-flex align-items-center align-self-center mb-3">
-                <h6 class="card-title fw-bold title-cards text-uppercase me-2 m-0">
-                    <?php echo esc_html('Meus Pacientes'); ?>
-                </h6>
-                <a role="button" class="btn btn-3 btn-sm display-desktop" data-bs-toggle="offcanvas"
-                    data-bs-target="#viewCreateRelated" id="btn_user"><i class="fa-solid fa-user-plus"></i>
-                </a>
-            </div>
 
-            <table class="table" id="tableRelated" data-toggle="table" data-pagination="true" data-page-size="3"
-                data-search="false" data-pagination-parts="[pageList]">
-                <thead>
-                    <tr>
-                        <th data-field="display_name">Nome do Paciente</th>
-                        <th data-field="user_email">E-mail</th>
-                        <th data-field="description">Quadro Clínico</th>
-                        <th data-field="status"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($getUser as $getUsers): ?>
-                    <tr class="view-user" data-bs-toggle="offcanvas" data-bs-target="#viewUserRelated"
-                        data-userid="<?php echo $getUsers['ID']; ?>" id="list-<?php echo $getUsers['ID']; ?>">
-                        <td data-label="Nome do Paciente"><?php echo $getUsers['billing_first_name']; ?></td>
-                        <td data-label="E-mail"><?php echo $getUsers['user_email']; ?></td>
-                        <td data-label="Quadro Clínico"><?php echo $getUsers['description']; ?></td>
-                        <td class="status" style="background-color:none!important;">
-                            <button type="submit" class="btn btn-sm btn-secondary me-2 mb-1 view-cart"
-                                id="cart-user-<?php echo $getUsers['ID']; ?>" data-bs-target="#cartUserRelated"
-                                data-bs-toggle="offcanvas" data-userid="<?php echo $getUsers['ID']; ?>">
-                                <i class="fa-solid fa-cart-shopping"></i>
-                            </button>
-                            <?php
-                            if(!empty($expired)){
-                                foreach ($expired as $expireds) {
-                                    if($expireds['user_id'] == $getUsers['ID']){
-                                        if($expireds['status']){
-                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="fa-solid fa-circle-check check__mobile color-success" style="font-size:16px;"></i>';
-                                        }else{
-                                            echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="fa-solid fa-triangle-exclamation check__mobile color-danger" style="font-size:16px;"></i>';
-                                        }
-                                    }
-                                }
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                    <?php endforeach;?>
-                </tbody>
-            </table>
-            <div class="row m-0 m-auto mt-3 display-mobile">
-                <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="offcanvas"
-                    data-bs-target="#viewCreateRelated" id="btn_user"><i class="fa-solid fa-user-plus me-5"></i> Novo
-                    Paciente
+<table class="table" id="tableRelated" data-toggle="table" data-search="true" data-pagination="true" data-page-size="5"
+    data-pagination-parts="[pageList]">
+    <thead>
+        <tr>
+            <th data-field="display_name">Nome do Paciente</th>
+            <th data-field="user_email">E-mail</th>
+            <th data-field="description">Quadro Clínico</th>
+            <th data-field="status"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($getUser as $getUsers): ?>
+        <tr class="view-user" data-bs-toggle="offcanvas" data-bs-target="#viewUserRelated"
+            data-userid="<?php echo $getUsers['ID']; ?>" id="list-<?php echo $getUsers['ID']; ?>">
+            <td data-label="Nome do Paciente"><?php echo $getUsers['billing_first_name']; ?></td>
+            <td data-label="E-mail"><?php echo $getUsers['user_email']; ?></td>
+            <td data-label="Quadro Clínico"><?php echo $getUsers['description']; ?></td>
+            <td class="status" style="background-color:transparent!important;">
+                <button type="submit" class="btn btn-sm btn-secondary me-2 mb-1 view-cart"
+                    id="cart-user-<?php echo $getUsers['ID']; ?>" data-bs-target="#cartUserRelated"
+                    data-bs-toggle="offcanvas" data-userid="<?php echo $getUsers['ID']; ?>">
+                    <i class="fa-solid fa-cart-shopping"></i>
                 </button>
-            </div>
-        </div>
-    </div>
+                <?php
+                if (!empty($expired)) {
+                    foreach ($expired as $expireds) {
+                        if ($expireds['user_id'] == $getUsers['ID']) {
+                            if ($expireds['status']) {
+                                echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="fa-solid fa-circle-check check__mobile color-success" style="font-size:16px;"></i>';
+                            } else {
+                                echo '<i data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="fa-solid fa-triangle-exclamation check__mobile color-danger" style="font-size:16px;"></i>';
+                            }
+                        }
+                    }
+                }
+                ?>
+            </td>
+        </tr>
+        <?php endforeach;?>
+    </tbody>
+</table>
+<div class="row m-0 m-auto mt-3 display-mobile">
+    <button type="button" class="btn btn-lg btn-secondary" data-bs-toggle="offcanvas"
+        data-bs-target="#viewCreateRelated" id="btn_user"><i class="fa-solid fa-user-plus me-5"></i> Novo
+        Paciente
+    </button>
 </div>
 
 
@@ -154,7 +140,8 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
                     <div class="col-md-6 mb-3">
                         <span class="label-float">
                             <input type="date" id="date_birthUpdate" name="date_birthUpdate">
-                            <label for="date_birthUpdate" class="mb-2"><?php echo esc_html('Data de Nascimento'); ?></label>
+                            <label for="date_birthUpdate"
+                                class="mb-2"><?php echo esc_html('Data de Nascimento'); ?></label>
                         </span>
                     </div>
                     <div class="col-md-12 mb-3">
@@ -171,11 +158,12 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
                         </span>
                     </div>
                     <div class="col-md-12 mb-3">
-                            <span class="label-float mb-3">
-                                <input type="text" id="phoneUpdate" name="phoneUpdate">
-                                <label for="phoneUpdate" class="mb-2"><?php echo esc_html('Telefone'); ?></label>
-                                <a href="" target="_blank" class="btn whatsapp_button" id="phone_wpp"><i class="fa-brands fa-whatsapp"></i></a>
-                            </span>    
+                        <span class="label-float mb-3">
+                            <input type="text" id="phoneUpdate" name="phoneUpdate">
+                            <label for="phoneUpdate" class="mb-2"><?php echo esc_html('Telefone'); ?></label>
+                            <a href="" target="_blank" class="btn whatsapp_button" id="phone_wpp"><i
+                                    class="fa-brands fa-whatsapp"></i></a>
+                        </span>
                     </div>
                     <div class="col-md-12 mb-3">
                         <span class="label-float mb-3">
@@ -187,7 +175,8 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
                 <input type="hidden" name="user_id" id="userId" value="">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger me-2" id="deleteUser"><i class="fa-solid fa-trash"></i></button>
+                <button type="button" class="btn btn-danger-custom me-2" id="deleteUser"><i
+                        class="fa-solid fa-trash"></i></button>
                 <button type="submit" class="btn btn-secondary"
                     id="updateUser"><?php echo esc_html('Atualizar'); ?></button>
             </div>
@@ -211,10 +200,12 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
                         <div class="card-body">
                             <span class="badge bg-primary mb-2">Plano Bronze</span>
                             <h5 class="card-title fw-bold">Assinatura Mensal</h5>
-                            <h6><?php echo wc_price(get_post_meta($_plan_mensal_coachingRelation, '_price', true));  ?></h6>
-                            <p><?php echo $description = wc_get_product($_plan_mensal_coachingRelation) ? wc_get_product( $_plan_mensal_coachingRelation )->get_description() : 'Descrição não encontrada';?>
+                            <h6><?php echo wc_price(get_post_meta($_plan_mensal_coachingRelation, '_price', true)); ?>
+                            </h6>
+                            <p><?php echo $description = wc_get_product($_plan_mensal_coachingRelation) ? wc_get_product($_plan_mensal_coachingRelation)->get_description() : 'Descrição não encontrada'; ?>
                             </p>
-                            <input type="hidden" name="product_id" value="<?php echo $_plan_mensal_coachingRelation; ?>">
+                            <input type="hidden" name="product_id"
+                                value="<?php echo $_plan_mensal_coachingRelation; ?>">
                             <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
@@ -226,10 +217,12 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
                         <div class="card-body">
                             <span class="badge bg-primary mb-2">Plano Prata</span>
                             <h5 class="card-title fw-bold">Assinatura Trimestral</h5>
-                            <h6><?php echo wc_price(get_post_meta($_plan_trimestral_coachingRelation, '_price', true));  ?></h6>
-                            <p><?php echo $description = wc_get_product($_plan_trimestral_coachingRelation) ? wc_get_product( $_plan_trimestral_coachingRelation )->get_description() : 'Descrição não encontrada';?>
+                            <h6><?php echo wc_price(get_post_meta($_plan_trimestral_coachingRelation, '_price', true)); ?>
+                            </h6>
+                            <p><?php echo $description = wc_get_product($_plan_trimestral_coachingRelation) ? wc_get_product($_plan_trimestral_coachingRelation)->get_description() : 'Descrição não encontrada'; ?>
                             </p>
-                            <input type="hidden" name="product_id" value="<?php echo $_plan_trimestral_coachingRelation; ?>">
+                            <input type="hidden" name="product_id"
+                                value="<?php echo $_plan_trimestral_coachingRelation; ?>">
                             <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>
@@ -241,10 +234,12 @@ $_plan_semestral_coachingRelation = get_option('_plan_semestral_coachingRelation
                         <div class="card-body">
                             <span class="badge bg-primary mb-2">Plano Premium</span>
                             <h5 class="card-title fw-bold">Assinatura Semestral</h5>
-                            <h6><?php echo wc_price(get_post_meta($_plan_semestral_coachingRelation, '_price', true));  ?></h6>
-                            <p><?php echo $description = wc_get_product($_plan_semestral_coachingRelation) ? wc_get_product( $_plan_semestral_coachingRelation )->get_description() : 'Descrição não encontrada';?>
+                            <h6><?php echo wc_price(get_post_meta($_plan_semestral_coachingRelation, '_price', true)); ?>
+                            </h6>
+                            <p><?php echo $description = wc_get_product($_plan_semestral_coachingRelation) ? wc_get_product($_plan_semestral_coachingRelation)->get_description() : 'Descrição não encontrada'; ?>
                             </p>
-                            <input type="hidden" name="product_id" value="<?php echo $_plan_semestral_coachingRelation; ?>">
+                            <input type="hidden" name="product_id"
+                                value="<?php echo $_plan_semestral_coachingRelation; ?>">
                             <input type="hidden" name="user_related_id" value="">
                         </div>
                     </div>

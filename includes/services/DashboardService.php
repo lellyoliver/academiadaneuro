@@ -10,28 +10,23 @@ class DashboardService
         $this->dashboardModel = new DashboardModel();
     }
 
-    public function getListRelated()
+    public function getListRelated($user_id)
     {
-        return $this->dashboardModel->getListRelated();
+        return $this->dashboardModel->getListRelated($user_id);
     }
 
-    public function getProgressTraining()
+    public function getProgressUser($user_id)
     {
-        return $this->dashboardModel->getProgressTraining();
+        return $this->dashboardModel->getProgressUser($user_id);
     }
 
-    public function getListProgress()
+    public function getPrepareProgress($user_id)
     {
-        return $this->dashboardModel->getListProgress();
+        return $this->dashboardModel->getPrepareProgress($user_id);
     }
 
-    public function getTotalProgress()
+    public function getPrepareReplies($user_id)
     {
-        return $this->dashboardModel->getTotalProgress();
+        return $this->dashboardModel->getPrepareReplies($user_id);
     }
-
-    public function getReplies($user_id){
-        return $this->dashboardModel->getReplies($user_id);
-    }
-
 }

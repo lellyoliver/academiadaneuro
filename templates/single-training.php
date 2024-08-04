@@ -4,7 +4,6 @@
  */
 
 include_once plugin_dir_path(__FILE__) . 'header-custom.php';
-
 ?>
 <div class="loading" style="display:none" id="loading">
     <div class="overlay"></div>
@@ -14,6 +13,7 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
         </div>
     </div>
 </div>
+<div style=""></div>
 <div class="card mb-3">
     <div class="container padding_container__card">
         <div class="card-body">
@@ -23,10 +23,7 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
             <div class="row">
                 <div class="col-md-6">
                     <!--1-->
-                    <div class="class_training__video">
-                        <iframe width="100%" height="500" src="https://www.youtube.com/embed/" frameborder="0"
-                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"></iframe>
-                    </div>
+        
                     <div class="class_training__text mb-5">
                         <h5 class="mb-3">Como isso vai me ajudar no dia-a-dia?</h5>
                         <div class="accordion" id="accordionHelp">
@@ -101,7 +98,7 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                         </div>
                         <div class="class__trainings">
                             <h5 class="fw-bold text-uppercase mb-3">Respiração Neural</h5>
-                            <video width="100%" height="100%" class="class_training__video_2" id="videoPlayer" controls>
+                            <video width="100%" height="200" class="class_training__video_2" id="videoPlayer" controls>
                                 <source src="" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
@@ -115,8 +112,8 @@ include_once plugin_dir_path(__FILE__) . 'header-custom.php';
                         </div>
                         <div class="class__trainings">
                             <h5 class="fw-bold text-uppercase mb-3">Estimulação Cognitiva</h5>
-                            <a role="button" class="btn btn-lg col-3 btn-secondary class_trainings__gameplay"
-                                target="_blank" href="" id="gameplay">Iniciar</a>
+                            <a role="button" class="btn btn-lg col-3 btn-primary class_trainings__gameplay"
+                                target="_blank" href="" id="gameplay">Iniciar Jogo</a>
                         </div>
                     </div>
                     <form id="create-progress" method="post">

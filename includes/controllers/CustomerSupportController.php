@@ -13,13 +13,19 @@ class CustomerSupportController
     public function create($request){
         $comment_support = $request->get_param('comment_support');
         $user_id = $request->get_param('user_id');
+        $attachments_support = $request->get_file_params('attachment_support');
 
         $comment_data = [
             'comment_support' => $comment_support,
             'user_id' => $user_id,
         ];
-
+        
         $post_id = $this->customerSupportService->createSupport($comment_data);
+
+        if (!empty( $attachments_support )) {
+            $attachment_support_Id = $this->customerSupportService->handleSupportUpload( $attachments_support, $post_id, $comment_data );
+        }
+
         $protocolo = get_the_title($post_id);
 
         if ($post_id) {

@@ -15,7 +15,27 @@ class TrainingController
         $this->trainingService = new TrainingService();
         $this->userRelatedService = new UserRelatedService();
         $this->userService = new UserService();
+    }
 
+    private function fields()
+    {
+        return [
+            'sleep-quality',
+            'mental-fatigue',
+            'perception-mind-body',
+            'control-of-anxiety',
+            'emotional-control',
+            'stress',
+            'body-pain',
+            'headache',
+            'external-stimulus-anxiety',
+            'thoughts-invasive',
+            'mental-activity',
+            'concentration',
+            'creativity',
+            'focus-and-attention',
+            'learning-and-memory',
+        ];
     }
 
     /**
@@ -24,52 +44,31 @@ class TrainingController
      * @param WP_REST_Request $request The REST request containing user data.
      * @return WP_REST_Response The REST response with the result of the operation.
      */
-
     public function create($request)
     {
-        $sleepQuality = $request->get_param('sleepQuality');
-        $mentalFatigue = $request->get_param('mentalFatigue');
-        $perceptionMindBody = $request->get_param('perceptionMindBody');
-        $controlofAnxiety = $request->get_param('controlofAnxiety');
-        $stress = $request->get_param('stress');
-        $bodyPain = $request->get_param('bodyPain');
-        $headache = $request->get_param('headache');
-        $stimuliAnxiety = $request->get_param('stimuliAnxiety');
-        $thoughtsInvasive = $request->get_param('thoughtsInvasive');
-        $mentalActivity = $request->get_param('mentalActivity');
-        $creativity = $request->get_param('creativity');
-        $learningAndMemory = $request->get_param('learningAndMemory');
-        $focusAndAttention = $request->get_param('focusAndAttention');
-        $concentration = $request->get_param('concentration');
+        $replies = [];
+        foreach ($this->fields() as $field) {
+            $index = 0;
+            while ($request->get_param($field . '-' . $index) !== null) {
+                $key = $field . '-' . $index++;
+                $replies[$field][] = $request->get_param($key);
+            }
+        }
+
         $user_id = $request->get_param('user_id');
 
-        $fields = [
-            'Bem-estar Cerebral' => [
-                'sleepQuality' => $sleepQuality,
-                'mentalFatigue' => $mentalFatigue,
-                'perceptionMindBody' => $perceptionMindBody,
-                'controlofAnxiety' => $controlofAnxiety,
-                'stress' => $stress,
-                'bodyPain' => $bodyPain,
-                'headache' => $headache,
-                'stimuliAnxiety' => $stimuliAnxiety,
-                'thoughtsInvasive' => $thoughtsInvasive,
-            ],
-            'Desempenho Cognitivo' => [
-                'mentalActivity' => $mentalActivity,
-                'creativity' => $creativity,
-                'learningAndMemory' => $learningAndMemory,
-                'focusAndAttention' => $focusAndAttention,
-                'concentration' => $concentration,
-            ],
+        $data = [
+            'replies' => $replies,
+            'user_id' => $user_id,
         ];
 
-        $result = $this->trainingService->insertTrainingReplies($user_id, $fields);
+        $result = $this->trainingService->replies($data);
 
         if ($result) {
             $response = array(
                 'status' => 'sucesso',
                 'mensagem' => 'Treinamento criado com sucesso',
+                'data' => $data,
             );
             return new WP_REST_Response($response, 200);
         }
@@ -79,42 +78,42 @@ class TrainingController
             'mensagem' => 'Não foi possível criar um treinamento',
         );
         return new WP_REST_Response($response, 500);
-
     }
 
     public function createChoice($request)
     {
-        $post_ids = $request->get_param('post_id');
-        $user_id = $request->get_param('user_id');
-
-        $fields = [
-            'post_id' => $post_ids,
-        ];
-        if (!empty($user_id) && !empty($post_ids)) {
-            $replies = $this->trainingService->insertTrainingReplies($user_id, $fields);
-            $progress = $this->trainingService->insertTrainingProgress($user_id);
+        $replies = [];
+        foreach ($this->fields() as $field) {
+                $replies[$field] = ["1", "1", "1", "1", "1"];
         }
 
-        if ($replies || $progress) {
+        $user_id = $request->get_param('user_id');
+        $post_id = $request->get_param('post_id');
+
+
+        $data = [
+            'replies' => $replies,
+            'user_id' => $user_id,
+            'post_id' => $post_id,
+        ];
+
+        $result = $this->trainingService->replies($data);
+
+        if ($result) {
             $response = array(
                 'status' => 'sucesso',
                 'mensagem' => 'Treinamento criado com sucesso',
+                'data' => $data,
             );
             return new WP_REST_Response($response, 200);
         }
 
         $response = array(
             'status' => 'erro',
-            'mensagem' => 'Esse treinamento já foi criado para esse paciente!',
+            'mensagem' => 'Não foi possível criar um treinamento',
         );
         return new WP_REST_Response($response, 500);
     }
-
-    /**
-     * Display the user registration form.
-     *
-     * @return string The HTML/PHP content of the user registration form.
-     */
 
     public function show()
     {
@@ -130,47 +129,57 @@ class TrainingController
             }
         }
         ob_start();
-        $users = $this->getListRelated();
+        $questions = $this->trainingService->getQuestionsCombine();
         require_once plugin_dir_path(__FILE__) . '../views/training/TrainingView.php';
         $output = ob_get_contents();
         ob_end_clean();
         return $output;
     }
 
-    public function choiceShow()
+    public function showProgress()
     {
-
         if (!is_user_logged_in()) {
             wp_redirect(site_url('/login', 'https'));
             exit;
         }
-
         $userExpired = $this->userExpired();
-
         if ($this->roleRegistered()) {
             if (!$userExpired[0]["status"]) {
                 wp_redirect(site_url('/meu-perfil', 'https'));
                 exit;
             }
         }
-
         ob_start();
+        $questions = $this->trainingService->getQuestionsCombine();
+        require_once plugin_dir_path(__FILE__) . '../views/training/TrainingProgressView.php';
+        $output = ob_get_contents();
+        ob_end_clean();
+        return $output;
+    }
+
+    public function showChoice(){
+        if (!is_user_logged_in()) {
+            wp_redirect(site_url('/login', 'https'));
+            exit;
+        }
+        $userExpired = $this->userExpired();
+        if ($this->roleRegistered()) {
+            if (!$userExpired[0]["status"]) {
+                wp_redirect(site_url('/meu-perfil', 'https'));
+                exit;
+            }
+        }
+        ob_start();
+
         $users = $this->getListRelated();
-        $training = $this->getListTraining();
+        $trainings = $this->getListTraining();
+
         require_once plugin_dir_path(__FILE__) . '../views/training/TrainingChoiceView.php';
         $output = ob_get_contents();
         ob_end_clean();
         return $output;
     }
 
-    /**
-     * Retrieves a list of users related to the current logged-in user.
-     *
-     * This function first obtains the ID of the currently logged-in user using the WordPress function
-     * get_current_user_id().
-     *
-     * @return array An array of users related to the current user.
-     */
     public function getListRelated()
     {
         $current_user_id = get_current_user_id();
@@ -178,16 +187,18 @@ class TrainingController
         return $list;
     }
 
-    public function getListTraining()
-    {
-        $categories = [
+    public function getListTraining(){
+        $trainings = [];
+        $categorias = [
             'categoria-1',
             'categoria-2',
             'categoria-3',
             'categoria-4',
             'categoria-5',
         ];
-        $trainings = $this->trainingService->getTrainings($categories);
+        foreach ($categorias as $categoria) {
+            $trainings[] = $this->trainingService->getPostsCategory($categoria);
+        }
         return $trainings;
     }
 
@@ -205,5 +216,4 @@ class TrainingController
         }
         return false;
     }
-
 }

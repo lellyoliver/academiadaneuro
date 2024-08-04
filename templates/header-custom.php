@@ -21,8 +21,12 @@ $allowed_roles_2 = ['coach', 'health-pro', 'administrator'];
 $allowed_roles_3 = ['training'];
 
 
-$user = new NotificationUser;
-$messages = $user->updateNotification();
+// $notify = new NotificationUser;
+// $messages = $notify->updateNotification();
+// echo '<pre>';
+// print_r($messages);
+// echo '</pre>';
+
 ?>
 
 <body id="body-home">
@@ -90,7 +94,7 @@ $messages = $user->updateNotification();
                     <div class="status-toggle dropdown">
                         <button class="btn btn-link" id="status-notify" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-bell"></i>
-                            <?php if($messages){
+                            <?php if(!empty($messages)){
                                 echo '<span class="circle-notify"></span>';
                             } ?>
                         </button>

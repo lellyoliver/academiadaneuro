@@ -136,6 +136,7 @@ $_plan_semestral_training = get_option('_plan_semestral_training');
 
         </div>
     </div>
+    
     <?php endif;?>
     <?php if (array_intersect($allowed_roles_2, $current_user->roles)): ?>
     <div class="card mb-3">
@@ -213,14 +214,13 @@ $_plan_semestral_training = get_option('_plan_semestral_training');
                                 <div class="mb-3"></div>
                             </div>
                         </div>
-                        <?php endforeach;
-                                    endif;
-                                    ?>
+                        <?php   endforeach; 
+                                endif;?>
                     </div>
 
                     <hr class="display-mobile mobile-order-2 mb-4 mt-4">
-                    <?php if (array_intersect($allowed_roles_3, $current_user->roles)): ?>
                     <div class="col-md-6 mobile-order-1">
+                    <?php if (array_intersect($allowed_roles_3, $current_user->roles)): ?>
                         <h6>Cobranças</h6>
                         <div class="mb-3"></div>
                         <span>
@@ -249,13 +249,13 @@ $_plan_semestral_training = get_option('_plan_semestral_training');
                         }
                         ?>
                         <div class="mb-3"></div>
+                    <?php endif;?>
                         <h6>Suporte ao Cliente</h6>
                         <div class="mb-3"></div>
                         <p class="m-0 mb-2">Link para nosso suporte técnico:</p>
                         <button class="btn btn-sm btn-secondary" onclick="window.location='<?php echo site_url( '/suporte-cliente' ); ?>'">Suporte Técnico</button>
                         <span>
                     </div>
-                    <?php endif;?>
                 </div>
 
             </div>

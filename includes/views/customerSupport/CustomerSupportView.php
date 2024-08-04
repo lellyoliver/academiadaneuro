@@ -14,13 +14,17 @@
                     <?php echo esc_html('Suporte ao Cliente'); ?>
                 </h6>
             </div>
-            <span>Entraremos em contato por e-mail. Fique atento!</span>
+            <span>Entraremos em contato também por e-mail. Fique atento!</span>
             <div class="mb-4"></div>
             <div class="row">
-                <form id="form-support" method="post">
+                <form id="form-support" method="post" enctype="multipart/form-data">
                     <div class="mb-4">
                         <label for="comment_support" class="form-label">Descreva o seu problema</label>
                         <textarea class="form-control" name="comment_support" id="comment_support" rows="3"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <input class="form-control" type="file" id="attachment_support" name="attachment_support"
+                            accept="image/*">
                     </div>
                     <input type="hidden" name="user_id" id="user_id" value="<?php echo get_current_user_id(); ?>">
                     <div class="row m-0 m-auto">
@@ -30,53 +34,67 @@
             </div>
         </div>
     </div>
-    <div class="carousel-card">
-        <?php if ($supports):
+    <div class="container">
+
+
+        <div class="carousel-card">
+            <?php if ($supports):
     foreach ($supports as $support):
         if ($support['user_id'] == get_current_user_id()):
         ?>
-        <div class="carousel-item-card">
-            <div class="card-support">
-                <div class="card-body">
-                    <p style="font-size:12px;">
-                        <?php echo '<b>' . $support['protocolo'] . '</b> | ' . $support['date']; ?>
-                    </p>
-                    <p class="comment_user" class="m-0">
-                        <?php echo $support['message']; ?>
-                    </p>
-                </div>
-                <div class="card-footer" id="heading">
-                    <div class="d-flex align-items-center align-self-center justify-content-between">
-                        <span
-                            class="reply"><?php echo '<i class="fa-solid ' . $support['taxonomies']['icon'] . '"></i> ' . $support['taxonomies']['term']; ?></span>
-                        <button class="ms-3 btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapse-<?php echo $support['id']; ?>" aria-expanded="true"
-                            aria-controls="collapse-<?php echo $support['id']; ?>"><span data-bs-toggle="tooltip" data-bs-placement="right" title="Click duas vezes">Solução <i
-                                class="fa-solid fa-caret-down"></i></span></button>
-                    </div>
-                    <?php if ($support['taxonomies']['valid']): ?>
-                    <div id="collapse-<?php echo $support['id']; ?>" class="accordion-collapse collapse mt-3"
-                        aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <div class="chat m-0">
-                                <p>
-                                    <?php echo $support['comments']['content']; ?>
-                                </p>
-                                <div class="datetime-chat">
-                                    <p class="m-0"><?php echo $support['comments']['date']; ?> | Suporte</p>
-                                </div>
+            <div class="carousel-item-card">
+                <div class="card-support">
+                    <div class="card-body">
+                        <p style="font-size:12px;">
+                            <?php echo '<b>' . $support['protocolo'] . '</b> | ' . $support['date'] . ' | <a data-bs-toggle="modal" data-bs-target="#exampleModal"><u><i class="fa-solid fa-paperclip"></i> anexo</u></a>'; ?>
+                        </p>
+                        <p class="comment_user" class="m-0">
+                            <?php echo $support['message']; ?>
+                        </p>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <img src="<?php echo wp_get_attachment_image_url($support["anexo"], "")?>"
+                                    width="80%" class="text-center"/>
                             </div>
                         </div>
                     </div>
-                    <?php endif;?>
+                    <div class="card-footer" id="heading">
+                        <div class="d-flex align-items-center align-self-center justify-content-between">
+                            <span
+                                class="reply"><?php echo '<i class="fa-solid ' . $support['taxonomies']['icon'] . '"></i> ' . $support['taxonomies']['term']; ?></span>
+                            <button class="ms-3 btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse-<?php echo $support['id']; ?>" aria-expanded="true"
+                                aria-controls="collapse-<?php echo $support['id']; ?>"><span data-bs-toggle="tooltip"
+                                    data-bs-placement="right" title="Click duas vezes">Solução <i
+                                        class="fa-solid fa-caret-down"></i></span></button>
+                        </div>
+                        <?php if ($support['taxonomies']['valid']): ?>
+                        <div id="collapse-<?php echo $support['id']; ?>" class="accordion-collapse collapse mt-3"
+                            aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                <div class="chat m-0">
+                                    <p>
+                                        <?php echo $support['comments']['content']; ?>
+                                    </p>
+                                    <div class="datetime-chat">
+                                        <p class="m-0"><?php echo $support['comments']['date']; ?> | Suporte</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif;?>
+                    </div>
                 </div>
             </div>
+            <?php endif;endforeach;endif;?>
         </div>
-        <?php endif;endforeach;endif;?>
-    </div>
-    <div class="carousel-nav" style="padding:0px 12px;">
-        <button class="prev btn btn-sm btn-secondary me-2"><i class="fa fa-chevron-left"></i></button>
-        <button class="next btn btn-sm btn-secondary"><i class="fa fa-chevron-right"></i></button>
+        <div class="carousel-nav" style="padding:0px 12px;">
+            <button class="prev btn btn-sm btn-secondary me-2"><i class="fa fa-chevron-left"></i></button>
+            <button class="next btn btn-sm btn-secondary"><i class="fa fa-chevron-right"></i></button>
+        </div>
     </div>
 </div>
 

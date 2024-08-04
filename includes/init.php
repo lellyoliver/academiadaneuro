@@ -6,6 +6,8 @@ require_once plugin_dir_path(__FILE__) . 'controllers/TrainingController.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/UserController.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/UserRelatedController.php';
 require_once plugin_dir_path(__FILE__) . 'controllers/CustomerSupportController.php';
+require_once plugin_dir_path(__FILE__) . 'controllers/MenuController.php';
+
 
 
 
@@ -20,6 +22,8 @@ $trainingController = new TrainingController();
 $userController = new UserController();
 $userRelatedController = new UserRelatedController();
 $customerSupportController = new CustomerSupportController();
+$menuController = new MenuController();
+
 
 /**
  * Routes API
@@ -36,9 +40,7 @@ add_action('rest_api_init', function () use ($authController) {
         },
         'permission_callback' => '__return_true',
     ));
-});
 
-add_action('rest_api_init', function () use ($authController) {
     register_rest_route('adn-plugin/v1', 'auth/forgot-password', array(
         'methods' => 'POST',
         'callback' => function (WP_REST_Request $request) use ($authController) {
@@ -62,9 +64,7 @@ add_action('rest_api_init', function () use ($userController) {
         },
         'permission_callback' => '__return_true',
     ));
-});
 
-add_action('rest_api_init', function () use ($userController) {
     register_rest_route('adn-plugin/v1', '/users/update', array(
         'methods' => 'POST',
         'callback' => function (WP_REST_Request $request) use ($userController) {
@@ -75,9 +75,7 @@ add_action('rest_api_init', function () use ($userController) {
         },
         'permission_callback' => '__return_true',
     ));
-});
 
-add_action('rest_api_init', function () use ($userController) {
     register_rest_route('adn-plugin/v1', '/users/view/(?P<id>\d+)', array(
         'methods' => 'GET',
         'callback' => function (WP_REST_Request $request) use ($userController) {
@@ -87,10 +85,7 @@ add_action('rest_api_init', function () use ($userController) {
         },
         'permission_callback' => '__return_true',
     ));
-});
 
-
-add_action('rest_api_init', function () use ($userController) {
     register_rest_route('adn-plugin/v1', '/users/refunded', array(
         'methods' => 'POST',
         'callback' => function (WP_REST_Request $request) use ($userController) {
@@ -101,10 +96,7 @@ add_action('rest_api_init', function () use ($userController) {
         },
         'permission_callback' => '__return_true',
     ));
-});
 
-
-add_action('rest_api_init', function () use ($userController) {
     register_rest_route('adn-plugin/v1', '/userNewOrder/update', array(
         'methods' => 'POST',
         'callback' => function (WP_REST_Request $request) use ($userController) {
@@ -128,9 +120,7 @@ add_action('rest_api_init', function () use ($userRelatedController) {
         },
         'permission_callback' => '__return_true',
     ));
-});
 
-add_action('rest_api_init', function () use ($userRelatedController) {
     register_rest_route('adn-plugin/v1', '/users-related/update', array(
         'methods' => 'POST',
         'callback' => function (WP_REST_Request $request) use ($userRelatedController) {
@@ -141,9 +131,7 @@ add_action('rest_api_init', function () use ($userRelatedController) {
         },
         'permission_callback' => '__return_true',
     ));
-});
 
-add_action('rest_api_init', function () use ($userRelatedController) {
     register_rest_route('adn-plugin/v1', '/users-related/view/(?P<id>\d+)', array(
         'methods' => 'GET',
         'callback' => function (WP_REST_Request $request) use ($userRelatedController) {
@@ -153,28 +141,13 @@ add_action('rest_api_init', function () use ($userRelatedController) {
         },
         'permission_callback' => '__return_true',
     ));
-});
 
-add_action('rest_api_init', function () use ($userRelatedController) {
     register_rest_route('adn-plugin/v1', '/users-related/delete/userDelete=(?P<id>\d+)', array(
         'methods' => 'GET',
         'callback' => function (WP_REST_Request $request) use ($userRelatedController) {
             $id = $request->get_param('id');
             $delete = $userRelatedController->delete($id);
             return new WP_REST_Response($delete, 200);
-        },
-        'permission_callback' => '__return_true',
-    ));
-});
-
-add_action('rest_api_init', function () use ($dashboardController) {
-    register_rest_route('adn-plugin/v1', '/dashboard', array(
-        'methods' => 'POST',
-        'callback' => function (WP_REST_Request $request) use ($dashboardController) {
-            if ($request->get_method() !== 'POST') {
-                return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
-            }
-            return $dashboardController->getMetaTrainings($id);
         },
         'permission_callback' => '__return_true',
     ));
@@ -192,8 +165,6 @@ add_action('rest_api_init', function () use ($dashboardController) {
     ));
 });
 
-
-
 add_action('rest_api_init', function () use ($trainingController) {
     register_rest_route('adn-plugin/v1', '/training', array(
         'methods' => 'POST',
@@ -205,9 +176,6 @@ add_action('rest_api_init', function () use ($trainingController) {
         },
         'permission_callback' => '__return_true',
     ));
-});
-
-add_action('rest_api_init', function () use ($trainingController) {
     register_rest_route('adn-plugin/v1', '/trainingChoice', array(
         'methods' => 'POST',
         'callback' => function (WP_REST_Request $request) use ($trainingController) {
@@ -221,25 +189,13 @@ add_action('rest_api_init', function () use ($trainingController) {
 });
 
 add_action('rest_api_init', function () use ($myTrainingController) {
-    register_rest_route('adn-plugin/v1', '/myTrainingProgress', array(
+    register_rest_route('adn-plugin/v1', '/myTraining', array(
         'methods' => 'POST',
         'callback' => function (WP_REST_Request $request) use ($myTrainingController) {
             if ($request->get_method() !== 'POST') {
                 return new WP_Error('invalid_method', 'Invalid request method', array('status' => 405));
             }
-            return $myTrainingController->saveTrainingProgress($request);
-        },
-        'permission_callback' => '__return_true',
-    ));
-});
-
-add_action('rest_api_init', function () use ($myTrainingController) {
-    register_rest_route('adn-plugin/v1', '/myTraining/view/(?P<id>\d+)', array(
-        'methods' => 'GET',
-        'callback' => function (WP_REST_Request $request) use ($myTrainingController) {
-            $post_id = $request->get_param('id');
-            $training = $myTrainingController->getMetaTrainings($post_id);
-            return new WP_REST_Response($training, 200);
+            return $myTrainingController->create($request);
         },
         'permission_callback' => '__return_true',
     ));
@@ -266,7 +222,16 @@ add_shortcode('user-create', array($userController, 'signinUserShow'));
 add_shortcode('user-new-order', array($userController, 'newOrderUserShow'));
 add_shortcode('user-create-related', array($userRelatedController, 'show'));
 add_shortcode('user-training', array($trainingController, 'show'));
-add_shortcode('user-training-choice', array($trainingController, 'choiceShow'));
+add_shortcode('user-training-progress', array($trainingController, 'showProgress'));
+add_shortcode('user-training-choice', array($trainingController, 'showChoice'));
 add_shortcode('user-myTraining', array($myTrainingController, 'show'));
+add_shortcode('user-ressonance-neural', array($myTrainingController, 'showRessonanceNeural'));
+add_shortcode('user-cognitive-stimulation-game', array($myTrainingController, 'showCognitiveStimulationGame'));
+add_shortcode('user-cognitive-stimulation-hidden', array($myTrainingController, 'showCognitiveStimulationHidden'));
+add_shortcode('user-ressonance-breathing', array($myTrainingController, 'showRessonanceBreathing'));
+add_shortcode('user-updated', array($myTrainingController, 'showUpdated'));
+add_shortcode('user-info', array($myTrainingController, 'showInfo'));
+add_shortcode('user-total-progress', array($myTrainingController, 'showTotalProgress'));
 add_shortcode('dashboard', array($dashboardController, 'show'));
+add_shortcode('menu', array($menuController, 'show'));
 add_shortcode('customer-support', array($customerSupportController, 'show'));

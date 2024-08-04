@@ -215,7 +215,7 @@ function tableCustom() {
     const screenWidth = window.screen.width;
 
     if (wideMobile) { // Verifica se o elemento foi encontrado
-        wideMobile.dataset.pageSize = screenWidth > 900 ? '3' : '3';
+        wideMobile.dataset.pageSize = screenWidth > 900 ? '5' : '3';
     }
 }
 

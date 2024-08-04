@@ -278,21 +278,27 @@ tr.view-user {
 /** BUTTONS **/
 .btn-primary {
   background: var(--primary) !important;
-  border: #003070 1px solid !important;
+  border: none;
 }
 
 .btn-secondary {
-  background: #00a9e7!important;
-  border: 1px solid #0199d0!important;
+  background: #00a9e7 !important;
+  border: none !important;
 }
 
-.btn-secondary:hover{
-opacity:0.8!important;
+.btn-secondary {
+  font-size: 15px !important;
+  font-weight: 300 !important;
+  padding: 10px !important;
 }
 
-.btn-primary:hover{
-  opacity:0.8!important;
-  }
+.btn-secondary:hover {
+  opacity: 0.7 !important;
+}
+
+.btn-primary:hover {
+  opacity: 0.8 !important;
+}
 
 .btn-grey {
   background: rgb(209, 209, 209) !important;
@@ -307,11 +313,23 @@ opacity:0.8!important;
 .btn-3:hover {
   background-color: #ef4e23 !important;
   color: white !important;
-  opacity: 0.8;
+  opacity: 0.7 !important;
 }
 
 .btn {
   border-radius: 5px !important;
+}
+
+.btn-danger-custom {
+  background-color: var(--red) !important;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+.btn-danger-custom i {
+  color: white;
 }
 
 .btn-secondary:focus {
@@ -351,15 +369,16 @@ opacity:0.8!important;
   box-shadow: none !important;
   outline: 0;
 }
-.btn{
-  opacity: 0.9!important;
+
+.btn {
+  opacity: 0.9 !important;
 }
 
 @media screen and (max-width: 900px) {
   td.status {
     position: absolute;
     right: 0;
-    margin-top: -189px;
+    margin-top: -176px;
     border: 0;
   }
 }
@@ -419,6 +438,18 @@ i.fa-bell {
 .navbar-light .navbar-toggler-icon {
   background-image: url(https://cdn.institutodeneurociencia.com.br/image/bars.svg) !important;
   filter: brightness(5);
+}
+
+.navbar-toggler-icon {
+  width: 1.9em !important;
+}
+
+.btn-link:hover {
+  background-color: rgb(27 127 204 / 27%);
+}
+
+button.navbar-toggler:hover {
+  background-color: rgb(27 127 204 / 27%);
 }
 
 .navbar-toggler {
@@ -548,7 +579,7 @@ img.img-perfil {
   padding: 0px 10px;
 }
 
-.edit-pen-perfil i{
+.edit-pen-perfil i {
   margin-left: -7px;
 }
 
@@ -872,7 +903,7 @@ li.nav-item {
     width: 80%;
     text-align: center;
     margin: 0 auto;
-}
+  }
 
 }
 
@@ -919,8 +950,16 @@ li.nav-item {
   /* Defina o tamanho desejado para a caixa de áudio */
 }
 
+audio {
+  height: 14px;
+}
+
 .audio-container audio {
   width: 100%;
+}
+
+.box {
+  padding: 8px 0px;
 }
 
 /* Esconda o botão de download */
@@ -929,6 +968,11 @@ li.nav-item {
 }
 
 /**MEUS TREINAMENTOS**/
+
+.class-mytrainings-list:hover {
+  background-color: #a8e3fa;
+}
+
 div.class-mytrainings-container-list {
   padding: 0;
   cursor: pointer;
@@ -939,14 +983,25 @@ div.class-mytrainings-list {
   padding: 12px;
   width: 100%;
   margin-bottom: 2px;
+  border-radius: 7px;
 }
 
 div.class-mytrainings-list p {
   font-weight: 700;
-  color: #555555;
+  color: #1D1D1D;
   margin: 0;
   font-size: 14px;
   white-space: nowrap;
+}
+
+.class-mytrainings-list .class-mytrainings-progress {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.progress {
+  margin-left: 1.3em;
 }
 
 .class__trainings {
@@ -976,7 +1031,7 @@ div.class-mytrainings-list p {
   display: flex;
   flex-wrap: nowrap;
   width: 100%;
-  margin-bottom:50px;
+  margin-bottom: 50px;
 }
 
 .timeline__trainings p {
@@ -1046,6 +1101,26 @@ iframe {
   .btn__save {
     width: 100% !important;
   }
+
+  div.class-mytrainings-list p {
+    font-weight: 700;
+    color: #555555;
+    margin: 0;
+    font-size: 14px;
+    white-space: normal;
+    margin-bottom: .4em;
+  }
+
+  .class-mytrainings-list .class-mytrainings-progress {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .progress {
+    margin-left: 0;
+  }
 }
 
 span.progress-bar {
@@ -1065,7 +1140,22 @@ span.progress {
 /**DASHBOARD**/
 
 .accordion-header {
-  background-color: #ebebeb;
+  background-color: #DFF6FF !important;
+  border-radius: 0px !important;
+}
+
+.accordion-header {
+  border-bottom: 1px #a8e3fa solid !important;
+}
+
+.accordion-header:hover {
+  background-color: #a8e3fa !important;
+  border-radius: 7px !important;
+}
+
+.accordion-item {
+  background-color: #DFF6FF !important;
+  border: none !important;
 }
 
 .accordion-wrapper {
@@ -1317,6 +1407,10 @@ select#installments {
     margin-left: 21px;
   }
 
+  .check__mobile {
+    z-index: 99;
+  }
+
   .navbar-brand-signin img {
     content: url('https://cdn.institutodeneurociencia.com.br/image/logo-vertical-branco.svg');
   }
@@ -1341,20 +1435,28 @@ select#installments {
 /**Screen Novo Treinamento para especialistas**/
 
 .question-container {
-  border: 1px solid #ccc;
   padding: 10px;
-  cursor: GRAB;
   margin-bottom: 10px;
 }
 
-.question-container:hover {
+.question-container-2:hover {
   border-color: var(--secondary);
+}
+
+.question-container-2 {
+  border: 1px solid #d4d4d4;
+  padding: 10px 20px;
+  margin: 10px 0px;
+  border-radius: 7px;
+  background: white;
 }
 
 .selected-questions {
   border: 2px dashed var(--secondary);
   padding: 15px;
   margin-bottom: 20px;
+  background: white;
+  border-radius: 7px;
 }
 
 .selected-question {
@@ -1469,6 +1571,7 @@ li.notify_list__item {
 .div:where(.swal2-icon) {
   border-color: transparent !important;
 }
+
 /** CAROUSEL ICON **/
 
 .carousel-card {
@@ -1538,18 +1641,19 @@ span.reply {
   justify-content: space-around;
   margin: 0 auto;
 }
-#toggleButton{
-  cursor:pointer;
+
+#toggleButton {
+  cursor: pointer;
 }
 
 @media screen and (max-width: 900px) {
   .carousel-item-card {
-      flex: 0 0 auto;
-      width: 100%;
+    flex: 0 0 auto;
+    width: 100%;
   }
 }
 
-.comment_user{
+.comment_user {
   cursor: pointer;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1564,8 +1668,103 @@ span.reply {
   background: green;
   color: white;
 }
+
 a#phone_wpp {
   position: absolute;
   right: 12px;
   top: 24px;
 }
+
+th.woocommerce-table__product-name,
+td.woocommerce-table__product-name {
+  pointer-events: none;
+  cursor: default;
+}
+
+.toast-success {
+  color: #ffffff;
+  background-color: var(--secondary) !important;
+}
+
+.toast-error {
+  color: #ffffff;
+  background-color: var(--red) !important;
+}
+
+.badge.text-bg-primary {
+  background-color: #00a9e7 !important;
+  border: none !important;
+  background-image: none !important;
+}
+
+.progress, .progress-stacked {
+  background-color: #f0f8ff !important;
+  box-shadow: none !important;
+}
+
+.progress-bar {
+  background-color: #00a9e7 !important;
+}
+
+.question-container {
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 7px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.option.selected {
+  border-color: #00A9E7;
+  background-color: transparent;
+  border: 2px solid #00A9E7;
+}
+
+.navigation-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.navigation-buttons button {
+  padding: 10px 20px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  background-color: #00A9E7;
+  color: #fff;
+  font-size: 16px;
+}
+
+.navigation-buttons button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* ul.nav-menu {
+  display: inline-flex;
+  gap: 27px;
+  list-style: none;
+  flex-direction: row;
+}
+.nav-menu > li > a {
+  color: white !important;
+}
+
+.nav-menu > li > a:active {
+  color: white !important;
+  font-weight:bold;
+} */

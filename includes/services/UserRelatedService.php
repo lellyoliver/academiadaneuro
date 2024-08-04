@@ -107,4 +107,8 @@ class UserRelatedService
         return $this->userRelatedModel->newUserExpired($current_user_id, $user_id);
     }
 
+    public function getOrderId(){
+        return $this->userRelatedModel->getLatestOrders();
+    }
+
 }

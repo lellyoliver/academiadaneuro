@@ -30,7 +30,7 @@ class NotificationUser
         foreach ($patientsList as $patient) {
             if (isset($progressData[$patient->ID])) {
                 $progressDate = strtotime($progressData[$patient->ID]['updateProgress']);
-                $futureDate = strtotime('+3 days', $progressDate);
+                $futureDate = strtotime('+7 days', $progressDate);
                 $currentDate = time();
                 $userName = $patient->nickname ?? 'Usuário Desconhecido';
 
@@ -41,7 +41,8 @@ class NotificationUser
             }
         }
 
-        return $notifications;
+        // Check if there are notifications, return false if empty
+        return (!empty($notifications)) ? $notifications : false;
     }
 
     /**
@@ -64,7 +65,8 @@ class NotificationUser
             }
         }
 
-        return $notifications;
+        // Check if there are notifications, return false if empty
+        return (!empty($notifications)) ? $notifications : false;
     }
 
     /**
@@ -81,14 +83,19 @@ class NotificationUser
 
                 if (!$expired['status']) {
                     $message = "Sua assinatura não está ativa!";
-                    $notifications = $message;
+                    // Assign to $notifications as an array, not a string
+                    $notifications[] = $message;
                 }
             }
         }
 
-        return $notifications;
+        // Check if there are notifications, return false if empty
+        return (!empty($notifications)) ? $notifications : false;
     }
 
+    /**
+     * Message 4
+     */
     public function getEmailConfirmation()
     {
         $user_id = get_current_user_id();
@@ -96,6 +103,8 @@ class NotificationUser
         if ($meta_exist) {
             return 'Seu e-mail não foi confirmado!';
         }
+
+        return false;
     }
 
     public function getPeriodTest()
@@ -124,6 +133,11 @@ class NotificationUser
             'message_4' => $this->getEmailConfirmation(),
             'message_5' => $this->getPeriodTest(),
         ];
+
+        // Check if all values in $notifications are falsy
+        if (empty(array_filter($notifications))) {
+            return false;
+        }
 
         return $notifications;
     }

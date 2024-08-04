@@ -1,35 +1,40 @@
 function createSupport() {
     const form = document.getElementById('form-support');
     const loading = document.getElementById('loading');
-    
+
     if (form) {
         form.addEventListener('submit', (event) => {
+            const inputFile = document.getElementById('attachment_support');
+
             event.preventDefault();
 
             loading.style.display = '';
 
             const formData = new FormData(form);
 
+            formData.append('attachment_support', inputFile.files[0]);
+
+
             fetch('/wp-json/adn-plugin/v1/customerSupport', {
                 method: 'POST',
                 body: formData,
             })
-            .then(response => response.json())
-            .then(data => {
-                loading.style.display = 'none';
-                if (data.status === 'sucesso') {
-                    Swal.fire('Sucesso!', data.protocolo, 'success').then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire('Erro!', data.message, 'error').then(() => {
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao enviar suporte:', error);
-                loading.style.display = 'none';
-            });
+                .then(response => response.json())
+                .then(data => {
+                    loading.style.display = 'none';
+                    if (data.status === 'sucesso') {
+                        Swal.fire('Sucesso!', data.protocolo, 'success').then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire('Erro!', data.message, 'error').then(() => {
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao enviar suporte:', error);
+                    loading.style.display = 'none';
+                });
         });
     }
 }

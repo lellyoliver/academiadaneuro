@@ -22,7 +22,7 @@ class UserRelatedModel
             'nickname' => sanitize_text_field($user_data['name']),
             'first_name' => sanitize_text_field($user_data['name']),
             'role' => 'coachingRelation',
-            'show_admin_bar_front' => false, // Usando o valor booleano
+            'show_admin_bar_front' => 'false',
             'description' => $user_data['description'],
             'meta_input' => [
                 'billing_first_name' => sanitize_text_field($user_data['name']),
@@ -43,10 +43,6 @@ class UserRelatedModel
 
     public function updateUser($name, $email, $user_id, $password, $description)
     {
-        if(!empty($password)){
-            $token = sanitize_text_field($password);
-            wp_set_password($token, $user_id);
-        }
 
         $userdata = array(
             'ID' => $user_id,
@@ -56,7 +52,12 @@ class UserRelatedModel
             'nickname' => sanitize_text_field($name),
             'first_name' => sanitize_text_field($name),
             'description' => sanitize_text_field($description),
+
         );
+        
+        if (!empty($password)) {
+            wp_set_password($password, $user_id);
+        }
 
         $user_updated = wp_update_user($userdata);
 
@@ -110,6 +111,45 @@ class UserRelatedModel
         $users_data = get_users($metadata);
 
         return $users_data;
+    }
+
+    public function getLatestOrders()
+    {
+        if (!class_exists('WooCommerce')) {
+            return array();
+        }
+
+        $user_id = get_current_user_id();
+
+        if (!$user_id) {
+            return array();
+        }
+
+        $orders = wc_get_orders(array(
+            'limit' => 10,
+            'orderby' => 'date',
+            'order' => 'DESC',
+            'customer' => $user_id,
+        ));
+
+        $result_data = array();
+
+        foreach ($orders as $order) {
+            $order_id = $order->get_id();
+            $items = $order->get_items();
+            $product_names = array();
+            $meta_order = get_post_meta($order_id, 'billing_user_related', true);
+
+            foreach ($items as $item) {
+                $product = $item->get_product();
+                $product_names[] = $product->get_name();
+            }
+
+            $product_names_string = implode(', ', $product_names);
+            $result_data[$meta_order] = $product_names_string;
+        }
+
+        return $result_data;
     }
 
     public function getUserById($id)
@@ -169,7 +209,6 @@ class UserRelatedModel
                             'order_id' => $order_id,
                             'order_date' => $order_date,
                             'user_id' => $user_id,
-                            'product_id' => $product_id,
                             'expiration_date' => $expiration_date,
                         );
 
@@ -179,7 +218,7 @@ class UserRelatedModel
 
                         $created_order = $order->update_status('completed');
 
-                        if($created_order){
+                        if ($created_order) {
                             delete_user_meta($current_user_id, 'free_trial', true);
                         }
 
@@ -187,7 +226,7 @@ class UserRelatedModel
                     }
                 }
             }
-        }else{
+        } else {
             return;
         }
 
@@ -198,7 +237,7 @@ class UserRelatedModel
         $current_user_id = get_current_user_id();
 
         $user_ids = $this->getListUserRelated($current_user_id);
-        $result = array(); // Defina o array $result fora do loop
+        $result = array();
 
         foreach ($user_ids as $user_id) {
             $meta_values = get_user_meta($current_user_id, $user_id->id . '_user_expired', false);

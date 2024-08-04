@@ -82,7 +82,6 @@ class UserRelatedController
         $meta_fields = [
             'date_birth' => $date_birth,
             'billing_first_name' => $name,
-            'user_pass' => $password,
             'billing_phone' => $phone,
             'description' => $description,
         ];
@@ -149,6 +148,7 @@ class UserRelatedController
         $expired = $this->userExpiredData();
         $listUser = $this->getListRelated();
         $getUser = $this->getListedUserRelated();
+        $getOrder = $this->userRelatedService->getOrderId();
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/userRelated/UserRelatedView.php';
         $output = ob_get_contents();

@@ -10,19 +10,19 @@ class TrainingService
         $this->trainingModel = new TrainingModel();
     }
 
-    public function insertTrainingReplies($user_id, $fields)
+    public function replies($data)
     {
-        return $this->trainingModel->insertTrainingReplies($user_id, $fields);
+        return $this->trainingModel->replies($data);
     }
 
-    public function insertTrainingProgress($user_id)
+    public function getQuestionsCombine()
     {
-        return $this->trainingModel->insertTrainingProgress($user_id);
+        return $this->trainingModel->getQuestionsCombine();
     }
 
-    public function getTrainings($categories)
+    public function getPostsCategory($categoria)
     {
-        return $this->trainingModel->getTrainings($categories);
+        return $this->trainingModel->getPostsCategory($categoria);
     }
 
 }

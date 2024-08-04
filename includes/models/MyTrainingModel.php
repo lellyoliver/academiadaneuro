@@ -1,247 +1,271 @@
 <?php
 class MyTrainingModel
 {
-    private $table_name_replies;
-    private $table_name_progress;
-
+    private $table_replies;
+    private $table_progress;
+    private $wpdb;
 
     public function __construct()
     {
         global $wpdb;
-        $this->table_name_replies = $wpdb->prefix . 'training_replies';
-        $this->table_name_progress = $wpdb->prefix . 'training_progress';
 
+        $this->wpdb = $wpdb;
+        $this->table_replies = $this->wpdb->prefix . 'adn_replies';
+        $this->table_progress = $this->wpdb->prefix . 'adn_progress';
     }
 
     /**
-     * Get the training results for a specific user.
+     * Get the training results for a specific user or post.
      *
-     * @param int $current_user_id The ID of the current user.
-     * @return array An array of training results for the user.
+     * @param int|bool $user_id The ID of the user.
+     * @return array|bool An array of training results for the user or post, or false on failure.
      */
-    public function getResultsTraining($current_user_id)
+    public function getPrepareReplies($user_id)
     {
-        global $wpdb;
+        if ($user_id) {
+            $query = $this->wpdb->prepare(
+                "SELECT treinamentos FROM $this->table_replies WHERE user_id = %d",
+                $user_id
+            );
+        } else {
+            return false;
+        }
 
-        $query = $wpdb->prepare(
-            "SELECT replies FROM $this->table_name_replies WHERE user_id = %d",
-            $current_user_id
+        $results = $this->wpdb->get_results($query);
+
+        if (!empty($results)) {
+            return json_decode($results[0]->treinamentos, true);
+        }
+
+        return false;
+    }
+
+    public function getPrepareProgress($user_id)
+    {
+        if (!$user_id) {
+            return false;
+        }
+
+        $query = $this->wpdb->prepare(
+            "SELECT activity_started, activity_updated, neural_breathing, neural_resonance, cognitive_stimulation, post_id FROM $this->table_progress WHERE user_id = %d",
+            $user_id
         );
 
-        $results = $wpdb->get_var($query);
+        $results = $this->wpdb->get_results($query);
 
-        if ($results) {
-            $replies = json_decode($results, true);
-            if ($replies !== null) {
-                return $replies;
-            } else {
-                return array();
-            }
-        } else {
-            return array();
+        if (!empty($results)) {
+            return $results;
         }
+
+        return false;
     }
-/**
- * Categorize the user's trainings based on specific criteria.
- *
- * @param array $myTraining An array of user's training data.
- * @return array An array of categorized trainings.
- */
-    public function getCategoriesTrainings($myTraining)
+
+    public function getUpdatedProgress($user_id, $post_id)
     {
-        $categories = [
-            'categoria-1' => ['sleepQuality', 'mentalFatigue', 'controlofAnxiety'],
-            'categoria-2' => ['stress', 'bodyPain', 'headache'],
-            'categoria-3' => ['stimuliAnxiety', 'thoughtsInvasive', 'perceptionMindBody'],
-            'categoria-4' => ['mentalActivity', 'creativity', 'learningAndMemory'],
-            'categoria-5' => ['focusAndAttention', 'concentration'],
-        ];
+        if (!$user_id || !$post_id) {
+            return false;
+        }
 
-        $categoryTerms = [];
+        $query = $this->wpdb->prepare(
+            "SELECT activity_updated FROM $this->table_progress WHERE user_id = %d AND post_id = %d",
+            $user_id, $post_id
+        );
 
-        foreach ($categories as $categoryKey => $category) {
-            $totalSum = 0;
-            foreach ($myTraining as $trainingCategory => $values) {
-                if (is_array($values) && in_array($trainingCategory, $category)) {
-                    foreach ($values as $value) {
-                        $intValue = intval($value);
-                        $totalSum += $intValue;
+        $results = $this->wpdb->get_results($query);
+
+        $response = [];
+        if (!empty($results)) {
+            foreach ($results as $result) {
+                if (!empty($result->activity_updated)) {
+
+                    $timestamp = intval($result->activity_updated);
+                    if ($timestamp > 0) {
+                        $response[] = date_i18n('j \d\e F \d\e Y', $timestamp);
                     }
                 }
             }
-            $categoryTerms[$categoryKey] = $totalSum;
+            return $response[0];
         }
 
-        arsort($categoryTerms);
-
-        return $this->getCompareTrainings(array_keys($categoryTerms));
-    }
-/**
- * Retrieve and compare trainings based on specified categories.
- *
- * @param array $categories An array of training categories to compare.
- * @return array An array of compared trainings.
- */
-    public function getCompareTrainings($categories)
-    {
-
-        $postslist = [];
-
-        foreach ($categories as $category) {
-            $args = array(
-                'post_type' => 'training',
-                'posts_per_page' => -1,
-                'tax_query' => array(
-                    array(
-                        'taxonomy' => 'brainGroup',
-                        'field' => 'slug',
-                        'terms' => $category,
-                    ),
-                ),
-            );
-            $postslist[] = get_posts($args);
-        }
-
-        return $postslist;
-
+        return false;
     }
 
     /**
-     * Retrieve and compare trainings based on specified post IDs.
+     * Calculate progress percentages for each activity type based on specific minimum times.
      *
-     * @param array $post_ids An array of post IDs to retrieve and compare trainings.
-     * @return array An array of compared trainings.
+     * @param int $user_id The user ID to get progress for.
+     * @return array The progress percentages for each post ID.
      */
-    public function getCompareTrainingsPostID($postIDs)
+    public function getProgress($user_id)
     {
-        if (!is_array($postIDs) || !isset($postIDs['post_id'])) {
-            return array();
-        }
+        $timestampsArray = $this->getPrepareProgress($user_id);
+        $progress = [];
 
-        $postIDsArray = $postIDs['post_id'];
+        // Tempos mínimos semanais em segundos
+        $minTimeNeuralResonance = 8400; // 7 dias * 1200 segundos/dia
+        $minTimeNeuralBreathing = 4200; // 7 dias * 600 segundos/dia
+        $minTimeCognitiveStimulation = 4200; // 7 dias * 600 segundos/dia
 
-        $postslist = [];
+        // Pesos das categorias
+        $weights = [
+            'neural_breathing' => 17.5,
+            'neural_resonance' => 70,
+            'cognitive_stimulation' => 17.5,
+        ];
 
-        foreach ($postIDsArray as $postID) {
-            $args = array(
-                'posts_per_page' => -1,
-                'post_type' => 'training',
-                'post__in' => array($postID),
-            );
+        if (!empty($timestampsArray)) {
+            foreach ($timestampsArray as $timestampObject) {
+                $categoryProgress = [];
 
-            $postslist[] = get_posts($args);
-        }
+                // Associando categorias com seus tempos mínimos
+                $categories = [
+                    'neural_breathing' => $minTimeNeuralBreathing,
+                    'neural_resonance' => $minTimeNeuralResonance,
+                    'cognitive_stimulation' => $minTimeCognitiveStimulation,
+                ];
 
-        return $postslist;
-    }
+                foreach ($categories as $category => $minTimeSeconds) {
+                    $start = $timestampObject->activity_started;
+                    $end = $timestampObject->{$category};
+                    $differenceSeconds = max($end - $start, 0);
+                    $percentage = min(($differenceSeconds / $minTimeSeconds) * $weights[$category], 100);
+                    $categoryProgress[$category] = $percentage;
+                }
 
-    public function insertTrainingProgress($data)
-    {
-        global $wpdb;
-        $current_user_id = $data['user_id'];
-        $post_id = $data['post_id'];
+                // Calculando a soma ponderada das porcentagens
+                $totalProgress = array_sum($categoryProgress);
 
-        $existing_user = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM $this->table_name_progress WHERE user_id = %d AND post_id = %d", $current_user_id, $post_id)
-        );
-
-        if ($existing_user) {
-            // Calcular os novos valores aqui
-            $new_dh_exit = strtotime($existing_user->dh_exit) + strtotime($data['DH_exit']);
-            $new_neuralResonance = strtotime($existing_user->neuralResonance) + strtotime($data['neuralResonance']);
-            $new_cognitiveStimulation = strtotime($existing_user->cognitiveStimulation) + strtotime($data['cognitiveStimulation']);
-            $new_neuralBreathing = strtotime($existing_user->neuralBreathing) + strtotime($data['neuralBreathing']);
-
-            $progress_data = array(
-                'dh_exit' => gmdate("H:i:s", $new_dh_exit),
-                'neuralResonance' => gmdate("H:i:s", $new_neuralResonance),
-                'cognitiveStimulation' => gmdate("H:i:s", $new_cognitiveStimulation),
-                'neuralBreathing' => gmdate("H:i:s", $new_neuralBreathing),
-                'updateProgress' => $data['updateProgress'],
-            );
-
-            $where = array(
-                'user_id' => $current_user_id,
-                'post_id' => $post_id,
-            );
-
-            return $wpdb->update($this->table_name_progress, $progress_data, $where);
-        } else {
-            $progress_data = array(
-                'user_id' => $current_user_id,
-                'post_id' => $post_id,
-                'dh_enter' => $data['DH_enter'],
-                'dh_exit' => $data['DH_exit'],
-                'neuralResonance' => $data['neuralResonance'],
-                'cognitiveStimulation' => $data['cognitiveStimulation'],
-                'neuralBreathing' => $data['neuralBreathing'],
-                'updateProgress' => $data['updateProgress'],
-            );
-
-            return $wpdb->insert($this->table_name_progress, $progress_data);
-        }
-    }
-
-    public function progressTraining($current_user_id, $post_id)
-    {
-        global $wpdb;
-
-        $query = $wpdb->prepare(
-            "SELECT dh_enter, dh_exit
-        FROM $this->table_name_progress
-        WHERE user_id = %d AND post_id = %d",
-            $current_user_id,
-            $post_id
-        );
-
-        $results = $wpdb->get_results($query);
-        $dh_enter = '05:00:00';
-        $status = 0;
-        $dh_enter_seconds = strtotime($dh_enter) - strtotime('00:00:00');
-        foreach ($results as $result) {
-            $result_seconds = strtotime($result->dh_exit) - strtotime('00:00:00');
-            if ($result_seconds > $dh_enter_seconds) {
-                $status = "100%";
-            } else {
-                $remaining_seconds = $dh_enter_seconds - $result_seconds;
-                $percentage = (($dh_enter_seconds - $remaining_seconds) / $dh_enter_seconds) * 100;
-                $status = $percentage . "%";
+                $progress[$timestampObject->post_id] = (object) [
+                    'porcentagem' => ceil($totalProgress),
+                ];
             }
         }
 
-        $progress_bar = sprintf(
-            '<span class="progress" style="width:500px;">
-                <span class="progress-bar" role="progressbar" style="width:%s;" aria-valuenow="%s" aria-valuemin="0" aria-valuemax="100"></span><span class="ms-3">%s%%</span>
-             </span>',
-            $status,
-            $status,
-            round($status, 0)
-        );
-
-        return $progress_bar;
+        return $progress;
     }
 
-    public function getMetaTrainings($post_id)
+    public function getTotalProgress($user_id)
     {
-        $neuralResonance = get_post_meta($post_id, 'neuralResonance', true);
-        $neuralBreathing = get_post_meta($post_id, 'neuralBreathing', true);
-        $cognitiveStimulation = get_post_meta($post_id, 'cognitiveStimulation', true);
-        $textTraining = get_post_meta( $post_id, 'textTraining', true );
-        $usageTips = get_post_meta( $post_id, 'usageTips', true );
-        $recommendations = get_post_meta( $post_id, 'recommendations', true );
+        $timestampsArray = $this->getPrepareProgress($user_id);
+        $categoryProgress = [
+            'neural_breathing' => 0,
+            'neural_resonance' => 0,
+            'cognitive_stimulation' => 0,
+        ];
+        $categoryCounts = [
+            'neural_breathing' => 0,
+            'neural_resonance' => 0,
+            'cognitive_stimulation' => 0,
+        ];
 
+        // Tempos mínimos semanais em segundos
+        $minTimeNeuralResonance = 8400; // 7 dias * 1200 segundos/dia
+        $minTimeNeuralBreathing = 4200; // 7 dias * 600 segundos/dia
+        $minTimeCognitiveStimulation = 4200; // 7 dias * 600 segundos/dia
 
-        $response_data = array(
-            'neuralResonance' => $neuralResonance,
-            'neuralBreathing' => $neuralBreathing,
-            'cognitiveStimulation' => $cognitiveStimulation,
+        // Pesos das categorias
+        $weights = [
+            'neural_breathing' => 17.5,
+            'neural_resonance' => 70,
+            'cognitive_stimulation' => 17.5,
+        ];
+
+        foreach ($timestampsArray as $timestampObject) {
+            $categories = [
+                'neural_breathing' => $minTimeNeuralBreathing,
+                'neural_resonance' => $minTimeNeuralResonance,
+                'cognitive_stimulation' => $minTimeCognitiveStimulation,
+            ];
+
+            foreach ($categories as $category => $minTimeSeconds) {
+                if (isset($timestampObject->{$category})) {
+                    $start = $timestampObject->activity_started;
+                    $end = $timestampObject->{$category};
+                    $differenceSeconds = max($end - $start, 0);
+                    // Calcular a porcentagem diária baseada nos pesos e tempos mínimos
+                    $percentage = min(($differenceSeconds / $minTimeSeconds) * $weights[$category], 100);
+                    $categoryProgress[$category] += $percentage;
+                    $categoryCounts[$category]++;
+                }
+            }
+        }
+
+        $finalProgress = [];
+        foreach ($categoryCounts as $category => $count) {
+            // Calcular a média das porcentagens diárias para cada categoria
+            $finalProgress[$category] = $count > 0 ? ceil($categoryProgress[$category] / $count) : 0;
+        }
+
+        return $finalProgress;
+    }
+
+    public function progress($data)
+    {
+        $user_id = $data['user_id'];
+        $post_id = $data['post_id'];
+        $neural_breathing_seconds = $data['activity_type']['neural_breathing'];
+        $cognitive_stimulation_seconds = $data['activity_type']['cognitive_stimulation'];
+        $neural_resonance_seconds = $data['activity_type']['neural_resonance'];
+
+        $current_time = current_time('timestamp');
+
+        $progress = $this->wpdb->get_row($this->wpdb->prepare(
+            "SELECT * FROM $this->table_progress WHERE user_id = %d AND post_id = %d ORDER BY activity_started ASC LIMIT 1",
+            $user_id, $post_id
+        ));
+
+        if (!$progress) {
+            $this->wpdb->insert(
+                $this->table_progress,
+                array(
+                    'user_id' => $user_id,
+                    'post_id' => $post_id,
+                    'activity_started' => $current_time,
+                    'activity_completed' => null,
+                    'activity_status' => 0,
+                    'neural_breathing' => isset($neural_breathing_seconds) && $neural_breathing_seconds !== '' ? $current_time + $neural_breathing_seconds : $current_time,
+                    'neural_resonance' => isset($neural_resonance_seconds) && $neural_resonance_seconds !== '' ? $current_time + $neural_resonance_seconds : $current_time,
+                    'cognitive_stimulation' => isset($cognitive_stimulation_seconds) && $cognitive_stimulation_seconds !== '' ? $current_time + $cognitive_stimulation_seconds : $current_time,
+                    'activity_updated' => $current_time,
+                ),
+                array(
+                    '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d',
+                )
+            );
+        } else {
+            if ($current_time == $progress->activity_updated) {
+                return;
+            }
+
+            $this->wpdb->update(
+                $this->table_progress,
+                array(
+                    'neural_breathing' => $progress->neural_breathing + (isset($neural_breathing_seconds) && $neural_breathing_seconds !== '' ? $neural_breathing_seconds : 0),
+                    'neural_resonance' => $progress->neural_resonance + (isset($neural_resonance_seconds) && $neural_resonance_seconds !== '' ? $neural_resonance_seconds : 0),
+                    'cognitive_stimulation' => $progress->cognitive_stimulation + (isset($cognitive_stimulation_seconds) && $cognitive_stimulation_seconds !== '' ? $cognitive_stimulation_seconds : 0),
+                    'activity_updated' => $current_time,
+                ),
+                array('user_id' => $user_id, 'post_id' => $post_id),
+                array('%d', '%d', '%d', '%d'),
+                array('%d', '%d')
+            );
+        }
+    }
+
+    public function getlearnMore($post_id)
+    {
+
+        $textTraining = get_post_meta($post_id, 'textTraining', true);
+        $usageTips = get_post_meta($post_id, 'usageTips', true);
+        $recommendations = get_post_meta($post_id, 'recommendations', true);
+
+        $learn_more = [
             'textTraining' => $textTraining,
             'usageTips' => $usageTips,
             'recommendations' => $recommendations,
-        );
+        ];
 
-        return $response_data;
-
+        return $learn_more;
     }
 
 }

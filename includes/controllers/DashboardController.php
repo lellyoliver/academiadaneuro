@@ -1,16 +1,19 @@
 <?php
 require_once plugin_dir_path(__FILE__) . '../services/DashboardService.php';
 require_once plugin_dir_path(__FILE__) . '../services/UserService.php';
+require_once plugin_dir_path(__FILE__) . '../services/MyTrainingService.php';
 
 class DashboardController
 {
     private $dashboardService;
     private $userService;
+    private $myTrainingService;
 
     public function __construct()
     {
         $this->dashboardService = new DashboardService();
         $this->userService = new UserService();
+        $this->myTrainingService = new MyTrainingService();
     }
 
     /**
@@ -33,16 +36,22 @@ class DashboardController
             }
         }
 
-        $list_progress_unify = $this->dashboardService->getListProgress();
-        $patients = $this->dashboardService->getListRelated();
-        $progress = $this->dashboardService->getTotalProgress();
-        $replies = $this->getReplies($user_id);
+        $user_id = get_current_user_id();
+        $progresses = $this->dashboardService->getProgressUser($user_id);
+        $teste = $this->dashboardService->getPrepareReplies($user_id);
+
 
         ob_start();
         require_once plugin_dir_path(__FILE__) . '../views/dashboard/DashboardView.php';
         $output = ob_get_contents();
         ob_end_clean();
         return $output;
+    }
+
+    public function getReplies($id){
+        $replies = $this->dashboardService->getPrepareReplies($id);
+
+        return $replies;
     }
 
     /**
@@ -69,16 +78,5 @@ class DashboardController
             return true;
         }
         return false;
-    }
-
-    /**
-     * Get the latestpost training refer user_related.
-     *
-     * @param int $id The ID of the post Training.
-     * @return mixed The latest post for the training.
-     */
-    public function getReplies($id)
-    {
-        return $this->dashboardService->getReplies($id);
     }
 }

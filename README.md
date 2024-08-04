@@ -2,11 +2,11 @@
 
 ## Visão Geral
 
-Este documento descreve o fluxo de trabalho Git para ACADEMIA DA NEUROCIENCIA. O objetivo é manter a estabilidade da `main`, garantindo que todo o código seja revisado antes de ser mergeado. Todas as mudanças na `main` devem ser feitas por meio de pull requests (PRs) associados a tasks no ClickUp e devem ser aprovadas por pelo menos um membro da equipe antes de serem mergeadas.
+Este documento descreve o fluxo de trabalho Git para ACADEMIA DA NEUROCIENCIA. O objetivo é manter a estabilidade da `main`, garantindo que todo o código seja revisado antes de ser mergeado. Todas as mudanças na `production` devem ser feitas por meio de pull requests (PRs) associados a tasks no ClickUp e devem ser aprovadas por pelo menos um membro da equipe antes de serem mergeadas.
 
 ## Regras Gerais
 
-- Todo trabalho deve ser feito em branches de feature que derivam da `main`.
+- Todo trabalho deve ser feito em branches de feature que derivam da `production`.
 - Cada pull request deve ser nomeado com o ID da issues do Github.
 - Cada pull request deve receber pelo menos uma aprovação antes de ser mergeado.
 - Incentivamos a prática de commits atômicos para facilitar a revisão de código.
@@ -18,8 +18,8 @@ Este documento descreve o fluxo de trabalho Git para ACADEMIA DA NEUROCIENCIA. O
     - Exemplo: `feature/melhorar-performance-api`
 
     ```sh
-    git checkout main
-    git pull origin main
+    git checkout production
+    git pull origin production
     git checkout -b feature/nome-da-feature
     ```
 
@@ -33,7 +33,7 @@ Este documento descreve o fluxo de trabalho Git para ACADEMIA DA NEUROCIENCIA. O
     ```
 
 3. **Criar um Pull Request**
-    - Quando a feature estiver completa, crie um pull request (PR) para a `main`.
+    - Quando a feature estiver completa, crie um pull request (PR) para a `production`.
     - Nomeie o PR com o ID da Issue do Github e uma breve descrição.
     - Exemplo: `8: Melhorar performance da API`
     - Adicione uma descrição detalhada sobre as mudanças implementadas.
@@ -44,7 +44,7 @@ Este documento descreve o fluxo de trabalho Git para ACADEMIA DA NEUROCIENCIA. O
     - Incentive os revisores a deixarem comentários construtivos.
 
 5. **Merge do Pull Request**
-    - Após receber a aprovação, o PR pode ser mergeado na `main`.
+    - Após receber a aprovação, o PR pode ser mergeado na `production`.
 
 ## Boas Práticas
 
@@ -54,7 +54,7 @@ Este documento descreve o fluxo de trabalho Git para ACADEMIA DA NEUROCIENCIA. O
 
 ## Regras de Proteção da Branch `main`
 
-1. **Sem Commits Diretos:** Nenhum commit deve ser feito diretamente na `main`.
+1. **Sem Commits Diretos:** Nenhum commit deve ser feito diretamente na `production`.
 2. **Aprovação Obrigatória:** Cada PR deve ser aprovado por pelo menos um membro da equipe antes de ser mergeado.
 3. **Nomeação de PRs:** Todos os PRs devem incluir o ID da Issue.
 

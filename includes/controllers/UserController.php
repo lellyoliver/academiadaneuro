@@ -229,4 +229,23 @@ class UserController
         return $this->userService->openPixShow();
     }
 
+    public function urlCheckout()
+    {
+        WC()->cart->empty_cart();
+        
+        $product_id = get_the_ID();
+
+        $checkout_url = wc_get_checkout_url();
+
+        $checkout_link = esc_url(add_query_arg(
+            array(
+                'add-to-cart' => $product_id,
+                'quantity' => 1,
+            ),
+            $checkout_url
+        ));
+
+        return $checkout_link;
+    }
+
 }

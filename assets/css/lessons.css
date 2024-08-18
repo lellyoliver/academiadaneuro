@@ -1,0 +1,97 @@
+.sfwd-lessons {
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+.sfwd-quiz{
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+.sfwd-topic{
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+footer.entry-meta {
+    display: none;
+}
+
+.learndash-wrapper .ld-button{
+    background-color: #00a2e8!important;
+    border-radius: 7px!important;
+    color: #fff!important;
+    font-size: 14px!important;
+    font-weight: 400!important;
+}
+
+#retomar-curso .ld-button{
+    background-color: #EF4E23!important;
+    border-radius: 7px!important;
+    color: #fff!important;
+    font-size: 14px!important;
+    font-weight: 400!important;
+}
+
+#retomar-curso .ld-button:hover{
+    background-color: #e77050!important;
+    opacity:1!important;
+}
+
+
+.learndash-wrapper .ld-tabs .ld-tabs-navigation:after {
+    background: transparent!important;
+    bottom: 0;
+    content: "";
+    height: 6px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    z-index: 8;
+}
+
+h1.entry-title {
+    letter-spacing: -0.02em;
+}
+
+.learndash-wrapper #learndash_mark_complete_button, .learndash-wrapper .learndash_mark_complete_button {
+    border-radius: 7px!important;
+}
+
+.ld-breadcrumbs-segments span a {
+    font-weight: 500 !important;
+    color: #1c1c1c!important;
+}
+
+.ld-video {
+    margin-bottom: 40px;
+}
+
+.learndash-wrapper .ld-quiz-actions input[name=reShowQuestion], .learndash-wrapper .ld-quiz-actions input[name=restartQuiz] {
+    background: #00a2e8!important;
+}
+
+.learndash-wrapper .wpProQuiz_content .wpProQuiz_button, .learndash-wrapper .wpProQuiz_content .wpProQuiz_button2, .learndash-wrapper .wpProQuiz_content .wpProQuiz_certificate a.btn-blue {
+    border-radius: 7px!important;
+    font-size: 14px!important;
+    font-weight: 400!important;
+}
+.learndash-wrapper .wpProQuiz_content .wpProQuiz_questionListItem.wpProQuiz_answerCorrect .wpProQuiz_sortable, .learndash-wrapper .wpProQuiz_content .wpProQuiz_questionListItem.wpProQuiz_answerCorrect label {
+    background: #00a2e8!important;
+}
+
+.learndash-wrapper .wpProQuiz_content .wpProQuiz_header {
+    margin: 40px 0 0 0!important;
+}
+
+.ld-profile-card {
+    display: none !important;
+}
+.ld-table-list-column.ld-table-list-column-stats {
+    display: none !important;
+}
+.ld-table-list-column.ld-column-stats {
+    display: none !important;
+}

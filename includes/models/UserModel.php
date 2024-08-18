@@ -54,7 +54,7 @@ class UserModel
 
         if ($user_data['role'] === "training") {
             $this->newUserExpired($user_id);
-        }else {
+        } else {
             $this->freeTrial($user_id);
         }
 
@@ -335,7 +335,7 @@ class UserModel
                 'order' => 'DESC',
                 'customer_id' => $id,
             ));
-    
+
             return $orders;
         }
     }
@@ -539,7 +539,7 @@ class UserModel
     {
         global $wpdb;
 
-        $sql = $wpdb->prepare("SELECT * FROM $this->table_name_comments");
+        $sql = "SELECT * FROM $this->table_name_comments";
         $comments = $wpdb->get_results($sql, OBJECT);
 
         $comments_array = array();

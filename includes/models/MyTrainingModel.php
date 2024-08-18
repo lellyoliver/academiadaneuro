@@ -101,12 +101,10 @@ class MyTrainingModel
         $timestampsArray = $this->getPrepareProgress($user_id);
         $progress = [];
 
-        // Tempos mínimos semanais em segundos
         $minTimeNeuralResonance = 8400; // 7 dias * 1200 segundos/dia
         $minTimeNeuralBreathing = 4200; // 7 dias * 600 segundos/dia
         $minTimeCognitiveStimulation = 4200; // 7 dias * 600 segundos/dia
 
-        // Pesos das categorias
         $weights = [
             'neural_breathing' => 17.5,
             'neural_resonance' => 70,
@@ -116,8 +114,6 @@ class MyTrainingModel
         if (!empty($timestampsArray)) {
             foreach ($timestampsArray as $timestampObject) {
                 $categoryProgress = [];
-
-                // Associando categorias com seus tempos mínimos
                 $categories = [
                     'neural_breathing' => $minTimeNeuralBreathing,
                     'neural_resonance' => $minTimeNeuralResonance,
@@ -132,7 +128,6 @@ class MyTrainingModel
                     $categoryProgress[$category] = $percentage;
                 }
 
-                // Calculando a soma ponderada das porcentagens
                 $totalProgress = array_sum($categoryProgress);
 
                 $progress[$timestampObject->post_id] = (object) [
@@ -158,12 +153,10 @@ class MyTrainingModel
             'cognitive_stimulation' => 0,
         ];
 
-        // Tempos mínimos semanais em segundos
         $minTimeNeuralResonance = 8400; // 7 dias * 1200 segundos/dia
         $minTimeNeuralBreathing = 4200; // 7 dias * 600 segundos/dia
         $minTimeCognitiveStimulation = 4200; // 7 dias * 600 segundos/dia
 
-        // Pesos das categorias
         $weights = [
             'neural_breathing' => 17.5,
             'neural_resonance' => 70,
@@ -182,7 +175,6 @@ class MyTrainingModel
                     $start = $timestampObject->activity_started;
                     $end = $timestampObject->{$category};
                     $differenceSeconds = max($end - $start, 0);
-                    // Calcular a porcentagem diária baseada nos pesos e tempos mínimos
                     $percentage = min(($differenceSeconds / $minTimeSeconds) * $weights[$category], 100);
                     $categoryProgress[$category] += $percentage;
                     $categoryCounts[$category]++;
@@ -192,7 +184,6 @@ class MyTrainingModel
 
         $finalProgress = [];
         foreach ($categoryCounts as $category => $count) {
-            // Calcular a média das porcentagens diárias para cada categoria
             $finalProgress[$category] = $count > 0 ? ceil($categoryProgress[$category] / $count) : 0;
         }
 

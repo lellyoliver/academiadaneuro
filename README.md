@@ -31,11 +31,11 @@ A aplicação segue o fluxo descrito abaixo:
 ## Estrutura do Projeto
 
 ```plaintext
-├── init.php                # Arquivo de roteamento principal
+├── init.php                # Arquivo de roteamento principal e os (shortcodes)
 ├── controllers/            # Diretório contendo os controladores
 ├── services/               # Diretório contendo os serviços
 ├── models/                 # Diretório contendo os modelos
-└── views/                  # Diretório contendo as visualizações (shortcodes)
+└── views/                  # Diretório contendo as visualizações 
 ```
 
 ## Requisitos

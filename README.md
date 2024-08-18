@@ -44,27 +44,6 @@ A aplicação segue o fluxo descrito abaixo:
 - WordPress versão 5.0 ou superior
 - Banco de Dados MySQL/PostgreSQL
 
-## Instalação
-
-1. Clone o repositório no diretório de plugins do WordPress:
-   ```bash
-   git clone https://github.com/lellyoliver/academiadaneuro.git
-   ```
-
-2. Ative o plugin no painel administrativo do WordPress.
-
-3. Configure as opções necessárias através do menu do plugin.
-
-4. Utilize o shortcode gerado pela View em qualquer página ou post do WordPress para exibir os dados processados.
-
-## Contribuição
-
-Sinta-se à vontade para contribuir com este projeto. Faça um fork do repositório, crie uma nova branch para sua feature ou correção de bug, e abra um pull request quando estiver pronto.
-
-## Licença
-
-Este projeto está licenciado sob a [Licença MIT](LICENSE).
-
 # Processo GitFlow
 
 ## Visão Geral

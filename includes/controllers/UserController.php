@@ -178,7 +178,7 @@ class UserController
      */
     public function getOrderId($id)
     {
-        return $user = $this->userService->getLatestOrders($id);
+        return $this->userService->getLatestOrders($id);
     }
 
     /**
@@ -224,6 +224,16 @@ class UserController
         );
         return new WP_REST_Response($response, 500);
     }
+
+    function userReembolsoWooShow() {
+        ob_start();
+        $user_id = get_current_user_id();
+        $orders = $this->getOrderId($user_id);
+        require_once plugin_dir_path(__FILE__) . '../views/user/UserReembolsoView.php';
+        $output = ob_get_contents();
+        ob_end_clean();
+        return $output;
+    }    
     
     public function openPixShow(){
         return $this->userService->openPixShow();

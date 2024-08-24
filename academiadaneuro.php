@@ -49,7 +49,7 @@ register_activation_hook(__FILE__, 'adn_activate');
 
 function adn_scripts()
 {
-    wp_enqueue_style('stylecss', plugins_url('assets/css/style.css', __FILE__), array(), '0.0.54', false);
+    wp_enqueue_style('stylecss', plugins_url('assets/css/style.css', __FILE__), array(), '0.0.55', false);
     wp_enqueue_style('lessonscss', plugins_url('assets/css/lessons.css', __FILE__), array(), '0.0.21', false);
     wp_enqueue_script('utilsjs', plugins_url('assets/js/utils.js', __FILE__), array(), ACADEMIA_DA_NEURO_VERSION, true);
 
@@ -65,7 +65,7 @@ function adn_scripts()
     }
 
     if (is_page('new-order')) {
-        wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), array(), ACADEMIA_DA_NEURO_VERSION, true);
+        wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), array(), '3.0.33', true);
         wp_enqueue_script('userUtilsjs', plugins_url('assets/js/users/user-utils.js', __FILE__), array(), ACADEMIA_DA_NEURO_VERSION, true);
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), array(), '11.7.31', false);
@@ -110,7 +110,8 @@ function adn_scripts()
     }
 
     if (is_page('meu-perfil')) {
-        wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), array(), ACADEMIA_DA_NEURO_VERSION, true);
+        wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), array(), '3.0.33', true);
+        wp_enqueue_script('userReembolsojs', plugins_url('assets/js/users/user-reembolso.js', __FILE__), array(), '0.0.1', true);
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('compressorminjs', plugins_url('assets/lib/compressor/compressor.min.js', __FILE__), array(), '1.0.7', false);
@@ -302,18 +303,18 @@ function adn_custom_checkout_user_fullfil($fields)
 }
 add_filter('woocommerce_checkout_fields', 'adn_custom_checkout_user_fullfil');
 
-// function alterar_status_pedido_cheque($order_id)
-// {
-//     if (!$order_id) {
-//         return;
-//     }
-//     $order = wc_get_order($order_id);
-//     if ($order->get_payment_method() === 'cheque') {
+function alterar_status_pedido_cheque($order_id)
+{
+    if (!$order_id) {
+        return;
+    }
+    $order = wc_get_order($order_id);
+    if ($order->get_payment_method() === 'cheque') {
 
-//         $order->update_status('completed');
-//     }
-// }
-// add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
+        $order->update_status('completed');
+    }
+}
+add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
 
 function adn_add_product_checkout()
 {
@@ -491,9 +492,13 @@ $current_user = wp_get_current_user();
 $allowed_roles_3 = ['training', 'administrator', 'coach'];
 
     $items['suporte'] = 'Suporte Técnico';
+    $items['reembolso'] = 'Reembolso';
+
     return $items;
 }
 add_filter( 'woocommerce_account_menu_items', 'add_endpoint_woo' );
+
+
 
 // Adiciona a função callback para o endpoint
 function endpoint_support_woo_content() {
@@ -502,3 +507,7 @@ function endpoint_support_woo_content() {
 }
 add_action( 'woocommerce_account_suporte_endpoint', 'endpoint_support_woo_content' );
 
+function endpoint_reembolso_woo_content() {
+    echo do_shortcode('[user-reembolso]');
+}
+add_action( 'woocommerce_account_reembolso_endpoint', 'endpoint_reembolso_woo_content' );

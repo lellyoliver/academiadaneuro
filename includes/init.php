@@ -221,6 +221,7 @@ add_shortcode('user-perfil', array($userController, 'show'));
 add_shortcode('user-create', array($userController, 'signinUserShow'));
 add_shortcode('user-new-order', array($userController, 'newOrderUserShow'));
 add_shortcode('url-checkout', array($userController, 'urlCheckout'));
+add_shortcode('user-reembolso', array($userController, 'userReembolsoWooShow'));
 add_shortcode('user-create-related', array($userRelatedController, 'show'));
 add_shortcode('user-training', array($trainingController, 'show'));
 add_shortcode('user-training-progress', array($trainingController, 'showProgress'));

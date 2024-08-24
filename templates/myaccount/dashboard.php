@@ -49,13 +49,6 @@ $profissional = get_userdata($data);
                         <div class="mb-3"></div>
                         <button class="btn btn-sm btn-outline-secondary" data-bs-target="#cartUserRelated"
                             data-bs-toggle="offcanvas"><i class="fa-solid fa-credit-card"></i> Renovar Plano</button>
-                        <?php
-                        if ($expireds[0]['status']) {
-                            echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="color-success"><i class="fa-solid fa-circle-check"></i> Seu plano está ativo</span>';
-                        } else {
-                            echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="color-danger"><i class="fa-solid fa-triangle-exclamation"></i> Seu plano está inativo</span>';
-                        }
-                        ?>
                         <div class="mb-3"></div>
                     <?php endif;?>
 					<?php if (array_intersect($allowed_roles_1, $current_user->roles)): ?>
@@ -64,15 +57,7 @@ $profissional = get_userdata($data);
 									<?php echo esc_html('Sua Assinatura'); ?>
 								</h6>
 								<div class="mb-3"></div>
-								<p><b>Sua assinatura é compartilhada com seu(a) profissional: <?php echo $profissional->display_name; ?></b>
-									<?php
-									if ($expireds[0]['status']) {
-										echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="ativo" class="color-success"><i class="fa-solid fa-circle-check"></i></span>';
-									} else {
-										echo '<span data-bs-toggle="tooltip" data-bs-placement="right" title="inativo" class="color-danger"><i class="fa-solid fa-triangle-exclamation"></i></span>';
-									}
-									?>
-								</p>
+								<p><b>Sua assinatura é compartilhada com seu(a) profissional: <?php echo $profissional->display_name; ?></b></p>
 								<p>Qualquer dúvida sobre seu plano converse com seu profissional!</p>
 								<p><a href="https://wa.me/+55<?php echo $billing_phone; ?>" class="btn btn-sm btn-outline-secondary"
 										target="_blank"><i class="fa-brands fa-whatsapp"></i> <?php echo $billing_phone; ?></a></p>

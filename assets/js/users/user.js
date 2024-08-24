@@ -136,57 +136,6 @@ function showPassword() {
   });
 }
 
-function refundOrder() {
-  const forms = document.querySelectorAll('.form-refund');
-  if (forms) {
-    forms.forEach(form => {
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-
-        Swal.fire({
-          title: 'Pedir Reembolso',
-          text: 'Se você fizer o pedido de reembolso você não terá a assinatura de volta. Deseja mesmo?',
-          iconHtml: '<i class="fas fa-rotate-left"></i>',
-          showCancelButton: true,
-          confirmButtonColor: '#00a9e7',
-          cancelButtonColor: '#dc3545',
-          confirmButtonText: 'Sim',
-          cancelButtonText: 'Cancelar'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            const formData = new FormData(form);
-            const order_id = formData.get('order_id');
-
-            fetch('/wp-json/adn-plugin/v1/users/refunded', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                order_id: order_id,
-              })
-            })
-              .then(response => response.json())
-              .then(data => {
-                if (data.status === 'sucesso') {
-                  Swal.fire('Sucesso!', data.mensagem , 'success').then(() => {
-                    location.reload();
-                  });
-                } else {
-                  Swal.fire('Erro!', data.mensagem, 'error');
-                }
-              })
-              .catch(error => {
-                console.error('Erro ao pedir reembolso:', error);
-              });
-          }
-        });
-      });
-    });
-  }
-}
-refundOrder();
-
 updateUser();
 viewUser();
 showPassword();

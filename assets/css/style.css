@@ -278,7 +278,7 @@ tr.view-user {
 /** BUTTONS **/
 .btn-primary {
   background: var(--primary) !important;
-  border: none;
+  border: none!important;
 }
 
 .btn-secondary {

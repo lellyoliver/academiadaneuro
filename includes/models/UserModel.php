@@ -328,12 +328,16 @@ class UserModel
     public function getLatestOrders($id)
     {
         if (class_exists('WooCommerce')) {
+
+            $date_after = date('Y-m-d', strtotime('-7 days'));
+
             $orders = wc_get_orders(array(
-                'status' => array('wc-completed', 'wc-processing', 'wc-refunded', 'wc-pending'),
+                'status' => array('wc-completed'),
                 'limit' => 10,
                 'orderby' => 'date',
                 'order' => 'DESC',
                 'customer_id' => $id,
+                'date_after' => $date_after,
             ));
 
             return $orders;

@@ -256,17 +256,17 @@ add_filter('wp_password_change_notification_email', 'adn_password_reset_notifica
  * Woocomerce
  */
 
- function adn_custom__checkout($template, $template_name)
+ function adn_custom__checkout($template, $template_name, $template_path)
  {
-     if ('checkout/review-order.php' == $template_name) {
-         $template = plugin_dir_path(__FILE__) . 'templates/checkout/review-order.php';
+     if ('myaccount/dashboard.php' == $template_name) {
+         $template = plugin_dir_path(__FILE__) . 'templates/myaccount/dashboard.php';
      }
      if ('checkout/thankyou.php' == $template_name) {
          $template = plugin_dir_path(__FILE__) . 'templates/checkout/thankyou.php';
      }
      return $template;
  }
- add_filter('woocommerce_locate_template', 'adn_custom__checkout', 20, 2);
+ add_filter('woocommerce_locate_template', 'adn_custom__checkout', 20, 3);
 
 function adn_custom_woocommerce_input_class($args, $key, $value)
 {

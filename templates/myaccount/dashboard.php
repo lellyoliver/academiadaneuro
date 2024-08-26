@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 $user = wp_get_current_user();
 $user_name = $user->first_name;
-$allowed_roles_3 = ['training', 'administrator', 'coach'];
+$allowed_roles_3 = ['training', 'administrator', 'coach', 'health-pro'];
 $data = get_user_meta($current_user_id, 'connected_user', true);
 $billing_phone = get_user_meta($data, 'billing_phone', true);
 $profissional = get_userdata($data);

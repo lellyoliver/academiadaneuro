@@ -1,9 +1,13 @@
+const queryParams = window.location.search;
 
-const queryString = window.location.search;
-if(queryString){
-  if (queryString.includes('?user_related=')) {
-    const user_id = queryString.split('?user_related=')[1];
+if (queryParams) {
+  const params = new URLSearchParams(queryParams);
+  const userId = params.get('user_related');
+
+  if (userId) {
     const inputHiddenUserID = document.getElementById('billing_user_related');
-    inputHiddenUserID.value = user_id;
+    if (inputHiddenUserID) {
+      inputHiddenUserID.value = userId;
+    }
   }
 }

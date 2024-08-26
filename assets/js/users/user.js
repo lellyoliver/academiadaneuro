@@ -89,7 +89,7 @@ function viewUser() {
     const cityInput = document.getElementById('city');
     const cepInput = document.getElementById('cep');
     const statesInput = document.getElementById('states');
-    const CPF = document.getElementById('user_name');
+    const CPF = document.getElementById('cpf');
     const userID = document.getElementById('userId');
     const avatar = document.getElementById('avatar-preview');
 
@@ -99,7 +99,7 @@ function viewUser() {
       .then(response => response.json())
       .then(data => {
         if (CPF) {
-          CPF.innerHTML = data.user_nicename;
+          CPF.value = data.billing_cpf;
         }
         if (avatar) {
           avatar.src = data.billing_avatar;

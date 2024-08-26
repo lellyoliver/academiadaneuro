@@ -74,7 +74,13 @@ $_plan_semestral_training = get_option('_plan_semestral_training');
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-10 mb-3">
+                <div class="col-md-4 mb-3">
+                    <span class="label-float">
+                        <input type="text" id="cpf" name="cpf">
+                        <label for="cpf"><?php echo esc_html('CPF'); ?></label>
+                    </span>
+                </div>
+                <div class="col-md-6 mb-3">
                     <span class="label-float">
                         <input type="text" id="city" name="city">
                         <label for="city"><?php echo esc_html('Cidade'); ?></label>

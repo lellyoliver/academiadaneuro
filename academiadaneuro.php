@@ -65,7 +65,7 @@ function adn_scripts()
     }
 
     if (is_page('new-order')) {
-        wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), array(), '3.0.33', true);
+        wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), array(), '3.0.36', true);
         wp_enqueue_script('userUtilsjs', plugins_url('assets/js/users/user-utils.js', __FILE__), array(), ACADEMIA_DA_NEURO_VERSION, true);
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), array(), '11.7.31', false);
@@ -110,7 +110,7 @@ function adn_scripts()
     }
 
     if (is_page('meu-perfil')) {
-        wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), array(), '3.0.33', true);
+        wp_enqueue_script('userjs', plugins_url('assets/js/users/user.js', __FILE__), array(), '3.0.36', true);
         wp_enqueue_script('userReembolsojs', plugins_url('assets/js/users/user-reembolso.js', __FILE__), array(), '0.0.1', true);
         wp_enqueue_style('sweetAlert2Mincss', plugins_url('assets/lib/sweet-alert-2/sweetalert2.min.css', __FILE__), array(), '11.7.31', false);
         wp_enqueue_script('sweetAlert2Minjs', plugins_url('assets/lib/sweet-alert-2/sweetalert2.all.min.js', __FILE__), array(), '11.7.31', false);
@@ -127,10 +127,9 @@ function adn_scripts()
         wp_enqueue_script('customerSupportjs', plugins_url('assets/js/dashboard/dashboard.js', __FILE__), array('jquery'),'2.0.8', true);
     }
 
-    if (is_checkout()) {
-        wp_enqueue_script('checkoutjs', plugins_url('assets/js/checkout/checkout.js', __FILE__), array(), ACADEMIA_DA_NEURO_VERSION, false);
+    if(is_checkout()){
+        wp_enqueue_script('checkoutjs', plugins_url('assets/js/checkout/checkout.js', __FILE__), array(),'4.0.25', true);
     }
-
 }
 add_action('wp_enqueue_scripts', 'adn_scripts');
 
@@ -257,17 +256,17 @@ add_filter('wp_password_change_notification_email', 'adn_password_reset_notifica
  * Woocomerce
  */
 
-function adn_custom__checkout($template, $template_name, $template_path)
-{
-    if ('myaccount/dashboard.php' == $template_name) {
-        $template = plugin_dir_path(__FILE__) . 'templates/myaccount/dashboard.php';
-    }
-    if ('checkout/thankyou.php' == $template_name) {
-        $template = plugin_dir_path(__FILE__) . 'templates/checkout/thankyou.php';
-    }
-    return $template;
-}
-add_filter('woocommerce_locate_template', 'adn_custom__checkout', 20, 3);
+ function adn_custom__checkout($template, $template_name)
+ {
+     if ('checkout/review-order.php' == $template_name) {
+         $template = plugin_dir_path(__FILE__) . 'templates/checkout/review-order.php';
+     }
+     if ('checkout/thankyou.php' == $template_name) {
+         $template = plugin_dir_path(__FILE__) . 'templates/checkout/thankyou.php';
+     }
+     return $template;
+ }
+ add_filter('woocommerce_locate_template', 'adn_custom__checkout', 20, 2);
 
 function adn_custom_woocommerce_input_class($args, $key, $value)
 {
@@ -303,18 +302,18 @@ function adn_custom_checkout_user_fullfil($fields)
 }
 add_filter('woocommerce_checkout_fields', 'adn_custom_checkout_user_fullfil');
 
-function alterar_status_pedido_cheque($order_id)
-{
-    if (!$order_id) {
-        return;
-    }
-    $order = wc_get_order($order_id);
-    if ($order->get_payment_method() === 'cheque') {
+// function alterar_status_pedido_cheque($order_id)
+// {
+//     if (!$order_id) {
+//         return;
+//     }
+//     $order = wc_get_order($order_id);
+//     if ($order->get_payment_method() === 'cheque') {
 
-        $order->update_status('completed');
-    }
-}
-add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
+//         $order->update_status('completed');
+//     }
+// }
+// add_action('woocommerce_thankyou', 'alterar_status_pedido_cheque', 10, 1);
 
 function adn_add_product_checkout()
 {
@@ -427,7 +426,7 @@ function check_and_enable_registration($order_id)
 
                 $json_response = json_encode($response_data);
 
-                update_user_meta($user_id, $user_related . '_user_expired', $json_response);
+                $teste = update_user_meta($user_id, $user_related . '_user_expired', $json_response);
 
                 break;
             }
@@ -470,9 +469,6 @@ function user_related_meta_admin_pedidos($order) {
             </p>';
 }
 add_action('woocommerce_admin_order_data_after_order_details', 'user_related_meta_admin_pedidos', 10, 1);
-
-
-
 
 function user_related_meta_finalizar_compra($order_id) {
     $value = isset($_POST['billing_user_related']) ? sanitize_text_field($_POST['billing_user_related']) : '';

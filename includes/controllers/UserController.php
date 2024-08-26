@@ -80,6 +80,8 @@ class UserController
         $avatar_file = $request->get_file_params('avatar_file');
         $post_id = $request->get_param('post_id');
         $role = $request->get_param('role');
+        $cpf = $request->get_param('cpf');
+
 
         if (!empty($avatar_file)) {
             $avatar_id = $this->userService->handleAvatarUpload($avatar_file, $post_id);
@@ -88,6 +90,7 @@ class UserController
         $meta_fields = [
             'billing_first_name' => $name,
             'billing_phone' => $phone,
+            'billing_cpf' => $cpf,
         ];
 
         if ($role == 'coach' || $role == 'health-pro' || $role == 'administrator' || $role == 'training') {

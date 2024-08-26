@@ -45,6 +45,7 @@ class UserModel
                 'confirmation_token' => sanitize_text_field($confirmation_token),
                 'confirm_terms_services' => sanitize_text_field($user_data['termsAndServices']),
                 'billing_avatar' => '145',
+                'billing_cpf' => $user_name,
             ],
         );
 
@@ -319,6 +320,7 @@ class UserModel
             'billing_address_1' => $user->billing_address_1,
             'billing_state' => $user->billing_state,
             'billing_city' => $user->billing_city,
+            'billing_cpf' => $user->billing_cpf,
             'billing_avatar' => wp_get_attachment_image_url($user->billing_avatar, ''),
         );
 

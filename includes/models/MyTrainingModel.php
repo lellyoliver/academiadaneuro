@@ -128,7 +128,11 @@ class MyTrainingModel
                     $categoryProgress[$category] = $percentage;
                 }
 
+                 // Calculando a soma ponderada das porcentagens
                 $totalProgress = array_sum($categoryProgress);
+    
+                // Limitando o progresso a no máximo 100%
+                $totalProgress = min(round($totalProgress), 100);
 
                 $progress[$timestampObject->post_id] = (object) [
                     'porcentagem' => ceil($totalProgress),

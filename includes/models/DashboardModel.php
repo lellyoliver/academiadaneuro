@@ -90,50 +90,50 @@ class DashboardModel
     {
         $users = $this->getListRelated($user_id);
         $result = [];
-
+    
         foreach ($users as $user) {
             $trainings = $this->myTrainingService->getProgress($user->ID);
             $general = $this->myTrainingService->getTotalProgress($user->ID);
-
-            $total = "";
-            $averageProgress = ""; // Inicializando a variável
-
+    
+            $total = 0; // Inicializando corretamente como 0
+            $averageProgress = 0; // Inicializando a variável como 0
+    
             if (!empty($trainings)) {
                 $count = count($trainings);
-
+    
                 if ($count > 0) {
                     foreach ($trainings as $training) {
                         if (isset($training->porcentagem) && is_numeric($training->porcentagem)) {
                             $total += $training->porcentagem;
                         }
                     }
-                    $averageProgress = $total / $count;
+                    $averageProgress = min(round($total / $count), 100);
                 }
             }
-
+    
             $preparesUpdateds = $this->getPrepareProgress($user->ID);
             $activity_updated = "";
-
+    
             if (!empty($preparesUpdateds)) {
                 foreach ($preparesUpdateds as $preparesUpdated) {
                     $activity_updated = date_i18n('d M', $preparesUpdated->activity_updated);
                 }
             }
-
+    
             $result[] = [
                 "ID" => $user->ID,
                 "name" => $user->display_name,
                 "porcentagem" => $averageProgress,
                 "updated" => $activity_updated,
-                "neural_breathing" => $general['neural_breathing'],
-                "neural_resonance" => $general['neural_resonance'],
-                "cognitive_stimulation" => $general['cognitive_stimulation'],
-
+                "neural_breathing" => min(round($general['neural_breathing']), 100),
+                "neural_resonance" => min(round($general['neural_resonance']), 100),
+                "cognitive_stimulation" => min(round($general['cognitive_stimulation']), 100),
             ];
         }
-
+    
         return $result;
     }
+
 
     public function getProgress($user_id)
     {

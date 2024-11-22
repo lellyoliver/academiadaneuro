@@ -135,7 +135,7 @@ class MyTrainingModel
                 $totalProgress = min(round($totalProgress), 100);
 
                 $progress[$timestampObject->post_id] = (object) [
-                    'porcentagem' => ceil($totalProgress),
+                    'porcentagem' => $totalProgress,
                 ];
             }
         }
